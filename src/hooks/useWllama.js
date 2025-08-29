@@ -1,5 +1,4 @@
 import { useState, useCallback, useRef } from 'react';
-import { Wllama, LoggerWithoutDebug } from '@wllama/wllama';
 export function useWllama(config = {}) {
     const [isLoaded, setIsLoaded] = useState(false);
     const [progress, setProgress] = useState(0);
@@ -20,6 +19,8 @@ export function useWllama(config = {}) {
             return wllamaRef.current;
         try {
             console.log('🚀 wllama 초기화 시작...');
+            // 동적 import로 wllama 로드
+            const { Wllama, LoggerWithoutDebug } = await import('@wllama/wllama');
             // wllama 설정 경로 (CDN에서 wasm 파일 로드)
             const CONFIG_PATHS = {
                 'single-thread/wllama.wasm': 'https://cdn.jsdelivr.net/npm/@wllama/wllama@2.3.4/esm/single-thread/wllama.wasm',
@@ -87,12 +88,12 @@ export function useWllama(config = {}) {
             console.log('📝 사용자 메시지:', lastUserMessage);
             // 채팅 완료 옵션
             const completionOptions = {
-                nPredict: defaultConfig.maxTokens,
+                nPredict: defaultConfig.maxTokens || 512,
                 sampling: {
-                    temp: defaultConfig.temperature,
+                    temp: defaultConfig.temperature || 0.7,
                     top_k: 40,
-                    top_p: defaultConfig.topP,
-                    repeat_penalty: defaultConfig.repetitionPenalty,
+                    top_p: defaultConfig.topP || 0.9,
+                    repeat_penalty: defaultConfig.repetitionPenalty || 1.1,
                 },
             };
             console.log('⚙️ 채팅 옵션:', completionOptions);

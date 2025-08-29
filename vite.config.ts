@@ -40,11 +40,11 @@ export default defineConfig({
   },
   build: {
     rollupOptions: {
-      external: ['@wllama/wllama'],
+      external: [],
     },
     chunkSizeWarningLimit: 10000, // 10MB로 증가
   },
   optimizeDeps: {
-    exclude: ['@wllama/wllama'],
+    include: ['@wllama/wllama'],
   },
 });

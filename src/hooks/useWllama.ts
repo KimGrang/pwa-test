@@ -1,6 +1,17 @@
 import { useState, useCallback, useRef } from 'react';
 import { ChatMessage } from '../types/pwa';
-import { Wllama, LoggerWithoutDebug } from '@wllama/wllama';
+
+// wllama 타입 정의
+interface Wllama {
+  loadModelFromUrl: (
+    url: string,
+    options: { progressCallback?: (progress: { loaded: number; total: number }) => void }
+  ) => Promise<void>;
+  createCompletion: (
+    prompt: string,
+    options: { nPredict: number; sampling: { temp: number; top_k: number; top_p: number; repeat_penalty: number } }
+  ) => Promise<string>;
+}
 
 export interface WllamaHookConfig {
   temperature?: number;
@@ -31,6 +42,9 @@ export function useWllama(config: WllamaHookConfig = {}) {
 
     try {
       console.log('🚀 wllama 초기화 시작...');
+
+      // 동적 import로 wllama 로드
+      const { Wllama, LoggerWithoutDebug } = await import('@wllama/wllama');
 
       // wllama 설정 경로 (CDN에서 wasm 파일 로드)
       const CONFIG_PATHS = {
@@ -115,12 +129,12 @@ export function useWllama(config: WllamaHookConfig = {}) {
 
         // 채팅 완료 옵션
         const completionOptions = {
-          nPredict: defaultConfig.maxTokens,
+          nPredict: defaultConfig.maxTokens || 512,
           sampling: {
-            temp: defaultConfig.temperature,
+            temp: defaultConfig.temperature || 0.7,
             top_k: 40,
-            top_p: defaultConfig.topP,
-            repeat_penalty: defaultConfig.repetitionPenalty,
+            top_p: defaultConfig.topP || 0.9,
+            repeat_penalty: defaultConfig.repetitionPenalty || 1.1,
           },
         };
 
