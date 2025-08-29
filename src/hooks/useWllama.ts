@@ -1,15 +1,8 @@
 import { useState, useCallback, useRef } from 'react';
 import { ChatMessage } from '../types/pwa';
 
-// wllama 타입 정의 - 단순화
-interface Wllama {
-  loadModelFromUrl: (url: string | string[], config?: any) => Promise<void>;
-  loadModel: (ggufBlobsOrModel: Blob[] | any, config?: any) => Promise<void>;
-  createCompletion: (
-    prompt: string,
-    options: { nPredict: number; sampling: { temp: number; top_k: number; top_p: number; repeat_penalty: number } }
-  ) => Promise<string>;
-}
+// wllama 라이브러리에서 실제 타입 import
+import type { Wllama } from '@wllama/wllama';
 
 export interface WllamaHookConfig {
   temperature?: number;
