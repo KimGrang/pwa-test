@@ -27,6 +27,22 @@ export default defineConfig({
         launch_handler: {
           client_mode: 'navigate-existing',
         },
+        screenshots: [
+          {
+            src: 'Screenshot_20250829_145348_Edge.jpg',
+            sizes: '1280x720',
+            type: 'image/jpeg',
+            form_factor: 'wide',
+            label: 'AI 채팅 인터페이스 - 데스크톱',
+          },
+          {
+            src: 'Screenshot_2025-08-29 145510.png',
+            sizes: '750x1334',
+            type: 'image/png',
+            form_factor: 'narrow',
+            label: 'AI 채팅 인터페이스 - 모바일',
+          },
+        ],
         categories: ['productivity', 'utilities', 'education'],
         dir: 'ltr',
         iarc_rating_id: 'e84b072d-71b3-4d3e-86ae-31a8ce4e53b7',
