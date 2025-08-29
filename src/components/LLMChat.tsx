@@ -314,29 +314,11 @@ const LLMChat: React.FC = () => {
               </div>
             </div>
             <div className='model-suggestions'>
-              <h4>💡 추천 모델들:</h4>
-              <ul>
-                <li>
-                  <code>TinyLlama-1.1B-Chat-v1.0-q4f16_1</code> - 빠른 응답, 경량 모델 (권장)
-                </li>
-                <li>
-                  <code>Phi-2-q4f16_1</code> - Microsoft의 효율적인 모델
-                </li>
-                <li>
-                  <code>Mistral-7B-Instruct-v0.2-q4f16_1</code> - 고품질 응답, 중간 크기
-                </li>
-              </ul>
               <h4>✅ wllama 특징:</h4>
               <ul>
                 <li>wllama는 로컬 GGUF 파일을 직접 지원합니다</li>
                 <li>WebAssembly를 사용하여 브라우저에서 직접 실행됩니다</li>
                 <li>네트워크 없이도 로컬 모델을 사용할 수 있습니다</li>
-              </ul>
-              <h4>⚡ 성능 팁:</h4>
-              <ul>
-                <li>첫 번째 로딩은 시간이 걸릴 수 있습니다 (모델 다운로드/로딩)</li>
-                <li>WebGPU를 지원하는 브라우저에서 더 빠른 성능을 얻을 수 있습니다</li>
-                <li>로컬 모델은 네트워크 없이도 사용할 수 있습니다</li>
               </ul>
             </div>
           </div>
