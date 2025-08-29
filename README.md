@@ -1,168 +1,138 @@
-# 🤖 WebLLM 온디바이스 LLM 채팅 PWA
+# 🤖 wllama AI 채팅 PWA
 
-온디바이스에서 AI 모델을 실행하는 Progressive Web App입니다. [WebLLM](https://github.com/mlc-ai/web-llm)을 사용하여 브라우저에서 직접 LLM을 실행할 수 있습니다.
+React, Vite, TypeScript로 구축된 Progressive Web App과 wllama를 사용한 온디바이스 Large Language Model 통합 프로젝트입니다.
 
-## ✨ 주요 기능
+## 🚀 주요 기능
 
-- 🌐 **온디바이스 실행**: 인터넷 연결 없이도 AI 모델 실행
-- 📱 **PWA 지원**: 홈 화면에 설치 가능
-- 🔄 **자동 업데이트**: 새 버전 자동 감지 및 설치
-- 🚀 **WebLLM 통합**: 고성능 브라우저 내 LLM 추론 엔진
-- 🎯 **다양한 모델 지원**: Llama-2, Mistral, Phi-2, TinyLlama 등
-- ⚡ **WebGPU 가속**: GPU 가속을 통한 빠른 추론
+- **온디바이스 LLM**: wllama를 사용한 브라우저 기반 AI 추론
+- **로컬 모델 지원**: GGUF 파일을 직접 로드하여 사용
+- **PWA 지원**: 오프라인 작동, 홈 화면 설치, 자동 업데이트
+- **실시간 채팅**: 스트리밍 응답으로 자연스러운 대화
+- **반응형 디자인**: 모바일과 데스크톱 모두 지원
 
-## 🚀 빠른 시작
-
-### 1. 개발 서버 실행
+## ⚡ 빠른 시작
 
 ```bash
 # 의존성 설치
 pnpm install
 
-# 개발 서버 실행
+# 개발 서버 시작
 pnpm dev
 
-# 브라우저에서 http://localhost:5173 접속
-```
-
-### 2. 프로덕션 빌드
-
-```bash
-# 빌드
+# 프로덕션 빌드
 pnpm build
 
-# 미리보기
+# 빌드 미리보기
 pnpm preview
 ```
 
 ## 📁 프로젝트 구조
 
 ```
-pwa_test/
-├── src/
-│   ├── components/
-│   │   ├── LLMChat.tsx           # 메인 채팅 컴포넌트
-│   │   ├── PWAInstallButton.tsx  # PWA 설치 버튼
-│   │   └── PWAUpdatePrompt.tsx   # 업데이트 알림
-│   ├── hooks/
-│   │   ├── useWebLLM.ts          # WebLLM 훅
-│   │   ├── usePWA.ts             # PWA 훅
-│   │   └── useInstallPrompt.ts   # 설치 프롬프트 훅
-│   ├── types/
-│   │   └── pwa.ts                # 타입 정의
-│   └── App.tsx                   # 메인 앱 컴포넌트
-├── public/
-│   ├── manifest.webmanifest      # PWA 매니페스트
-│   └── icons/                    # PWA 아이콘들
-├── vite.config.ts                # Vite 설정
-└── package.json
+src/
+├── components/          # React 컴포넌트
+│   ├── LLMChat.tsx     # 메인 채팅 인터페이스
+│   ├── PWAInstallButton.tsx  # PWA 설치 버튼
+│   └── PWAUpdatePrompt.tsx   # PWA 업데이트 프롬프트
+├── hooks/              # 커스텀 훅
+│   └── useWllama.ts    # wllama 통합 훅
+├── types/              # TypeScript 타입 정의
+│   └── pwa.ts          # PWA 관련 타입
+└── config/             # 설정 파일
+    └── wllama-config.js # wllama 설정
 ```
 
-## 🔧 WebLLM 모델 사용법
+## 🎯 wllama 모델 사용법
 
-### 1. 모델 선택 및 로딩
+### 1. 모델 선택
 
-1. **모델 선택**: 드롭다운에서 원하는 모델을 선택합니다
-2. **모델 로드**: "모델 로드" 버튼을 클릭하여 모델을 다운로드하고 초기화합니다
-3. **채팅 시작**: 모델 로딩이 완료되면 채팅 인터페이스가 나타납니다
+- **원격 모델**: wllama에서 제공하는 사전 정의된 모델
+- **로컬 모델**: 사용자가 직접 준비한 GGUF 파일
 
 ### 2. 사용 가능한 모델들
 
-- **TinyLlama-1.1B-Chat-v1.0-q4f16_1**: 빠른 응답, 경량 모델 (권장)
-- **Phi-2-q4f16_1**: Microsoft의 효율적인 모델
-- **Mistral-7B-Instruct-v0.2-q4f16_1**: 고품질 응답, 중간 크기
-- **Llama-2-7b-chat-q4f16_1**: Meta의 안정적인 모델
-- **Llama-2-13b-chat-q4f16_1**: 더 큰 모델 (고품질)
-- **NeuralHermes-2.5-Mistral-7B-q4f16_1**: 특화된 모델
+- `/models/euro_gguf.gguf` - 로컬 Euro 모델 (1.7GB)
 
-### 3. 성능 최적화
+### 3. 성능 팁
 
-- **첫 번째 로딩**: 모델 다운로드로 인해 시간이 걸릴 수 있습니다
-- **WebGPU 지원**: WebGPU를 지원하는 브라우저에서 더 빠른 성능
-- **브라우저 캐시**: 모델은 브라우저 캐시에 저장되어 다음 로딩 시 더 빠릅니다
+- 첫 번째 로딩은 시간이 걸릴 수 있습니다 (모델 다운로드/로딩)
+- WebAssembly를 사용하여 브라우저에서 직접 실행됩니다
+- 로컬 모델은 네트워크 없이도 사용할 수 있습니다
 
-## 🚀 WebLLM 특징
+## ✅ wllama 특징
 
-### 1. 고성능 브라우저 내 추론
+- **로컬 파일 지원**: GGUF 파일을 직접 로드 가능
+- **WebAssembly 기반**: 브라우저에서 네이티브 성능
+- **네트워크 독립적**: 오프라인에서도 사용 가능
+- **단순한 API**: 직관적인 인터페이스
 
-- **WebGPU 가속**: GPU 가속을 통한 빠른 추론
-- **메모리 효율성**: 브라우저 메모리를 효율적으로 사용
-- **오프라인 지원**: 인터넷 연결 없이도 AI 모델 실행
+## 🚀 Vercel 배포
 
-### 2. OpenAI API 호환성
+### 배포 방법
 
-- **완전 호환**: OpenAI API와 동일한 인터페이스
-- **스트리밍 지원**: 실시간 토큰 스트리밍
-- **다양한 모델**: Llama-2, Mistral, Phi-2 등 다양한 모델 지원
+1. GitHub에 코드 푸시
+2. Vercel에서 프로젝트 연결
+3. 자동 배포 완료
 
-### 3. PWA 통합
+### Vercel 설정
 
-- **홈 화면 설치**: 모바일/데스크탑 홈 화면에 설치 가능
-- **오프라인 동작**: 서비스 워커를 통한 오프라인 지원
-- **자동 업데이트**: 새 버전 자동 감지 및 설치
+- `vercel.json`에서 CORS 헤더 설정
+- WASM 파일 지원을 위한 헤더 구성
+- PWA 관련 파일 라우팅 설정
 
-## 🔍 문제 해결
+### 주의사항
+
+- **SharedArrayBuffer 지원**: Vercel에서 `Cross-Origin-Embedder-Policy` 헤더 설정 필요
+- **WASM 파일**: CDN에서 wllama WASM 파일 로드
+- **모델 파일**: 로컬 모델은 별도 호스팅 필요 (Vercel 파일 크기 제한)
+
+## 🔧 문제 해결
 
 ### 모델 로딩 실패
 
-**해결 방법**:
+- 브라우저 콘솔에서 에러 메시지 확인
+- 네트워크 연결 상태 확인
+- 모델 파일 경로 확인
 
-1. **브라우저 확인**: Chrome, Edge, Firefox 최신 버전 사용
-2. **WebGPU 지원**: WebGPU를 지원하는 브라우저에서 더 빠른 성능
-3. **메모리 정리**: 브라우저 새로고침으로 메모리 정리
-4. **네트워크 확인**: 모델 다운로드를 위한 안정적인 인터넷 연결
+### 채팅 응답 없음
 
-### 채팅 응답 오류
+- 모델이 완전히 로드되었는지 확인
+- 브라우저 메모리 부족 여부 확인
+- WebAssembly 지원 브라우저 사용
 
-**해결 방법**:
+### PWA 설치 안됨
 
-1. **모델 재로딩**: 모델을 다시 로드해보세요
-2. **브라우저 캐시**: 브라우저 캐시를 지우고 다시 시도
-3. **다른 모델**: 더 작은 모델로 테스트 (예: TinyLlama)
-4. **메모리 부족**: 다른 탭을 닫고 메모리 확보
+- HTTPS 환경에서 테스트
+- 브라우저 PWA 지원 확인
+- manifest.webmanifest 파일 확인
 
-### PWA 설치 문제
+## 📦 의존성
 
-**해결 방법**:
+### 핵심 의존성
 
-1. **HTTPS 환경**: PWA 설치를 위해서는 HTTPS 환경이 필요합니다
-2. **브라우저 지원**: Chrome, Edge, Safari에서 PWA 설치 지원
-3. **매니페스트 확인**: `manifest.webmanifest` 파일이 올바르게 설정되었는지 확인
+- `@wllama/wllama`: WebAssembly 기반 LLM 추론
+- `react`: UI 프레임워크
+- `vite`: 빌드 도구
+- `vite-plugin-pwa`: PWA 지원
 
-## 🛠️ 개발
+### 개발 의존성
 
-### 의존성
+- `typescript`: 타입 안전성
+- `@types/react`: React 타입 정의
+- `@vitejs/plugin-react`: React 플러그인
 
-- React 19
-- Vite 7
-- TypeScript 5.8
-- WebLLM 0.2.79
-- PWA 플러그인
+## 📝 스크립트
 
-### 스크립트
-
-```bash
-# 개발 서버
-pnpm dev
-
-# 타입 체크
-pnpm type-check
-
-# 빌드
-pnpm build
-
-# 미리보기
-pnpm preview
-
-# 린트
-pnpm lint
+```json
+{
+  "dev": "vite",
+  "build": "tsc -b && vite build",
+  "preview": "vite preview",
+  "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0"
+}
 ```
 
-## 📄 라이선스
-
-MIT License
-
-## 🤝 기여
+## 🤝 기여하기
 
 1. Fork the Project
 2. Create your Feature Branch (`git checkout -b feature/AmazingFeature`)
@@ -170,15 +140,13 @@ MIT License
 4. Push to the Branch (`git push origin feature/AmazingFeature`)
 5. Open a Pull Request
 
-## 📞 지원
+## 📄 라이선스
 
-문제가 발생하면 다음을 확인해주세요:
+이 프로젝트는 MIT 라이선스 하에 배포됩니다. 자세한 내용은 `LICENSE` 파일을 참조하세요.
 
-1. **nginx 사용**: 가장 안정적인 방법
-2. **모델 크기**: 512MB 이하 청크 권장
-3. **브라우저**: Chrome 최신 버전 권장
-4. **메모리**: 충분한 RAM 확보 (8GB 이상 권장)
+## 🙏 감사의 말
 
----
-
-**참고**: 이 프로젝트는 wllama 라이브러리를 사용하여 브라우저에서 직접 LLM을 실행합니다. 대용량 모델의 경우 충분한 메모리와 시간이 필요할 수 있습니다.
+- [wllama](https://github.com/ngxson/wllama) - WebAssembly 기반 LLM 추론
+- [llama.cpp](https://github.com/ggerganov/llama.cpp) - 효율적인 LLM 추론
+- [Vite](https://vitejs.dev/) - 빠른 빌드 도구
+- [React](https://react.dev/) - UI 프레임워크

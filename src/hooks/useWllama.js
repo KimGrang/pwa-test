@@ -22,8 +22,8 @@ export function useWllama(config = {}) {
             console.log('🚀 wllama 초기화 시작...');
             // wllama 설정 경로 (CDN에서 wasm 파일 로드)
             const CONFIG_PATHS = {
-                'single-thread/wllama.wasm': 'https://unpkg.com/@wllama/wllama@2.3.4/esm/single-thread/wllama.wasm',
-                'multi-thread/wllama.wasm': 'https://unpkg.com/@wllama/wllama@2.3.4/esm/multi-thread/wllama.wasm',
+                'single-thread/wllama.wasm': 'https://cdn.jsdelivr.net/npm/@wllama/wllama@2.3.4/esm/single-thread/wllama.wasm',
+                'multi-thread/wllama.wasm': 'https://cdn.jsdelivr.net/npm/@wllama/wllama@2.3.4/esm/multi-thread/wllama.wasm',
             };
             // wllama 인스턴스 생성 (LoggerWithoutDebug로 디버그 메시지 억제)
             const wllama = new Wllama(CONFIG_PATHS, {
@@ -55,6 +55,7 @@ export function useWllama(config = {}) {
             console.log('📁 모델 로딩 시작:', modelPath);
             // 로컬 파일 URL로 모델 로딩
             const modelUrl = new URL(modelPath, window.location.origin).href;
+            console.log('🔗 모델 URL:', modelUrl);
             await wllama.loadModelFromUrl(modelUrl, {
                 progressCallback,
             });
@@ -65,7 +66,8 @@ export function useWllama(config = {}) {
         }
         catch (error) {
             console.error('❌ wllama 모델 로딩 실패:', error);
-            setModelInfo('❌ 모델 로딩 실패');
+            const errorMessage = error instanceof Error ? error.message : String(error);
+            setModelInfo(`❌ 모델 로딩 실패: ${errorMessage}`);
             throw error;
         }
         finally {
