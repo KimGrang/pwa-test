@@ -1,12 +1,10 @@
 import { useState, useCallback, useRef } from 'react';
 import { ChatMessage } from '../types/pwa';
 
-// wllama 타입 정의
+// wllama 타입 정의 - 단순화
 interface Wllama {
-  loadModelFromUrl: (
-    url: string,
-    options: { progressCallback?: (progress: { loaded: number; total: number }) => void }
-  ) => Promise<void>;
+  loadModelFromUrl: (url: string | string[], config?: any) => Promise<void>;
+  loadModel: (ggufBlobsOrModel: Blob[] | any, config?: any) => Promise<void>;
   createCompletion: (
     prompt: string,
     options: { nPredict: number; sampling: { temp: number; top_k: number; top_p: number; repeat_penalty: number } }
@@ -111,6 +109,42 @@ export function useWllama(config: WllamaHookConfig = {}) {
     [initializeWllama]
   );
 
+  // 파일 업로드로 모델 로딩
+  const loadModelFromFile = useCallback(
+    async (file: File) => {
+      try {
+        setIsLoading(true);
+        setProgress(0);
+        setModelInfo(`파일 로딩 중: ${file.name}`);
+        console.log('🚀 wllama 파일 로딩 시작...', file.name);
+
+        const wllama = await initializeWllama();
+
+        console.log('📁 파일 로딩 시작:', file.name);
+
+        // 파일을 Blob으로 변환하여 wllama에 직접 전달
+        const blob = new Blob([file], { type: 'application/octet-stream' });
+        console.log('📦 파일을 Blob으로 변환 완료, 크기:', blob.size);
+
+        // wllama에 Blob 배열 직접 전달 (progressCallback 제거)
+        await wllama.loadModel([blob]);
+
+        setIsLoaded(true);
+        setProgress(100);
+        setModelInfo(`✅ ${file.name} 모델 로딩 완료`);
+        console.log('✅ wllama 파일 로딩 완료');
+      } catch (error) {
+        console.error('❌ wllama 파일 로딩 실패:', error);
+        const errorMessage = error instanceof Error ? error.message : String(error);
+        setModelInfo(`❌ 파일 로딩 실패: ${errorMessage}`);
+        throw error;
+      } finally {
+        setIsLoading(false);
+      }
+    },
+    [initializeWllama]
+  );
+
   // 채팅 완료
   const chatCompletion = useCallback(
     async (messages: ChatMessage[], onStream?: (text: string) => void) => {
@@ -199,5 +233,6 @@ export function useWllama(config: WllamaHookConfig = {}) {
     modelInfo,
     getAvailableModels,
     getLocalModels,
+    loadModelFromFile, // 새로 추가된 함수 노출
   };
 }

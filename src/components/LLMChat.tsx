@@ -7,7 +7,6 @@ const LLMChat: React.FC = () => {
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [inputMessage, setInputMessage] = useState('');
   const [selectedModel, setSelectedModel] = useState('TinyLlama-1.1B-Chat-v1.0-q4f16_1');
-  const [selectedLocalModel, setSelectedLocalModel] = useState('/models/euro_gguf.gguf');
   const [isModelLoading, setIsModelLoading] = useState(false);
   const [modelStatus, setModelStatus] = useState<'none' | 'loading' | 'loaded' | 'error'>('none');
   const [modelInfo, setModelInfo] = useState<string>('');
@@ -22,7 +21,7 @@ const LLMChat: React.FC = () => {
     progress,
     modelInfo: wllamaModelInfo,
     getAvailableModels,
-    getLocalModels,
+    loadModelFromFile,
   } = useWllama({
     temperature: 0.7,
     topP: 0.9,
@@ -64,9 +63,13 @@ const LLMChat: React.FC = () => {
     }
   };
 
-  const handleLoadLocalModel = async () => {
-    if (!selectedLocalModel) {
-      alert('로컬 모델을 선택해주세요.');
+  const handleFileUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    // GGUF 파일인지 확인
+    if (!file.name.endsWith('.gguf')) {
+      alert('GGUF 파일만 업로드 가능합니다.');
       return;
     }
 
@@ -74,12 +77,12 @@ const LLMChat: React.FC = () => {
       setIsModelLoading(true);
       setLoadingType('local');
       setModelStatus('loading');
-      await loadModel(selectedLocalModel);
-      setModelInfo(`로컬 모델 (${selectedLocalModel})이 로드되었습니다`);
+      await loadModelFromFile(file);
+      setModelInfo(`업로드된 모델 (${file.name})이 로드되었습니다`);
     } catch (error) {
       setModelStatus('error');
-      setModelInfo('로컬 모델 로딩에 실패했습니다');
-      alert('로컬 모델 로딩에 실패했습니다: ' + error);
+      setModelInfo('파일 로딩에 실패했습니다');
+      alert('파일 로딩에 실패했습니다: ' + error);
     } finally {
       setIsModelLoading(false);
     }
@@ -151,7 +154,6 @@ const LLMChat: React.FC = () => {
   };
 
   const availableModels = getAvailableModels();
-  const localModels = getLocalModels();
 
   return (
     <div className='llm-chat'>
@@ -218,28 +220,24 @@ const LLMChat: React.FC = () => {
             <span>또는</span>
           </div>
 
-          {/* 로컬 모델 로딩 */}
+          {/* 파일 업로드 모델 로딩 */}
           <div className='model-section'>
-            <h3>📁 로컬 모델</h3>
+            <h3>📁 파일 업로드</h3>
             <div className='model-warning'>
-              <p>✅ wllama는 로컬 GGUF 파일을 직접 지원합니다. 로컬 모델을 선택하면 실제 파일이 로드됩니다.</p>
+              <p>✅ 컴퓨터에서 GGUF 파일을 직접 선택하여 업로드할 수 있습니다.</p>
             </div>
             <div className='model-controls'>
-              <select
-                value={selectedLocalModel}
-                onChange={(e) => setSelectedLocalModel(e.target.value)}
-                className='model-select'
+              <input
+                type='file'
+                accept='.gguf'
+                onChange={handleFileUpload}
                 disabled={isModelLoading || isLoaded}
-              >
-                {localModels.map((model) => (
-                  <option key={model} value={model}>
-                    {model.split('/').pop()} (로컬)
-                  </option>
-                ))}
-              </select>
-              <button onClick={handleLoadLocalModel} disabled={isModelLoading || isLoaded} className='load-model-btn'>
-                {isModelLoading && loadingType === 'local' ? `로딩 중... ${progress.toFixed(1)}%` : '로컬 모델 로드'}
-              </button>
+                className='file-input'
+                id='model-file-input'
+              />
+              <label htmlFor='model-file-input' className='file-input-label'>
+                {isModelLoading && loadingType === 'local' ? `로딩 중... ${progress.toFixed(1)}%` : 'GGUF 파일 선택'}
+              </label>
             </div>
           </div>
         </div>
