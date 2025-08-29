@@ -124,22 +124,19 @@ export function useWllama(config = {}) {
                     top_p: defaultConfig.topP || 0.9,
                     repeat_penalty: defaultConfig.repetitionPenalty || 1.1,
                 },
-                stream: true, // 스트리밍 모드 활성화
-                onNewToken: onStream
-                    ? (token, piece) => {
-                        // 토큰을 텍스트로 변환하여 스트리밍
-                        const tokenText = new TextDecoder().decode(piece);
-                        if (tokenText.trim()) {
-                            onStream(tokenText);
-                            console.log('📝 스트리밍 토큰:', tokenText);
-                        }
-                    }
-                    : undefined,
             };
             console.log('⚙️ 채팅 옵션:', completionOptions);
-            // 스트리밍 채팅 실행
+            // 스트리밍 채팅
             const outputText = await wllamaRef.current.createCompletion(lastUserMessage, completionOptions);
             console.log('✅ 채팅 완료, 전체 응답:', outputText);
+            // 스트리밍 시뮬레이션 (wllama는 스트리밍을 직접 지원하지 않음)
+            if (onStream) {
+                const words = outputText.split(' ');
+                for (const word of words) {
+                    onStream(word + ' ');
+                    await new Promise((resolve) => setTimeout(resolve, 50)); // 50ms 지연
+                }
+            }
             return outputText;
         }
         catch (error) {
