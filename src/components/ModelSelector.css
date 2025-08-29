@@ -1,0 +1,386 @@
+.split-model-selector {
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 20px;
+  background: #f8f9fa;
+  border-radius: 12px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.selector-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  padding-bottom: 15px;
+  border-bottom: 2px solid #e9ecef;
+}
+
+.selector-header h3 {
+  margin: 0;
+  color: #2c3e50;
+  font-size: 1.5rem;
+}
+
+.mode-indicator {
+  background: #007bff;
+  color: white;
+  padding: 8px 16px;
+  border-radius: 20px;
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+.selection-status {
+  margin-bottom: 20px;
+  padding: 12px;
+  border-radius: 8px;
+  text-align: center;
+  font-weight: 500;
+}
+
+.selection-status.none {
+  background: #e9ecef;
+  color: #6c757d;
+}
+
+.selection-status.selected {
+  background: #d4edda;
+  color: #155724;
+}
+
+.selection-status.ready {
+  background: #cce5ff;
+  color: #004085;
+}
+
+/* nginx 섹션 스타일 */
+.nginx-section {
+  background: #fff;
+  border: 2px solid #28a745;
+  border-radius: 8px;
+  padding: 20px;
+  margin-bottom: 20px;
+}
+
+.nginx-section h4 {
+  margin: 0 0 10px 0;
+  color: #28a745;
+  font-size: 1.2rem;
+}
+
+.nginx-section p {
+  margin: 0 0 15px 0;
+  color: #6c757d;
+  line-height: 1.5;
+}
+
+.nginx-input-group {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 15px;
+}
+
+.nginx-url-input {
+  flex: 1;
+  padding: 12px;
+  border: 2px solid #ced4da;
+  border-radius: 6px;
+  font-size: 1rem;
+  transition: border-color 0.3s;
+}
+
+.nginx-url-input:focus {
+  outline: none;
+  border-color: #28a745;
+  box-shadow: 0 0 0 3px rgba(40, 167, 69, 0.1);
+}
+
+.nginx-load-btn {
+  padding: 12px 20px;
+  background: #28a745;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  white-space: nowrap;
+}
+
+.nginx-load-btn:hover:not(:disabled) {
+  background: #218838;
+}
+
+.nginx-load-btn:disabled {
+  background: #6c757d;
+  cursor: not-allowed;
+}
+
+.nginx-info {
+  background: #f8f9fa;
+  border-radius: 6px;
+  padding: 15px;
+}
+
+.nginx-info p {
+  margin: 0 0 10px 0;
+}
+
+.nginx-info ol {
+  margin: 0;
+  padding-left: 20px;
+}
+
+.nginx-info li {
+  margin-bottom: 5px;
+  color: #495057;
+}
+
+.nginx-info code {
+  background: #e9ecef;
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-family: 'Courier New', monospace;
+  font-size: 0.9rem;
+}
+
+/* 구분선 */
+.divider {
+  text-align: center;
+  margin: 20px 0;
+  position: relative;
+}
+
+.divider::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: #dee2e6;
+}
+
+.divider span {
+  background: #f8f9fa;
+  padding: 0 15px;
+  color: #6c757d;
+  font-weight: 500;
+}
+
+.file-input-section {
+  margin-bottom: 20px;
+}
+
+.file-input {
+  display: none;
+}
+
+.file-input-label {
+  display: block;
+  padding: 15px;
+  background: #fff;
+  border: 2px dashed #007bff;
+  border-radius: 8px;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.3s;
+  font-weight: 500;
+  color: #007bff;
+}
+
+.file-input-label:hover {
+  background: #f8f9ff;
+  border-color: #0056b3;
+}
+
+.file-input:disabled + .file-input-label {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.selected-files {
+  background: #fff;
+  border-radius: 8px;
+  padding: 20px;
+  margin-bottom: 20px;
+}
+
+.selected-files h4 {
+  margin: 0 0 15px 0;
+  color: #2c3e50;
+}
+
+.file-list {
+  margin-bottom: 15px;
+}
+
+.file-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 12px;
+  background: #f8f9fa;
+  border-radius: 6px;
+  margin-bottom: 8px;
+}
+
+.file-name {
+  font-weight: 500;
+  color: #495057;
+  word-break: break-all;
+}
+
+.file-size {
+  color: #6c757d;
+  font-size: 0.9rem;
+  white-space: nowrap;
+  margin-left: 10px;
+}
+
+.total-size {
+  font-weight: 600;
+  color: #2c3e50;
+  margin-bottom: 15px;
+  padding: 10px;
+  background: #e9ecef;
+  border-radius: 6px;
+  text-align: center;
+}
+
+.action-buttons {
+  display: flex;
+  gap: 10px;
+}
+
+.load-btn,
+.clear-btn {
+  flex: 1;
+  padding: 12px;
+  border: none;
+  border-radius: 6px;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.load-btn {
+  background: #007bff;
+  color: white;
+}
+
+.load-btn:hover:not(:disabled) {
+  background: #0056b3;
+}
+
+.load-btn:disabled {
+  background: #6c757d;
+  cursor: not-allowed;
+}
+
+.clear-btn {
+  background: #dc3545;
+  color: white;
+}
+
+.clear-btn:hover:not(:disabled) {
+  background: #c82333;
+}
+
+.clear-btn:disabled {
+  background: #6c757d;
+  cursor: not-allowed;
+}
+
+.split-info {
+  background: #fff3cd;
+  border: 1px solid #ffeaa7;
+  border-radius: 8px;
+  padding: 20px;
+  margin-bottom: 20px;
+}
+
+.split-info h4 {
+  margin: 0 0 15px 0;
+  color: #856404;
+}
+
+.split-info p {
+  margin: 0 0 10px 0;
+  color: #856404;
+  line-height: 1.5;
+}
+
+.split-info ul {
+  margin: 10px 0;
+  padding-left: 20px;
+}
+
+.split-info li {
+  margin-bottom: 5px;
+  color: #856404;
+}
+
+.loading-progress {
+  background: #fff;
+  border-radius: 8px;
+  padding: 20px;
+  text-align: center;
+}
+
+.progress-bar {
+  width: 100%;
+  height: 20px;
+  background: #e9ecef;
+  border-radius: 10px;
+  overflow: hidden;
+  margin-bottom: 10px;
+}
+
+.progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #007bff, #28a745);
+  transition: width 0.3s ease;
+  border-radius: 10px;
+}
+
+.loading-progress p {
+  margin: 0;
+  font-weight: 500;
+  color: #2c3e50;
+}
+
+/* 반응형 디자인 */
+@media (max-width: 768px) {
+  .split-model-selector {
+    padding: 15px;
+    margin: 10px;
+  }
+
+  .selector-header {
+    flex-direction: column;
+    gap: 10px;
+    text-align: center;
+  }
+
+  .nginx-input-group {
+    flex-direction: column;
+  }
+
+  .action-buttons {
+    flex-direction: column;
+  }
+
+  .file-item {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 5px;
+  }
+
+  .file-size {
+    margin-left: 0;
+  }
+}

@@ -1,18 +1,17 @@
 export interface BeforeInstallPromptEvent extends Event {
   readonly platforms: string[];
-  readonly userChoice: Promise<{
-    outcome: 'accepted' | 'dismissed';
-    platform: string;
-  }>;
+  readonly userChoice: Promise<{ outcome: 'accepted' | 'dismissed'; platform: string }>;
   prompt(): Promise<void>;
 }
 
-export interface PWAInstallPromptProps {
-  onInstall?: () => void;
-  onCancel?: () => void;
+export interface ChatMessage {
+  role: 'system' | 'user' | 'assistant';
+  content: string;
 }
 
-export interface UpdateAvailableEvent {
-  type: 'UPDATE_AVAILABLE';
-  payload: any;
+export interface LLMConfig {
+  modelUrl: string;
+  temperature?: number;
+  topP?: number;
+  contextSize?: number;
 }

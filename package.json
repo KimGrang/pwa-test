@@ -11,6 +11,7 @@
     "type-check": "tsc --noEmit"
   },
   "dependencies": {
+    "@wllama/wllama": "^2.3.4",
     "react": "^19.1.1",
     "react-dom": "^19.1.1"
   },
