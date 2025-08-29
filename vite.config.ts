@@ -12,6 +12,23 @@ export default defineConfig({
         maximumFileSizeToCacheInBytes: 10 * 1024 * 1024, // 10MB로 증가
         globPatterns: ['**/*.{js,css,html,ico,png,svg,woff2}'],
         globIgnores: ['**/models/*.gguf'], // GGUF 파일 제외
+        // Background Sync, Periodic Sync, Push Notifications 지원
+        runtimeCaching: [
+          {
+            urlPattern: /^https:\/\/api\./,
+            handler: 'NetworkFirst',
+            options: {
+              cacheName: 'api-cache',
+              expiration: {
+                maxEntries: 100,
+                maxAgeSeconds: 60 * 60 * 24, // 24시간
+              },
+            },
+          },
+        ],
+        // 오프라인 지원 강화
+        navigateFallback: '/index.html',
+        navigateFallbackAllowlist: [/^(?!\/__).*/],
       },
       manifest: {
         name: 'WebLLM AI 채팅 PWA',
