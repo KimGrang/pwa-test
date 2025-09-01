@@ -209,14 +209,14 @@ export function useWllama(config: WllamaHookConfig = {}) {
   // 사용 가능한 모델 목록 (nginx 서버에서 제공하는 모델들)
   const getAvailableModels = useCallback(() => {
     return [
-      'http://www.dwon.store/models/euro_gguf.gguf',
+      'https://www.dwon.store/models/euro_gguf.gguf',
       // 추가 모델들을 여기에 추가할 수 있습니다
     ];
   }, []);
 
   // 로컬 모델 목록 (wllama는 로컬 파일을 직접 지원)
   const getLocalModels = useCallback(() => {
-    return ['http://www.dwon.store/models/euro_gguf.gguf'];
+    return ['https://www.dwon.store/models/euro_gguf.gguf'];
   }, []);
 
   return {

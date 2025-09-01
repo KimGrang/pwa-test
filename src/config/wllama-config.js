@@ -8,7 +8,7 @@ export const WLLAMA_CONFIG_CDN = {
   'single-thread/wllama.wasm': 'https://unpkg.com/@wllama/wllama@latest/esm/single-thread/wllama.wasm',
   'multi-thread/wllama.wasm': 'https://unpkg.com/@wllama/wllama@latest/esm/multi-thread/wllama.wasm',
   // 방법 1: nginx 서버에서 제공하는 모델
-  model: 'http://www.dwon.store/models/euro_gguf.gguf',
+  model: 'https://www.dwon.store/models/euro_gguf.gguf',
   // 방법 2: 대안 URL들
   // model: 'https://huggingface.co/TheBloke/Phi-2-GGUF/resolve/main/phi-2.Q4_K_M.gguf',
   // model: 'https://huggingface.co/TheBloke/Mistral-3B-Instruct-v0.2-GGUF/resolve/main/mistral-3b-instruct.Q4_K_M.gguf',
