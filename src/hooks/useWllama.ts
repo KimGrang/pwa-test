@@ -203,17 +203,17 @@ export function useWllama(config: WllamaHookConfig = {}) {
     setModelInfo('');
   }, []);
 
-  // 사용 가능한 모델 목록 (로컬 파일들)
+  // 사용 가능한 모델 목록 (nginx 서버에서 제공하는 모델들)
   const getAvailableModels = useCallback(() => {
     return [
-      '/models/euro_gguf.gguf',
-      // 추가 로컬 모델들을 여기에 추가할 수 있습니다
+      'http://www.example.com/models/euro_gguf.gguf',
+      // 추가 모델들을 여기에 추가할 수 있습니다
     ];
   }, []);
 
   // 로컬 모델 목록 (wllama는 로컬 파일을 직접 지원)
   const getLocalModels = useCallback(() => {
-    return ['/models/euro_gguf.gguf'];
+    return ['http://www.example.com/models/euro_gguf.gguf'];
   }, []);
 
   return {

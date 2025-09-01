@@ -73,6 +73,19 @@
   font-style: italic;
 }
 
+.model-details {
+  margin-top: 8px;
+  font-size: 0.85rem;
+  color: rgba(255, 255, 255, 0.8);
+  font-style: italic;
+}
+
+.model-details small {
+  display: block;
+  margin-top: 4px;
+  color: rgba(255, 255, 255, 0.7);
+}
+
 /* 모델 섹션 */
 .model-section {
   margin-bottom: 20px;

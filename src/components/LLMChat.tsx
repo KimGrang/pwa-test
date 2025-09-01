@@ -6,7 +6,7 @@ import './LLMChat.css';
 const LLMChat: React.FC = () => {
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [inputMessage, setInputMessage] = useState('');
-  const [selectedModel, setSelectedModel] = useState('TinyLlama-1.1B-Chat-v1.0-q4f16_1');
+  const [selectedModel, setSelectedModel] = useState('http://www.example.com/models/euro_gguf.gguf');
   const [isModelLoading, setIsModelLoading] = useState(false);
   const [modelStatus, setModelStatus] = useState<'none' | 'loading' | 'loaded' | 'error'>('none');
   const [modelInfo, setModelInfo] = useState<string>('');
@@ -187,7 +187,14 @@ const LLMChat: React.FC = () => {
               </div>
             </span>
           )}
-          {modelStatus === 'loaded' && <span>✅ {modelInfo}</span>}
+          {modelStatus === 'loaded' && (
+            <span>
+              ✅ {modelInfo}
+              <div className='model-details'>
+                <small>🌐 nginx 서버에서 다운로드 완료</small>
+              </div>
+            </span>
+          )}
           {modelStatus === 'error' && <span>❌ {modelInfo}</span>}
         </div>
 
@@ -203,11 +210,15 @@ const LLMChat: React.FC = () => {
                 className='model-select'
                 disabled={isModelLoading || isLoaded}
               >
-                {availableModels.map((model) => (
-                  <option key={model} value={model}>
-                    {model}
-                  </option>
-                ))}
+                {availableModels.map((model) => {
+                  // URL에서 파일명 추출하여 표시
+                  const fileName = model.split('/').pop() || model;
+                  return (
+                    <option key={model} value={model}>
+                      {fileName} (1.64GB)
+                    </option>
+                  );
+                })}
               </select>
               <button onClick={handleLoadRemoteModel} disabled={isModelLoading || isLoaded} className='load-model-btn'>
                 {isModelLoading && loadingType === 'remote' ? `로딩 중... ${progress.toFixed(1)}%` : '원격 모델 로드'}
