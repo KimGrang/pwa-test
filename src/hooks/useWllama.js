@@ -1,18 +1,18 @@
-import { useState, useCallback, useRef } from 'react';
+import React, { useState, useCallback, useRef } from 'react';
 export function useWllama(config = {}) {
     const [isLoaded, setIsLoaded] = useState(false);
     const [progress, setProgress] = useState(0);
     const [isLoading, setIsLoading] = useState(false);
     const [modelInfo, setModelInfo] = useState('');
     const wllamaRef = useRef(null);
-    // 기본 설정
-    const defaultConfig = {
+    // 기본 설정 - useMemo로 메모이제이션
+    const defaultConfig = React.useMemo(() => ({
         temperature: 0.7,
         topP: 0.9,
         maxTokens: 512,
         repetitionPenalty: 1.1,
         ...config,
-    };
+    }), [config]);
     // wllama 초기화
     const initializeWllama = useCallback(async () => {
         if (wllamaRef.current)

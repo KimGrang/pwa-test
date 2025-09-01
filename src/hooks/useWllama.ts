@@ -1,4 +1,4 @@
-import { useState, useCallback, useRef } from 'react';
+import React, { useState, useCallback, useRef } from 'react';
 import { ChatMessage } from '../types/pwa';
 
 // wllama 라이브러리에서 실제 타입 import
@@ -18,14 +18,17 @@ export function useWllama(config: WllamaHookConfig = {}) {
   const [modelInfo, setModelInfo] = useState<string>('');
   const wllamaRef = useRef<Wllama | null>(null);
 
-  // 기본 설정
-  const defaultConfig: WllamaHookConfig = {
-    temperature: 0.7,
-    topP: 0.9,
-    maxTokens: 512,
-    repetitionPenalty: 1.1,
-    ...config,
-  };
+  // 기본 설정 - useMemo로 메모이제이션
+  const defaultConfig = React.useMemo(
+    (): WllamaHookConfig => ({
+      temperature: 0.7,
+      topP: 0.9,
+      maxTokens: 512,
+      repetitionPenalty: 1.1,
+      ...config,
+    }),
+    [config]
+  );
 
   // wllama 초기화
   const initializeWllama = useCallback(async () => {
