@@ -6,7 +6,7 @@ import './LLMChat.css';
 const LLMChat: React.FC = () => {
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [inputMessage, setInputMessage] = useState('');
-  const [selectedModel, setSelectedModel] = useState('http://www.example.com/models/euro_gguf.gguf');
+  const [selectedModel, setSelectedModel] = useState('https://www.example.com/models/euro_gguf.gguf');
   const [isModelLoading, setIsModelLoading] = useState(false);
   const [modelStatus, setModelStatus] = useState<'none' | 'loading' | 'loaded' | 'error'>('none');
   const [modelInfo, setModelInfo] = useState<string>('');
