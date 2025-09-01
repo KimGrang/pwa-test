@@ -51,13 +51,14 @@ src/
 
 ### 2. 사용 가능한 모델들
 
-- `/models/euro_gguf.gguf` - 로컬 Euro 모델 (1.7GB)
+- `http://www.dwon.store/models/euro_gguf.gguf` - nginx 서버에서 제공하는 Euro 모델 (1.64GB)
 
 ### 3. 성능 팁
 
-- 첫 번째 로딩은 시간이 걸릴 수 있습니다 (모델 다운로드/로딩)
+- 첫 번째 로딩은 시간이 걸릴 수 있습니다 (1.64GB 모델 다운로드)
+- nginx 서버에서 Range 요청을 지원하여 중단된 다운로드 재개 가능
 - WebAssembly를 사용하여 브라우저에서 직접 실행됩니다
-- 로컬 모델은 네트워크 없이도 사용할 수 있습니다
+- 모델 다운로드 후에는 오프라인에서도 사용할 수 있습니다
 
 ## ✅ wllama 특징
 
@@ -65,6 +66,40 @@ src/
 - **WebAssembly 기반**: 브라우저에서 네이티브 성능
 - **네트워크 독립적**: 오프라인에서도 사용 가능
 - **단순한 API**: 직관적인 인터페이스
+
+## 🌐 nginx 모델 서버 설정
+
+### 서버 구성
+
+이 프로젝트는 nginx를 사용하여 GGUF 모델 파일을 정적 다운로드로 제공하는 서버와 연동됩니다.
+
+#### 주요 설정
+
+- **서버 주소**: `http://www.dwon.store`
+- **모델 경로**: `/models/euro_gguf.gguf`
+- **파일 크기**: 1.64GB
+- **다운로드 최적화**: Range 요청 지원, 청크 전송
+
+#### nginx 설정 특징
+
+```nginx
+# 대용량 파일 처리를 위한 설정
+client_max_body_size 10G;
+sendfile_max_chunk 2m;  # 2MB 청크로 전송
+
+# Range 요청 지원 (중단된 다운로드 재개)
+add_header Accept-Ranges bytes;
+
+# 다운로드 속도 제한 (선택사항)
+# limit_rate 50m;
+```
+
+#### API 엔드포인트
+
+- `/models/` - 모델 파일 다운로드
+- `/api/models` - 모델 목록 조회 (JSON)
+- `/stats` - 서버 상태 정보
+- `/health` - 헬스체크
 
 ## 🚀 Vercel 배포
 
@@ -84,7 +119,7 @@ src/
 
 - **SharedArrayBuffer 지원**: Vercel에서 `Cross-Origin-Embedder-Policy` 헤더 설정 필요
 - **WASM 파일**: CDN에서 wllama WASM 파일 로드
-- **모델 파일**: 로컬 모델은 별도 호스팅 필요 (Vercel 파일 크기 제한)
+- **모델 파일**: nginx 서버에서 모델 파일 제공 (Vercel 파일 크기 제한 우회)
 
 ## 🔧 문제 해결
 
@@ -92,7 +127,9 @@ src/
 
 - 브라우저 콘솔에서 에러 메시지 확인
 - 네트워크 연결 상태 확인
+- nginx 서버 상태 확인 (`http://www.dwon.store/health`)
 - 모델 파일 경로 확인
+- CORS 설정 확인 (nginx 서버에서 `Access-Control-Allow-Origin *` 설정)
 
 ### 채팅 응답 없음
 
