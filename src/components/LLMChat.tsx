@@ -204,25 +204,36 @@ const LLMChat: React.FC = () => {
           <div className='model-section'>
             <h3>🌐 원격 모델</h3>
             <div className='model-controls'>
-              <select
-                value={selectedModel}
-                onChange={(e) => setSelectedModel(e.target.value)}
-                className='model-select'
-                disabled={isModelLoading || isLoaded}
-              >
-                {availableModels.map((model) => {
-                  // URL에서 파일명 추출하여 표시
-                  const fileName = model.split('/').pop() || model;
-                  return (
-                    <option key={model} value={model}>
-                      {fileName} (1.64GB)
-                    </option>
-                  );
-                })}
-              </select>
-              <button onClick={handleLoadRemoteModel} disabled={isModelLoading || isLoaded} className='load-model-btn'>
-                {isModelLoading && loadingType === 'remote' ? `로딩 중... ${progress.toFixed(1)}%` : '원격 모델 로드'}
-              </button>
+              <label htmlFor='model-select' className='model-select-label'>
+                사용할 AI 모델을 선택하세요:
+              </label>
+              <div className='model-controls-row'>
+                <select
+                  id='model-select'
+                  value={selectedModel}
+                  onChange={(e) => setSelectedModel(e.target.value)}
+                  className='model-select'
+                  disabled={isModelLoading || isLoaded}
+                  aria-label='AI 모델 선택'
+                >
+                  {availableModels.map((model) => {
+                    // URL에서 파일명 추출하여 표시
+                    const fileName = model.split('/').pop() || model;
+                    return (
+                      <option key={model} value={model}>
+                        {fileName} (1.64GB)
+                      </option>
+                    );
+                  })}
+                </select>
+                <button
+                  onClick={handleLoadRemoteModel}
+                  disabled={isModelLoading || isLoaded}
+                  className='load-model-btn'
+                >
+                  {isModelLoading && loadingType === 'remote' ? `로딩 중... ${progress.toFixed(1)}%` : '원격 모델 로드'}
+                </button>
+              </div>
             </div>
           </div>
 
