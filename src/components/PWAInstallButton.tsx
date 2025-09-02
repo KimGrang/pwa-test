@@ -1,5 +1,6 @@
 import React from 'react';
 import { useInstallPrompt } from '../hooks/useInstallPrompt';
+import './PWAInstallButton.css';
 
 const PWAInstallButton: React.FC = () => {
   const { isInstallable, promptInstall, isInstalled } = useInstallPrompt();
