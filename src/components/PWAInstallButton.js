@@ -1,5 +1,6 @@
 import { jsx as _jsx } from "react/jsx-runtime";
 import { useInstallPrompt } from '../hooks/useInstallPrompt';
+import './PWAInstallButton.css';
 const PWAInstallButton = () => {
     const { isInstallable, promptInstall, isInstalled } = useInstallPrompt();
     if (isInstalled) {
