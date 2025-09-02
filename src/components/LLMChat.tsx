@@ -1,7 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState, lazy, Suspense } from 'react';
 import { useWllama } from '../hooks/useWllama';
 import { ChatMessage } from '../types/pwa';
 import './LLMChat.css';
+
+// 지연 로딩을 위한 컴포넌트 분리
+const ModelSelector = lazy(() => import('./ModelSelector'));
+const PWAInstallButton = lazy(() => import('./PWAInstallButton'));
 
 const LLMChat: React.FC = () => {
   const [messages, setMessages] = useState<ChatMessage[]>([]);
@@ -198,71 +202,24 @@ const LLMChat: React.FC = () => {
           {modelStatus === 'error' && <span>❌ {modelInfo}</span>}
         </div>
 
-        {/* 모델 로딩 방법들 */}
-        <div className='model-loading-methods'>
-          {/* 원격 모델 로딩 */}
-          <div className='model-section'>
-            <h3>🌐 원격 모델</h3>
-            <div className='model-controls'>
-              <label htmlFor='model-select' className='model-select-label'>
-                사용할 AI 모델을 선택하세요:
-              </label>
-              <div className='model-controls-row'>
-                <select
-                  id='model-select'
-                  value={selectedModel}
-                  onChange={(e) => setSelectedModel(e.target.value)}
-                  className='model-select'
-                  disabled={isModelLoading || isLoaded}
-                  aria-label='AI 모델 선택'
-                >
-                  {availableModels.map((model) => {
-                    // URL에서 파일명 추출하여 표시
-                    const fileName = model.split('/').pop() || model;
-                    return (
-                      <option key={model} value={model}>
-                        {fileName} (1.64GB)
-                      </option>
-                    );
-                  })}
-                </select>
-                <button
-                  onClick={handleLoadRemoteModel}
-                  disabled={isModelLoading || isLoaded}
-                  className='load-model-btn'
-                >
-                  {isModelLoading && loadingType === 'remote' ? `로딩 중... ${progress.toFixed(1)}%` : '원격 모델 로드'}
-                </button>
-              </div>
-            </div>
-          </div>
+        {/* PWA 설치 버튼 */}
+        <Suspense fallback={<div>로딩 중...</div>}>
+          <PWAInstallButton />
+        </Suspense>
+      </div>
 
-          {/* 구분선 */}
-          <div className='model-divider'>
-            <span>또는</span>
-          </div>
-
-          {/* 파일 업로드 모델 로딩 */}
-          <div className='model-section'>
-            <h3>📁 파일 업로드</h3>
-            <div className='model-warning'>
-              <p>✅ 컴퓨터에서 GGUF 파일을 직접 선택하여 업로드할 수 있습니다.</p>
-            </div>
-            <div className='model-controls'>
-              <input
-                type='file'
-                accept='.gguf'
-                onChange={handleFileUpload}
-                disabled={isModelLoading || isLoaded}
-                className='file-input'
-                id='model-file-input'
-              />
-              <label htmlFor='model-file-input' className='file-input-label'>
-                {isModelLoading && loadingType === 'local' ? `로딩 중... ${progress.toFixed(1)}%` : 'GGUF 파일 선택'}
-              </label>
-            </div>
-          </div>
-        </div>
+      {/* 모델 선택 및 로딩 컨트롤 */}
+      <div className='model-controls'>
+        <Suspense fallback={<div>모델 선택기 로딩 중...</div>}>
+          <ModelSelector
+            selectedModel={selectedModel}
+            onModelSelect={setSelectedModel}
+            onLoadRemoteModel={handleLoadRemoteModel}
+            onFileUpload={handleFileUpload}
+            isModelLoading={isModelLoading}
+            availableModels={availableModels}
+          />
+        </Suspense>
       </div>
 
       {/* 채팅 인터페이스 - 모델이 로드된 후에만 표시 */}

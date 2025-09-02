@@ -82,12 +82,90 @@ export default defineConfig({
     },
   },
   build: {
+    // JavaScript 번들 최적화 설정
+    minify: 'terser', // Terser를 사용한 고급 최소화
+    terserOptions: {
+      compress: {
+        drop_console: true, // 프로덕션에서 console 제거
+        drop_debugger: true, // debugger 문 제거
+        pure_funcs: ['console.log', 'console.info', 'console.debug'], // 순수 함수 제거
+        passes: 2, // 압축 패스 수 증가
+        unsafe: true, // 안전하지 않은 최적화 활성화
+        unsafe_comps: true, // 비교 연산 최적화
+        unsafe_Function: true, // Function 생성자 최적화
+        unsafe_math: true, // 수학 연산 최적화
+        unsafe_proto: true, // 프로토타입 최적화
+        unsafe_regexp: true, // 정규식 최적화
+      },
+      mangle: {
+        safari10: true, // Safari 10+ 호환성
+        toplevel: true, // 최상위 함수명 난독화
+      },
+      format: {
+        comments: false, // 주석 제거
+      },
+    },
     rollupOptions: {
       external: [],
+      output: {
+        // 청크 최적화
+        manualChunks: (id) => {
+          // node_modules 의존성을 별도 청크로 분리
+          if (id.includes('node_modules')) {
+            if (id.includes('react')) {
+              return 'react-vendor';
+            }
+            if (id.includes('@wllama')) {
+              return 'wllama-vendor';
+            }
+            return 'vendor';
+          }
+        },
+        // 청크 파일명 최적화
+        chunkFileNames: 'assets/[name]-[hash].js',
+        entryFileNames: 'assets/[name]-[hash].js',
+        assetFileNames: 'assets/[name]-[hash].[ext]',
+        // 청크 크기 최적화
+        compact: true,
+        // 사용하지 않는 export 제거
+        exports: 'named',
+      },
+      // 트리 쉐이킹 최적화
+      treeshake: {
+        moduleSideEffects: false,
+        propertyReadSideEffects: false,
+        unknownGlobalSideEffects: false,
+      },
     },
     chunkSizeWarningLimit: 10000, // 10MB로 증가
+    // 소스맵 생성 (프로덕션 디버깅용)
+    sourcemap: false,
+    // CSS 코드 스플리팅
+    cssCodeSplit: true,
+    // 타겟 브라우저 설정
+    target: 'esnext',
+    // 빌드 최적화
+    reportCompressedSize: true,
   },
   optimizeDeps: {
     include: ['@wllama/wllama'],
+    // 의존성 최적화
+    force: true,
+    // ESBuild 최적화
+    esbuildOptions: {
+      target: 'esnext',
+      supported: {
+        bigint: true,
+        'dynamic-import': true,
+      },
+    },
+  },
+  // ESBuild 최적화
+  esbuild: {
+    target: 'esnext',
+    supported: {
+      bigint: true,
+      'dynamic-import': true,
+    },
   },
 });
