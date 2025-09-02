@@ -1,113 +1,94 @@
-import React, { useState } from 'react';
+import React from 'react';
 import './ModelSelector.css';
 
 interface Props {
-  onFilesSelect: (files: FileList) => void;
-  isLoading: boolean;
-  progress: number;
+  selectedModel: string;
+  onModelSelect: (model: string) => void;
+  onLoadRemoteModel: () => void;
+  onFileUpload: (event: React.ChangeEvent<HTMLInputElement>) => void;
+  isModelLoading: boolean;
+  availableModels: string[];
 }
 
-export function ModelSelector({ onFilesSelect, isLoading, progress }: Props) {
-  const [selectedFile, setSelectedFile] = useState<File | null>(null);
-  const [selectionStatus, setSelectionStatus] = useState<'none' | 'selected' | 'ready'>('none');
-
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const files = e.target.files;
-    if (!files || files.length === 0) return;
-
-    const file = files[0];
-
-    // GGUF 파일만 필터링
-    if (!file.name.toLowerCase().endsWith('.gguf')) {
-      alert('GGUF 파일을 선택해주세요.');
-      setSelectionStatus('none');
-      return;
-    }
-
-    const fileSizeMB = file.size / (1024 * 1024);
-    console.log(`선택된 파일: ${file.name}, 크기: ${fileSizeMB.toFixed(2)} MB`);
-
-    setSelectedFile(file);
-    setSelectionStatus('selected');
-  };
-
-  const handleLoadFile = () => {
-    if (!selectedFile) {
-      alert('파일을 선택해주세요.');
-      return;
-    }
-
-    setSelectionStatus('ready');
-
-    // FileList 객체 생성
-    const dataTransfer = new DataTransfer();
-    dataTransfer.items.add(selectedFile);
-
-    onFilesSelect(dataTransfer.files);
-  };
-
-  const clearSelection = () => {
-    setSelectedFile(null);
-    setSelectionStatus('none');
-  };
-
+const ModelSelector: React.FC<Props> = ({
+  selectedModel,
+  onModelSelect,
+  onLoadRemoteModel,
+  onFileUpload,
+  isModelLoading,
+  availableModels,
+}) => {
   return (
-    <div className='split-model-selector'>
-      <div className='selector-header'>
-        <h3>🤖 모델 파일 선택</h3>
-        <div className='mode-indicator'>📄 단일 파일</div>
-      </div>
-
-      {/* 선택 상태 표시 */}
-      <div className={`selection-status ${selectionStatus}`}>
-        {selectionStatus === 'none' && <span>📄 파일을 선택해주세요</span>}
-        {selectionStatus === 'selected' && (
-          <span>✅ 파일 선택됨 ({selectedFile ? (selectedFile.size / (1024 * 1024)).toFixed(2) : '0'} MB)</span>
-        )}
-        {selectionStatus === 'ready' && <span>🚀 로딩 준비 완료</span>}
-      </div>
-
-      <div className='file-input-section'>
-        <input
-          type='file'
-          accept='.gguf'
-          onChange={handleFileChange}
-          disabled={isLoading}
-          className='file-input'
-          id='model-file'
-        />
-        <label htmlFor='model-file' className='file-input-label'>
-          📁 GGUF 파일 선택
-        </label>
-      </div>
-
-      {selectedFile && (
-        <div className='selected-files'>
-          <h4>선택된 파일:</h4>
-          <div className='file-item'>
-            <span className='file-name'>{selectedFile.name}</span>
-            <span className='file-size'>({(selectedFile.size / (1024 * 1024)).toFixed(2)} MB)</span>
-          </div>
-
-          <div className='action-buttons'>
-            <button onClick={handleLoadFile} disabled={isLoading} className='load-btn'>
-              {isLoading ? `로딩 중... ${progress.toFixed(1)}%` : '🚀 모델 로드'}
-            </button>
-            <button onClick={clearSelection} disabled={isLoading} className='clear-btn'>
-              ❌ 선택 취소
-            </button>
+    <div className='model-selector'>
+      {/* 모델 로딩 방법들 */}
+      <div className='model-loading-methods'>
+        {/* 원격 모델 로딩 */}
+        <div className='model-section'>
+          <h3>🌐 원격 모델</h3>
+          <div className='model-controls'>
+            <label htmlFor='model-select' className='model-select-label'>
+              사용할 AI 모델을 선택하세요:
+            </label>
+            <div className='model-controls-row'>
+              <select
+                id='model-select'
+                value={selectedModel}
+                onChange={(e) => onModelSelect(e.target.value)}
+                className='model-select'
+                disabled={isModelLoading}
+                aria-label='AI 모델 선택'
+              >
+                {availableModels.map((model) => {
+                  // URL에서 파일명 추출하여 표시
+                  const fileName = model.split('/').pop() || model;
+                  return (
+                    <option key={model} value={model}>
+                      {fileName} (1.64GB)
+                    </option>
+                  );
+                })}
+              </select>
+              <button
+                onClick={() => {
+                  onLoadRemoteModel();
+                }}
+                disabled={isModelLoading}
+                className='load-model-btn'
+              >
+                원격 모델 로드
+              </button>
+            </div>
           </div>
         </div>
-      )}
 
-      {isLoading && (
-        <div className='loading-progress'>
-          <div className='progress-bar'>
-            <div className='progress-fill' style={{ width: `${progress}%` }} />
-          </div>
-          <p>모델 로딩 중... {progress.toFixed(1)}%</p>
+        {/* 구분선 */}
+        <div className='model-divider'>
+          <span>또는</span>
         </div>
-      )}
+
+        {/* 파일 업로드 모델 로딩 */}
+        <div className='model-section'>
+          <h3>📁 파일 업로드</h3>
+          <div className='model-warning'>
+            <p>✅ 컴퓨터에서 GGUF 파일을 직접 선택하여 업로드할 수 있습니다.</p>
+          </div>
+          <div className='model-controls'>
+            <input
+              type='file'
+              accept='.gguf'
+              onChange={onFileUpload}
+              disabled={isModelLoading}
+              className='file-input'
+              id='model-file-input'
+            />
+            <label htmlFor='model-file-input' className='file-input-label'>
+              GGUF 파일 선택
+            </label>
+          </div>
+        </div>
+      </div>
     </div>
   );
-}
+};
+
+export default ModelSelector;
