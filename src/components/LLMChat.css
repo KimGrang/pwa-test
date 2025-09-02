@@ -116,8 +116,21 @@
 /* 모델 컨트롤 */
 .model-controls {
   display: flex;
+  flex-direction: column;
   gap: 10px;
   margin-bottom: 20px;
+}
+
+.model-select-label {
+  font-size: 0.9rem;
+  color: rgba(255, 255, 255, 0.9);
+  font-weight: 500;
+  margin-bottom: 5px;
+}
+
+.model-controls-row {
+  display: flex;
+  gap: 10px;
   flex-wrap: wrap;
 }
 
