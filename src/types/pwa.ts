@@ -4,11 +4,6 @@ export interface BeforeInstallPromptEvent extends Event {
   prompt(): Promise<void>;
 }
 
-export interface ChatMessage {
-  role: 'system' | 'user' | 'assistant';
-  content: string;
-}
-
 export interface LLMConfig {
   modelUrl: string;
   temperature?: number;

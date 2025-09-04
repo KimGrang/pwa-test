@@ -12,7 +12,7 @@ interface NotificationOptions {
   badge?: string;
   body?: string;
   tag?: string;
-  data?: any;
+  data?: Record<string, unknown>;
   actions?: Array<{
     action: string;
     title: string;
@@ -41,9 +41,9 @@ export const useServiceWorker = () => {
         periodicSync: 'serviceWorker' in navigator && 'periodicSync' in window.ServiceWorkerRegistration.prototype,
         pushNotifications: 'serviceWorker' in navigator && 'PushManager' in window,
       };
-      
+
       setIsSupported(support);
-      
+
       if (support.serviceWorker) {
         try {
           const reg = await navigator.serviceWorker.register('/sw.js');
@@ -63,13 +63,20 @@ export const useServiceWorker = () => {
    * @param tag - 동기화 태그
    * @param options - 옵션
    */
-  const registerBackgroundSync = async (tag: string = 'background-sync', options?: any): Promise<void> => {
+  const registerBackgroundSync = async (
+    tag: string = 'background-sync',
+    options?: Record<string, unknown>
+  ): Promise<void> => {
     if (!isSupported.backgroundSync || !registration) {
       throw new Error('Background Sync가 지원되지 않습니다.');
     }
 
     try {
-      await (registration as any).sync.register(tag, options);
+      await (
+        registration as ServiceWorkerRegistration & {
+          sync: { register: (tag: string, options?: Record<string, unknown>) => Promise<void> };
+        }
+      ).sync.register(tag, options);
       console.log('Background Sync 등록 성공');
     } catch (error) {
       console.error('Background Sync 등록 실패:', error);
@@ -82,13 +89,20 @@ export const useServiceWorker = () => {
    * @param tag - 동기화 태그
    * @param options - 옵션
    */
-  const registerPeriodicSync = async (tag: string = 'periodic-sync', options?: any): Promise<void> => {
+  const registerPeriodicSync = async (
+    tag: string = 'periodic-sync',
+    options?: Record<string, unknown>
+  ): Promise<void> => {
     if (!isSupported.periodicSync || !registration) {
       throw new Error('Periodic Sync가 지원되지 않습니다.');
     }
 
     try {
-      await (registration as any).periodicSync.register(tag, options);
+      await (
+        registration as ServiceWorkerRegistration & {
+          periodicSync: { register: (tag: string, options?: Record<string, unknown>) => Promise<void> };
+        }
+      ).periodicSync.register(tag, options);
       console.log('Periodic Sync 등록 성공');
     } catch (error) {
       console.error('Periodic Sync 등록 실패:', error);
@@ -108,7 +122,7 @@ export const useServiceWorker = () => {
     try {
       // 기존 구독 확인
       let subscription = await registration.pushManager.getSubscription();
-      
+
       if (!subscription) {
         // 새로운 구독 생성
         subscription = await registration.pushManager.subscribe({
@@ -116,7 +130,7 @@ export const useServiceWorker = () => {
           applicationServerKey: vapidPublicKey,
         });
       }
-      
+
       console.log('Push Notifications 구독 성공:', subscription);
       return subscription;
     } catch (error) {
@@ -179,12 +193,12 @@ export const useServiceWorker = () => {
         badge: '/pwa-64x64.svg',
         ...options,
       });
-      
+
       notification.onclick = () => {
         window.focus();
         notification.close();
       };
-      
+
       return notification;
     } else {
       throw new Error('알림 권한이 없습니다.');

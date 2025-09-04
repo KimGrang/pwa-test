@@ -1,5 +1,4 @@
 import React from 'react';
-import './ModelSelector.css';
 
 interface Props {
   selectedModel: string;

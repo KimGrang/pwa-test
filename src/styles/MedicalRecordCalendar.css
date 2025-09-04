@@ -1,0 +1,377 @@
+.medical-record-calendar {
+  background: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+  font-family: inherit;
+  overflow: hidden;
+}
+
+/* React Calendar 기본 스타일 오버라이드 */
+.react-calendar {
+  width: 100% !important;
+  max-width: 100% !important;
+  background: #ffffff !important;
+  border: none !important;
+  font-family: inherit !important;
+  line-height: 1.125em !important;
+  font-size: 14px !important;
+}
+
+/* 네비게이션 */
+.react-calendar__navigation {
+  display: flex !important;
+  margin-bottom: 20px !important;
+  align-items: center !important;
+}
+
+.react-calendar__navigation button {
+  min-width: 44px !important;
+  background: #f8f9fa !important;
+  border: 1px solid #dee2e6 !important;
+  border-radius: 6px !important;
+  padding: 8px 12px !important;
+  margin: 0 4px !important;
+  font-size: 16px !important;
+  color: #495057 !important;
+  cursor: pointer !important;
+  transition: all 0.2s ease !important;
+  flex-shrink: 0 !important;
+}
+
+.react-calendar__navigation button:hover {
+  background: #e9ecef !important;
+  border-color: #adb5bd !important;
+}
+
+.react-calendar__navigation button:disabled {
+  background: #f8f9fa !important;
+  color: #adb5bd !important;
+  cursor: not-allowed !important;
+}
+
+.react-calendar__navigation__label {
+  font-weight: 600 !important;
+  font-size: 18px !important;
+  color: #212529 !important;
+  background: transparent !important;
+  border: none !important;
+  flex-grow: 1 !important;
+  text-align: center !important;
+  padding: 8px 12px !important;
+  margin: 0 4px !important;
+  border-radius: 6px !important;
+}
+
+/* 요일 헤더 */
+.react-calendar__month-view__weekdays {
+  text-align: center !important;
+  text-transform: uppercase !important;
+  font-weight: 600 !important;
+  font-size: 14px !important;
+  margin-bottom: 8px !important;
+}
+
+.react-calendar__month-view__weekdays__weekday {
+  padding: 12px 8px !important;
+  color: #495057 !important;
+  background: #f8f9fa !important;
+  border-radius: 6px !important;
+  margin: 0 2px !important;
+  font-size: 12px !important;
+}
+
+.react-calendar__month-view__weekdays__weekday abbr {
+  text-decoration: none !important;
+  border-bottom: none !important;
+  font-size: 12px !important;
+}
+
+/* 날짜 타일 */
+.react-calendar__month-view__days {
+  display: grid !important;
+  grid-template-columns: repeat(7, 1fr) !important;
+  gap: 2px !important;
+}
+
+.react-calendar__tile {
+  max-width: 100% !important;
+  background: #ffffff !important;
+  border: 1px solid #e9ecef !important;
+  border-radius: 6px !important;
+  padding: 8px !important;
+  min-height: 80px !important;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: flex-start !important;
+  cursor: pointer !important;
+  transition: all 0.2s ease !important;
+  position: relative !important;
+  font-size: 14px !important;
+}
+
+.react-calendar__tile:hover {
+  background: #f8f9fa !important;
+  border-color: #adb5bd !important;
+  transform: translateY(-1px) !important;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1) !important;
+}
+
+.react-calendar__tile--active {
+  background: #007bff !important;
+  color: #ffffff !important;
+  border-color: #007bff !important;
+}
+
+.react-calendar__tile--now {
+  background: #e3f2fd !important;
+  border: 2px solid #2196f3 !important;
+  font-weight: 600 !important;
+}
+
+.react-calendar__tile--has-records {
+  background: #fff3cd !important;
+  border-color: #ffc107 !important;
+}
+
+.react-calendar__tile abbr {
+  font-size: 14px !important;
+  font-weight: 500 !important;
+  color: inherit !important;
+  text-decoration: none !important;
+  border-bottom: none !important;
+  margin-bottom: 8px !important;
+}
+
+/* 커스텀 타일 콘텐츠 */
+.calendar-tile-content {
+  width: 100% !important;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  gap: 4px !important;
+}
+
+.records-indicator {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  gap: 2px !important;
+}
+
+.record-dot {
+  width: 8px !important;
+  height: 8px !important;
+  border-radius: 50% !important;
+  cursor: pointer !important;
+  transition: transform 0.2s ease !important;
+}
+
+.record-dot:hover {
+  transform: scale(1.2) !important;
+}
+
+/* 진료 유형별 색상 */
+.record-consultation {
+  background: #007bff !important;
+}
+
+.record-vaccination {
+  background: #28a745 !important;
+}
+
+.record-surgery {
+  background: #dc3545 !important;
+}
+
+.record-examination {
+  background: #ffc107 !important;
+}
+
+.more-records {
+  font-size: 10px !important;
+  color: #6c757d !important;
+  font-weight: 500 !important;
+  margin-top: 2px !important;
+}
+
+/* 범례 */
+.calendar-legend {
+  margin-top: 20px;
+  padding: 16px;
+  background: #f8f9fa;
+  border-radius: 8px;
+  border: 1px solid #e9ecef;
+}
+
+.legend-title {
+  font-weight: 600;
+  color: #495057;
+  margin-bottom: 12px;
+  font-size: 14px;
+}
+
+.legend-items {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  color: #495057;
+}
+
+.legend-dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+}
+
+/* 모바일 최적화 */
+@media (max-width: 768px) {
+  .medical-record-calendar {
+    padding: 12px;
+  }
+  
+  .react-calendar__navigation {
+    margin-bottom: 16px;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  
+  .react-calendar__navigation button {
+    min-width: 36px;
+    padding: 6px 8px;
+    font-size: 14px;
+    margin: 0 2px;
+  }
+  
+  .react-calendar__navigation__label {
+    font-size: 16px;
+    padding: 6px 8px;
+    margin: 0 2px;
+  }
+  
+  .react-calendar__month-view__weekdays__weekday {
+    padding: 8px 4px;
+    font-size: 11px;
+    margin: 0 1px;
+  }
+  
+  .react-calendar__tile {
+    min-height: 60px;
+    padding: 6px;
+    font-size: 12px;
+  }
+  
+  .react-calendar__tile abbr {
+    font-size: 12px;
+    margin-bottom: 6px;
+  }
+  
+  .record-dot {
+    width: 6px;
+    height: 6px;
+  }
+  
+  .legend-items {
+    gap: 12px;
+  }
+  
+  .calendar-legend {
+    margin-top: 16px;
+    padding: 12px;
+  }
+}
+
+@media (max-width: 480px) {
+  .medical-record-calendar {
+    padding: 8px;
+  }
+  
+  .react-calendar__navigation {
+    margin-bottom: 12px;
+  }
+  
+  .react-calendar__navigation button {
+    min-width: 32px;
+    padding: 4px 6px;
+    font-size: 12px;
+    margin: 0 1px;
+  }
+  
+  .react-calendar__navigation__label {
+    font-size: 14px;
+    padding: 4px 6px;
+    margin: 0 1px;
+  }
+  
+  .react-calendar__month-view__weekdays__weekday {
+    padding: 6px 2px;
+    font-size: 10px;
+    margin: 0;
+  }
+  
+  .react-calendar__tile {
+    min-height: 50px;
+    padding: 4px;
+    font-size: 11px;
+  }
+  
+  .react-calendar__tile abbr {
+    font-size: 11px;
+    margin-bottom: 4px;
+  }
+  
+  .record-dot {
+    width: 5px;
+    height: 5px;
+  }
+  
+  .legend-items {
+    flex-direction: column;
+    gap: 8px;
+  }
+  
+  .calendar-legend {
+    margin-top: 12px;
+    padding: 8px;
+  }
+  
+  .legend-title {
+    font-size: 12px;
+    margin-bottom: 8px;
+  }
+  
+  .legend-item {
+    font-size: 11px;
+  }
+  
+  .legend-dot {
+    width: 10px;
+    height: 10px;
+  }
+}
+
+/* 매우 작은 화면 */
+@media (max-width: 360px) {
+  .react-calendar__tile {
+    min-height: 45px;
+    padding: 2px;
+  }
+  
+  .react-calendar__tile abbr {
+    font-size: 10px;
+    margin-bottom: 2px;
+  }
+  
+  .record-dot {
+    width: 4px;
+    height: 4px;
+  }
+}
