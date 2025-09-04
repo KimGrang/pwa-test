@@ -1,0 +1,153 @@
+import React, { useCallback } from 'react';
+import { useUserStore } from '../store/userStore';
+import { usePetStore } from '../store/petStore';
+import '../styles/base.css';
+import '../styles/moreScreen.css';
+
+/**
+ * 더보기 메인 스크린 컴포넌트
+ * 사용자 프로필, 반려동물 관리, 설정 메뉴 제공
+ */
+const MoreScreen: React.FC = () => {
+  // 스토어에서 사용자 정보와 반려동물 데이터 가져오기
+  const { currentUser } = useUserStore();
+  const { pets, getPetById } = usePetStore();
+
+  /**
+   * 내 프로필 화면으로 이동 (현재는 알림)
+   */
+  const handleProfileEdit = useCallback(() => {
+    alert('프로필 편집 기능은 준비 중입니다.');
+  }, []);
+
+  /**
+   * 반려동물 관리 화면으로 이동 (새 반려동물 추가)
+   */
+  const handleAddPet = useCallback(() => {
+    alert('반려동물 추가 기능은 준비 중입니다.');
+  }, []);
+
+  /**
+   * 기존 반려동물 편집 화면으로 이동
+   */
+  const handleEditPet = useCallback(
+    (petId: number) => {
+      const pet = getPetById(petId);
+      alert(`반려동물 편집: ${pet?.name || '알 수 없음'}`);
+    },
+    [getPetById]
+  );
+
+  /**
+   * 알림 설정 화면으로 이동
+   */
+  const handleNotifications = useCallback(() => {
+    alert('알림 설정 기능은 준비 중입니다.');
+  }, []);
+
+  /**
+   * 병원 설정 화면으로 이동
+   */
+  const handleHospitalSettings = useCallback(() => {
+    alert('병원 설정 기능은 준비 중입니다.');
+  }, []);
+
+  /**
+   * 약관 화면으로 이동
+   */
+  const handleTerms = useCallback(() => {
+    alert('약관 및 개인정보처리방침 기능은 준비 중입니다.');
+  }, []);
+
+  return (
+    <div className='screen-container'>
+      {/* 상단 헤더 */}
+      <div className='screen-header'>
+        <div className='header-center'>
+          <span className='title'>더보기</span>
+        </div>
+      </div>
+
+      {/* 메인 콘텐츠 */}
+      <div className='screen-compact-content'>
+        {/* 사용자 프로필 섹션 */}
+        <div className='profile-section'>
+          <div className='profile-card'>
+            <div className='profile-avatar'>
+              <div className='avatar-circle'>
+                <span className='avatar-icon'>👤</span>
+              </div>
+            </div>
+            <div className='profile-info'>
+              <div className='profile-name'>{currentUser?.name || '사용자님'}</div>
+              <div className='profile-email'>{currentUser?.email || 'user@example.com'}</div>
+            </div>
+            <button className='edit-profile-button' onClick={handleProfileEdit}>
+              <span className='edit-icon'>✏️</span>
+            </button>
+          </div>
+        </div>
+
+        {/* 반려동물 관리 섹션 */}
+        <div className='section'>
+          <div className='section-header'>
+            <h3 className='section-title'>반려동물 관리</h3>
+            <button className='add-button' onClick={handleAddPet}>
+              <span className='add-icon'>+</span>
+            </button>
+          </div>
+
+          {pets.length > 0 ? (
+            <div className='pets-list'>
+              {pets.map((pet) => (
+                <div key={pet.id} className='pet-item' onClick={() => handleEditPet(pet.id)}>
+                  <div className='pet-info'>
+                    <div className='pet-name'>{pet.name}</div>
+                    <div className='pet-details'>
+                      {pet.gender === 'MALE' ? '수컷' : '암컷'} • {pet.weight || 0}kg •{' '}
+                      {new Date(pet.birthDate).getFullYear()}년생
+                    </div>
+                  </div>
+                  <span className='chevron-icon'></span>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <div className='empty-state'>
+              <div className='empty-icon'>🐕</div>
+              <div className='empty-text'>등록된 반려동물이 없습니다</div>
+              <button className='add-pet-button' onClick={handleAddPet}>
+                반려동물 추가하기
+              </button>
+            </div>
+          )}
+        </div>
+
+        {/* 설정 메뉴 섹션 */}
+        <div className='section'>
+          <h3 className='section-title'>설정</h3>
+
+          <div className='menu-item' onClick={handleNotifications}>
+            <span className='menu-icon'>🔔</span>
+            <span className='menu-text'>알림 설정</span>
+            <span className='chevron-icon'></span>
+          </div>
+
+          <div className='menu-item' onClick={handleHospitalSettings}>
+            <span className='menu-icon'>🏥</span>
+            <span className='menu-text'>병원 설정</span>
+            <span className='chevron-icon'></span>
+          </div>
+
+          <div className='menu-item' onClick={handleTerms}>
+            <span className='menu-icon'>📜</span>
+            <span className='menu-text'>약관 및 개인정보처리방침</span>
+            <span className='chevron-icon'></span>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default MoreScreen;

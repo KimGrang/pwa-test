@@ -1,234 +1,266 @@
-import React, { useState, useCallback, useRef } from 'react';
-import { ChatMessage } from '../types/pwa';
+// import React, { useState, useCallback, useRef, useEffect } from 'react';
+// import { ChatMessage } from '../types/pwa';
 
-// wllama 라이브러리에서 실제 타입 import
-import type { Wllama } from '@wllama/wllama';
+// // wllama 라이브러리에서 실제 타입 import
+// import type { Wllama } from '@wllama/wllama';
 
-export interface WllamaHookConfig {
-  temperature?: number;
-  topP?: number;
-  maxTokens?: number;
-  repetitionPenalty?: number;
-}
+// export interface WllamaHookConfig {
+//   temperature?: number;
+//   topP?: number;
+//   maxTokens?: number;
+//   repetitionPenalty?: number;
+//   autoLoad?: boolean; // 자동 로드 옵션 추가
+// }
 
-export function useWllama(config: WllamaHookConfig = {}) {
-  const [isLoaded, setIsLoaded] = useState(false);
-  const [progress, setProgress] = useState(0);
-  const [isLoading, setIsLoading] = useState(false);
-  const [modelInfo, setModelInfo] = useState<string>('');
-  const wllamaRef = useRef<Wllama | null>(null);
+// export function useWllama(config: WllamaHookConfig = {}) {
+//   const [isLoaded, setIsLoaded] = useState(false);
+//   const [progress, setProgress] = useState(0);
+//   const [isLoading, setIsLoading] = useState(false);
+//   const [modelInfo, setModelInfo] = useState<string>('');
+//   const [error, setError] = useState<string | null>(null); // 에러 상태 추가
+//   const wllamaRef = useRef<Wllama | null>(null);
 
-  // 기본 설정 - useMemo로 메모이제이션
-  const defaultConfig = React.useMemo(
-    (): WllamaHookConfig => ({
-      temperature: 0.7,
-      topP: 0.9,
-      maxTokens: 512,
-      repetitionPenalty: 1.1,
-      ...config,
-    }),
-    [config]
-  );
+//   // 기본 설정 - useMemo로 메모이제이션
+//   const defaultConfig = React.useMemo(
+//     (): WllamaHookConfig => ({
+//       temperature: 0.7,
+//       topP: 0.9,
+//       maxTokens: 512,
+//       repetitionPenalty: 1.1,
+//       autoLoad: false,
+//       ...config,
+//     }),
+//     [config]
+//   );
 
-  // wllama 초기화
-  const initializeWllama = useCallback(async () => {
-    if (wllamaRef.current) return wllamaRef.current;
+//   // 컴포넌트 언마운트 시 정리
+//   useEffect(() => {
+//     return () => {
+//       if (wllamaRef.current) {
+//         unloadModel();
+//       }
+//     };
+//   }, []);
 
-    try {
-      console.log('🚀 wllama 초기화 시작...');
+//   // wllama 초기화
+//   const initializeWllama = useCallback(async () => {
+//     if (wllamaRef.current) return wllamaRef.current;
 
-      // 동적 import로 wllama 로드
-      const { Wllama, LoggerWithoutDebug } = await import('@wllama/wllama');
+//     try {
+//       setError(null); // 에러 초기화
+//       console.log('🚀 wllama 초기화 시작...');
 
-      // wllama 설정 경로 (CDN에서 wasm 파일 로드)
-      const CONFIG_PATHS = {
-        'single-thread/wllama.wasm': 'https://cdn.jsdelivr.net/npm/@wllama/wllama@2.3.4/esm/single-thread/wllama.wasm',
-        'multi-thread/wllama.wasm': 'https://cdn.jsdelivr.net/npm/@wllama/wllama@2.3.4/esm/multi-thread/wllama.wasm',
-      };
+//       // 동적 import로 wllama 로드
+//       const { Wllama, LoggerWithoutDebug } = await import('@wllama/wllama');
 
-      // wllama 인스턴스 생성 (LoggerWithoutDebug로 디버그 메시지 억제)
-      const wllama = new Wllama(CONFIG_PATHS, {
-        logger: LoggerWithoutDebug,
-      });
+//       // wllama 설정 경로 (CDN에서 wasm 파일 로드)
+//       const CONFIG_PATHS = {
+//         'single-thread/wllama.wasm': 'https://cdn.jsdelivr.net/npm/@wllama/wllama@2.3.4/esm/single-thread/wllama.wasm',
+//         'multi-thread/wllama.wasm': 'https://cdn.jsdelivr.net/npm/@wllama/wllama@2.3.4/esm/multi-thread/wllama.wasm',
+//       };
 
-      wllamaRef.current = wllama;
+//       // wllama 인스턴스 생성 (LoggerWithoutDebug로 디버그 메시지 억제)
+//       const wllama = new Wllama(CONFIG_PATHS, {
+//         logger: LoggerWithoutDebug,
+//       });
 
-      console.log('✅ wllama 초기화 완료');
-      return wllama;
-    } catch (error) {
-      console.error('❌ wllama 초기화 실패:', error);
-      throw error;
-    }
-  }, []);
+//       wllamaRef.current = wllama;
 
-  // 모델 로딩
-  const loadModel = useCallback(
-    async (modelPath: string) => {
-      try {
-        setIsLoading(true);
-        setProgress(0);
-        setModelInfo(`모델 로딩 중: ${modelPath}`);
-        console.log('🚀 wllama 모델 로딩 시작...', modelPath);
+//       console.log('✅ wllama 초기화 완료');
+//       return wllama;
+//     } catch (error) {
+//       const errorMessage = error instanceof Error ? error.message : String(error);
+//       setError(`초기화 실패: ${errorMessage}`);
+//       console.error('❌ wllama 초기화 실패:', error);
+//       throw error;
+//     }
+//   }, []);
 
-        const wllama = await initializeWllama();
+//   // 모델 로딩
+//   const loadModel = useCallback(
+//     async (modelPath: string) => {
+//       try {
+//         setError(null);
+//         setIsLoading(true);
+//         setProgress(0);
+//         setModelInfo(`모델 로딩 중: ${modelPath}`);
+//         console.log('🚀 wllama 모델 로딩 시작...', modelPath);
 
-        // 진행률 콜백
-        const progressCallback = ({ loaded, total }: { loaded: number; total: number }) => {
-          const progressPercent = Math.round((loaded / total) * 100);
-          setProgress(progressPercent);
-          console.log(`📊 로딩 진행률: ${progressPercent}%`);
-        };
+//         const wllama = await initializeWllama();
 
-        console.log('📁 모델 로딩 시작:', modelPath);
+//         // 진행률 콜백
+//         const progressCallback = ({ loaded, total }: { loaded: number; total: number }) => {
+//           const progressPercent = Math.round((loaded / total) * 100);
+//           setProgress(progressPercent);
+//           console.log(`📊 로딩 진행률: ${progressPercent}%`);
+//         };
 
-        // 로컬 파일 URL로 모델 로딩
-        const modelUrl = new URL(modelPath, window.location.origin).href;
-        console.log('🔗 모델 URL:', modelUrl);
+//         console.log('📁 모델 로딩 시작:', modelPath);
 
-        await wllama.loadModelFromUrl(modelUrl, {
-          progressCallback,
-        });
+//         // 로컬 파일 URL로 모델 로딩
+//         const modelUrl = new URL(modelPath, window.location.origin).href;
+//         console.log('🔗 모델 URL:', modelUrl);
 
-        setIsLoaded(true);
-        setProgress(100);
-        setModelInfo(`✅ ${modelPath} 모델 로딩 완료`);
-        console.log('✅ wllama 모델 로딩 완료');
-      } catch (error) {
-        console.error('❌ wllama 모델 로딩 실패:', error);
-        const errorMessage = error instanceof Error ? error.message : String(error);
-        setModelInfo(`❌ 모델 로딩 실패: ${errorMessage}`);
-        throw error;
-      } finally {
-        setIsLoading(false);
-      }
-    },
-    [initializeWllama]
-  );
+//         await wllama.loadModelFromUrl(modelUrl, {
+//           progressCallback,
+//         });
 
-  // 파일 업로드로 모델 로딩
-  const loadModelFromFile = useCallback(
-    async (file: File) => {
-      try {
-        setIsLoading(true);
-        setProgress(0);
-        setModelInfo(`파일 로딩 중: ${file.name}`);
-        console.log('🚀 wllama 파일 로딩 시작...', file.name);
+//         setIsLoaded(true);
+//         setProgress(100);
+//         setModelInfo(`✅ ${modelPath} 모델 로딩 완료`);
+//         console.log('✅ wllama 모델 로딩 완료');
+//       } catch (error) {
+//         const errorMessage = error instanceof Error ? error.message : String(error);
+//         setError(`모델 로딩 실패: ${errorMessage}`);
+//         setModelInfo(`❌ 모델 로딩 실패: ${errorMessage}`);
+//         console.error('❌ wllama 모델 로딩 실패:', error);
+//         throw error;
+//       } finally {
+//         setIsLoading(false);
+//       }
+//     },
+//     [initializeWllama]
+//   );
 
-        const wllama = await initializeWllama();
+//   // 파일 업로드로 모델 로딩
+//   const loadModelFromFile = useCallback(
+//     async (file: File) => {
+//       try {
+//         setError(null);
+//         setIsLoading(true);
+//         setProgress(0);
+//         setModelInfo(`파일 로딩 중: ${file.name}`);
+//         console.log('🚀 wllama 파일 로딩 시작...', file.name);
 
-        console.log('📁 파일 로딩 시작:', file.name);
+//         const wllama = await initializeWllama();
 
-        // 파일을 Blob으로 변환하여 wllama에 직접 전달
-        const blob = new Blob([file], { type: 'application/octet-stream' });
-        console.log('📦 파일을 Blob으로 변환 완료, 크기:', blob.size);
+//         console.log('📁 파일 로딩 시작:', file.name);
 
-        // wllama에 Blob 배열 직접 전달 (progressCallback 제거)
-        await wllama.loadModel([blob]);
+//         // 파일을 Blob으로 변환하여 wllama에 직접 전달
+//         const blob = new Blob([file], { type: 'application/octet-stream' });
+//         console.log('📦 파일을 Blob으로 변환 완료, 크기:', blob.size);
 
-        setIsLoaded(true);
-        setProgress(100);
-        setModelInfo(`✅ ${file.name} 모델 로딩 완료`);
-        console.log('✅ wllama 파일 로딩 완료');
-      } catch (error) {
-        console.error('❌ wllama 파일 로딩 실패:', error);
-        const errorMessage = error instanceof Error ? error.message : String(error);
-        setModelInfo(`❌ 파일 로딩 실패: ${errorMessage}`);
-        throw error;
-      } finally {
-        setIsLoading(false);
-      }
-    },
-    [initializeWllama]
-  );
+//         // wllama에 Blob 배열 직접 전달 (progressCallback 제거)
+//         await wllama.loadModel([blob]);
 
-  // 채팅 완료
-  const chatCompletion = useCallback(
-    async (messages: ChatMessage[], onStream?: (text: string) => void) => {
-      if (!isLoaded || !wllamaRef.current) {
-        throw new Error('모델이 로드되지 않았습니다. 먼저 모델을 로드해주세요.');
-      }
+//         setIsLoaded(true);
+//         setProgress(100);
+//         setModelInfo(`✅ ${file.name} 모델 로딩 완료`);
+//         console.log('✅ wllama 파일 로딩 완료');
+//       } catch (error) {
+//         const errorMessage = error instanceof Error ? error.message : String(error);
+//         setError(`파일 로딩 실패: ${errorMessage}`);
+//         setModelInfo(`❌ 파일 로딩 실패: ${errorMessage}`);
+//         console.error('❌ wllama 파일 로딩 실패:', error);
+//         throw error;
+//       } finally {
+//         setIsLoading(false);
+//       }
+//     },
+//     [initializeWllama]
+//   );
 
-      try {
-        setIsLoading(true);
-        console.log('🚀 wllama 채팅 시작...');
+//   // 채팅 완료
+//   const chatCompletion = useCallback(
+//     async (messages: ChatMessage[], onStream?: (text: string) => void) => {
+//       if (!isLoaded || !wllamaRef.current) {
+//         const errorMsg = '모델이 로드되지 않았습니다. 먼저 모델을 로드해주세요.';
+//         setError(errorMsg);
+//         throw new Error(errorMsg);
+//       }
 
-        // 마지막 사용자 메시지 추출
-        const lastUserMessage = messages.filter((msg) => msg.role === 'user').pop()?.content || '';
+//       try {
+//         setError(null);
+//         setIsLoading(true);
+//         console.log('🚀 wllama 채팅 시작...');
 
-        console.log('📝 사용자 메시지:', lastUserMessage);
+//         // 마지막 사용자 메시지 추출
+//         const lastUserMessage = messages.filter((msg) => msg.role === 'user').pop()?.content || '';
 
-        // 채팅 완료 옵션
-        const completionOptions = {
-          nPredict: defaultConfig.maxTokens || 512,
-          sampling: {
-            temp: defaultConfig.temperature || 0.7,
-            top_k: 40,
-            top_p: defaultConfig.topP || 0.9,
-            repeat_penalty: defaultConfig.repetitionPenalty || 1.1,
-          },
-        };
+//         console.log('📝 사용자 메시지:', lastUserMessage);
 
-        console.log('⚙️ 채팅 옵션:', completionOptions);
+//         // 채팅 완료 옵션
+//         const completionOptions = {
+//           nPredict: defaultConfig.maxTokens || 512,
+//           sampling: {
+//             temp: defaultConfig.temperature || 0.7,
+//             top_k: 40,
+//             top_p: defaultConfig.topP || 0.9,
+//             repeat_penalty: defaultConfig.repetitionPenalty || 1.1,
+//           },
+//         };
 
-        // 스트리밍 채팅
-        const outputText = await wllamaRef.current.createCompletion(lastUserMessage, completionOptions);
+//         console.log('⚙️ 채팅 옵션:', completionOptions);
 
-        console.log('✅ 채팅 완료, 전체 응답:', outputText);
+//         // 스트리밍 채팅
+//         const outputText = await wllamaRef.current.createCompletion(lastUserMessage, completionOptions);
 
-        // 스트리밍 시뮬레이션 (wllama는 스트리밍을 직접 지원하지 않음)
-        if (onStream) {
-          const words = outputText.split(' ');
-          for (const word of words) {
-            onStream(word + ' ');
-            await new Promise((resolve) => setTimeout(resolve, 50)); // 50ms 지연
-          }
-        }
+//         console.log('✅ 채팅 완료, 전체 응답:', outputText);
 
-        return outputText;
-      } catch (error) {
-        console.error('❌ wllama 채팅 완료 실패:', error);
-        throw error;
-      } finally {
-        setIsLoading(false);
-      }
-    },
-    [isLoaded, defaultConfig]
-  );
+//         // 스트리밍 시뮬레이션 (wllama는 스트리밍을 직접 지원하지 않음)
+//         if (onStream) {
+//           const words = outputText.split(' ');
+//           for (const word of words) {
+//             onStream(word + ' ');
+//             await new Promise((resolve) => setTimeout(resolve, 50)); // 50ms 지연
+//           }
+//         }
 
-  // 모델 언로드
-  const unloadModel = useCallback(() => {
-    if (wllamaRef.current) {
-      // wllama는 모델 언로드 메서드가 없으므로 참조만 제거
-      wllamaRef.current = null;
-    }
-    setIsLoaded(false);
-    setProgress(0);
-    setModelInfo('');
-  }, []);
+//         return outputText;
+//       } catch (error) {
+//         const errorMessage = error instanceof Error ? error.message : String(error);
+//         setError(`채팅 실패: ${errorMessage}`);
+//         console.error('❌ wllama 채팅 완료 실패:', error);
+//         throw error;
+//       } finally {
+//         setIsLoading(false);
+//       }
+//     },
+//     [isLoaded, defaultConfig]
+//   );
 
-  // 사용 가능한 모델 목록 (nginx 서버에서 제공하는 모델들)
-  const getAvailableModels = useCallback(() => {
-    return [
-      'https://www.dwon.store/models/euro_gguf.gguf',
-      // 추가 모델들을 여기에 추가할 수 있습니다
-    ];
-  }, []);
+//   // 모델 언로드
+//   const unloadModel = useCallback(() => {
+//     if (wllamaRef.current) {
+//       // wllama는 모델 언로드 메서드가 없으므로 참조만 제거
+//       wllamaRef.current = null;
+//     }
+//     setIsLoaded(false);
+//     setProgress(0);
+//     setModelInfo('');
+//     setError(null);
+//   }, []);
 
-  // 로컬 모델 목록 (wllama는 로컬 파일을 직접 지원)
-  const getLocalModels = useCallback(() => {
-    return ['https://www.dwon.store/models/euro_gguf.gguf'];
-  }, []);
+//   // 에러 초기화
+//   const clearError = useCallback(() => {
+//     setError(null);
+//   }, []);
 
-  return {
-    loadModel,
-    chatCompletion,
-    unloadModel,
-    isLoaded,
-    isLoading,
-    progress,
-    modelInfo,
-    getAvailableModels,
-    getLocalModels,
-    loadModelFromFile, // 새로 추가된 함수 노출
-  };
-}
+//   // 사용 가능한 모델 목록 (nginx 서버에서 제공하는 모델들)
+//   const getAvailableModels = useCallback(() => {
+//     return [
+//       'https://www.dwon.store/models/euro_gguf.gguf',
+//       // 추가 모델들을 여기에 추가할 수 있습니다
+//     ];
+//   }, []);
+
+//   // 로컬 모델 목록 (wllama는 로컬 파일을 직접 지원)
+//   const getLocalModels = useCallback(() => {
+//     return ['https://www.dwon.store/models/euro_gguf.gguf'];
+//   }, []);
+
+//   return {
+//     loadModel,
+//     chatCompletion,
+//     unloadModel,
+//     isLoaded,
+//     isLoading,
+//     progress,
+//     modelInfo,
+//     error, // 에러 상태 노출
+//     clearError, // 에러 초기화 함수 노출
+//     getAvailableModels,
+//     getLocalModels,
+//     loadModelFromFile, // 새로 추가된 함수 노출
+//   };
+// }

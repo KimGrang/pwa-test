@@ -1,6 +1,5 @@
 import React from 'react';
 import { usePWA } from '../hooks/usePWA';
-import './PWAUpdatePrompt.css';
 
 const PWAUpdatePrompt: React.FC = () => {
   const { offlineReady, needRefresh, updateServiceWorker, closePrompt } = usePWA();

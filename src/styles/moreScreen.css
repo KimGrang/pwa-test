@@ -1,0 +1,317 @@
+/* ===== MoreScreen 전용 스타일 ===== */
+/* React Native 스타일을 참고한 PWA 버전 */
+
+/* MoreScreen 전용 스타일 */
+/* 공용 레이아웃 클래스 사용: .screen-container, .screen-compact-content */
+
+/* 프로필 섹션 */
+.profile-section {
+  margin-bottom: var(--spacing-md);
+}
+
+.profile-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: var(--color-background);
+  border-radius: var(--radius-lg);
+  padding: var(--spacing-sm);
+  border: 1px solid var(--color-border);
+  box-shadow: var(--shadow-sm);
+  transition: all var(--transition-normal);
+}
+
+.profile-card:hover {
+  box-shadow: var(--shadow-md);
+  transform: translateY(-1px);
+}
+
+.profile-avatar {
+  margin-right: var(--spacing-sm);
+}
+
+.avatar-circle {
+  width: 50px;
+  height: 50px;
+  border-radius: var(--radius-full);
+  background: var(--color-primary-light);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid var(--color-primary);
+}
+
+.avatar-icon {
+  font-size: var(--font-size-lg);
+  color: var(--color-primary);
+}
+
+.profile-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.profile-name {
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-primary);
+  margin: 0;
+}
+
+.profile-email {
+  font-size: var(--font-size-xs);
+  color: var(--color-text-secondary);
+  margin: 0;
+}
+
+.edit-profile-button {
+  padding: var(--spacing-sm);
+  background: transparent;
+  border: none;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.edit-profile-button:hover {
+  background: var(--color-background-secondary);
+}
+
+.edit-icon {
+  font-size: var(--font-size-lg);
+  color: var(--color-primary);
+}
+
+/* 섹션 공통 스타일 */
+.section {
+  background: var(--color-background);
+  border-radius: var(--radius-lg);
+  padding: var(--spacing-sm);
+  margin-bottom: var(--spacing-sm);
+  border: 1px solid var(--color-border);
+  box-shadow: var(--shadow-sm);
+}
+
+.section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--spacing-sm);
+}
+
+.section-title {
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-primary);
+  margin: 0;
+}
+
+.add-button {
+  padding: var(--spacing-sm);
+  background: transparent;
+  border: none;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.add-button:hover {
+  background: var(--color-background-secondary);
+}
+
+.add-icon {
+  font-size: var(--font-size-xl);
+  color: var(--color-primary);
+  font-weight: var(--font-weight-bold);
+}
+
+/* 반려동물 리스트 */
+.pets-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.pet-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--spacing-sm) 0;
+  border-bottom: 1px solid var(--color-border-light);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.pet-item:last-child {
+  border-bottom: none;
+}
+
+.pet-item:hover {
+  background: var(--color-background-secondary);
+  border-radius: var(--radius-md);
+  padding-left: var(--spacing-xs);
+  padding-right: var(--spacing-xs);
+}
+
+.pet-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xs);
+}
+
+.pet-name {
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text-primary);
+  margin: 0;
+}
+
+.pet-details {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-secondary);
+  margin: 0;
+}
+
+.chevron-icon {
+  font-size: var(--font-size-lg);
+  color: var(--color-text-muted);
+  font-weight: var(--font-weight-bold);
+}
+
+/* 빈 상태 */
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: var(--spacing-2xl) var(--spacing-md);
+  text-align: center;
+}
+
+.empty-icon {
+  font-size: 3rem;
+  margin-bottom: var(--spacing-md);
+  opacity: 0.6;
+}
+
+.empty-text {
+  font-size: var(--font-size-base);
+  color: var(--color-text-secondary);
+  margin-bottom: var(--spacing-lg);
+}
+
+.add-pet-button {
+  background: var(--color-primary);
+  color: var(--color-text-inverse);
+  border: none;
+  border-radius: var(--radius-md);
+  padding: var(--spacing-sm) var(--spacing-lg);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.add-pet-button:hover {
+  background: var(--color-primary-dark);
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-md);
+}
+
+/* 메뉴 아이템 */
+.menu-item {
+  display: flex;
+  align-items: center;
+  padding: var(--spacing-sm) 0;
+  border-bottom: 1px solid var(--color-border-light);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.menu-item:last-child {
+  border-bottom: none;
+}
+
+.menu-item:hover {
+  background: var(--color-background-secondary);
+  border-radius: var(--radius-md);
+  padding-left: var(--spacing-xs);
+  padding-right: var(--spacing-xs);
+}
+
+.menu-icon {
+  font-size: var(--font-size-lg);
+  margin-right: var(--spacing-md);
+  width: 24px;
+  text-align: center;
+}
+
+.menu-text {
+  flex: 1;
+  font-size: var(--font-size-base);
+  color: var(--color-text-primary);
+  font-weight: var(--font-weight-normal);
+}
+
+/* 반응형 디자인 */
+@media (min-width: 768px) {
+  .profile-card {
+    padding: var(--spacing-md);
+  }
+
+  .section {
+    padding: var(--spacing-md);
+  }
+
+  .avatar-circle {
+    width: 60px;
+    height: 60px;
+  }
+
+  .avatar-icon {
+    font-size: var(--font-size-xl);
+  }
+
+  .profile-name {
+    font-size: var(--font-size-lg);
+  }
+
+  .profile-email {
+    font-size: var(--font-size-sm);
+  }
+}
+
+@media (min-width: 1024px) {
+  .profile-card {
+    padding: var(--spacing-md);
+  }
+
+  .section {
+    padding: var(--spacing-md);
+  }
+
+  .avatar-circle {
+    width: 70px;
+    height: 70px;
+  }
+
+  .avatar-icon {
+    font-size: var(--font-size-2xl);
+  }
+
+  .profile-name {
+    font-size: var(--font-size-lg);
+  }
+
+  .profile-email {
+    font-size: var(--font-size-sm);
+  }
+}

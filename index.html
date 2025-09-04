@@ -1,38 +1,58 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ko">
   <head>
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/vite.svg" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <!-- 모바일 최적화 viewport 설정 -->
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes, viewport-fit=cover"
+    />
+
+    <!-- 모바일 최적화 메타 태그 -->
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+    <meta name="apple-mobile-web-app-title" content="병원 예약 시스템" />
+    <meta name="theme-color" content="#007aff" />
+    <meta name="msapplication-TileColor" content="#007aff" />
+
+    <!-- Material Icons -->
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
+
     <meta
       name="description"
-      content="WebLLM을 사용한 온디바이스 AI 모델 채팅 Progressive Web App. 오프라인에서도 동작하며, 홈 화면에 설치할 수 있습니다."
+      content="스마트한 병원 예약 시스템 PWA. 달력으로 진료 내역을 확인하고, AI 채팅으로 건강 상담을 받을 수 있습니다. 오프라인에서도 동작하며, 홈 화면에 설치할 수 있습니다."
     />
-    <meta name="keywords" content="AI 채팅, WebLLM, wllama, PWA, 오프라인 AI, 온디바이스 AI" />
-    <meta name="author" content="WebLLM PWA Team" />
+    <meta
+      name="keywords"
+      content="병원 예약, 진료 내역, AI 채팅, PWA, 오프라인, 홈 화면 설치, 건강 관리, 의료 서비스"
+    />
+    <meta name="author" content="병원 예약 시스템 PWA Team" />
     <meta name="robots" content="index, follow" />
 
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website" />
     <meta property="og:url" content="https://pwa-test-nine-beta.vercel.app/" />
-    <meta property="og:title" content="WebLLM AI 채팅 PWA - 온디바이스 AI 모델" />
+    <meta property="og:title" content="🏥 PWA_TEST" />
     <meta
       property="og:description"
-      content="WebLLM을 사용한 온디바이스 AI 모델 채팅 Progressive Web App. 오프라인에서도 동작하며, 홈 화면에 설치할 수 있습니다."
+      content="달력으로 진료 내역을 확인하고, AI 채팅으로 건강 상담을 받을 수 있는 스마트한 병원 예약 시스템입니다. 오프라인에서도 동작하며, 홈 화면에 설치할 수 있습니다."
     />
     <meta property="og:image" content="https://pwa-test-nine-beta.vercel.app/pwa-512x512.svg" />
 
     <!-- Twitter -->
     <meta property="twitter:card" content="summary_large_image" />
     <meta property="twitter:url" content="https://pwa-test-nine-beta.vercel.app/" />
-    <meta property="twitter:title" content="WebLLM AI 채팅 PWA - 온디바이스 AI 모델" />
+    <meta property="twitter:title" content="🏥 스마트 병원 예약 시스템 PWA" />
     <meta
       property="twitter:description"
-      content="WebLLM을 사용한 온디바이스 AI 모델 채팅 Progressive Web App. 오프라인에서도 동작하며, 홈 화면에 설치할 수 있습니다."
+      content="달력으로 진료 내역을 확인하고, AI 채팅으로 건강 상담을 받을 수 있는 스마트한 병원 예약 시스템입니다. 오프라인에서도 동작하며, 홈 화면에 설치할 수 있습니다."
     />
     <meta property="twitter:image" content="https://pwa-test-nine-beta.vercel.app/pwa-512x512.svg" />
 
-    <title>WebLLM AI 채팅 PWA - 온디바이스 AI 모델</title>
+    <title>🏥 스마트 병원 예약 시스템 PWA</title>
   </head>
   <body>
     <div id="root"></div>

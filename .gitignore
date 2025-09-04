@@ -29,6 +29,6 @@ dist-ssr
 # Build artifacts
 dev-dist/
 
-react_pwa_wllama_guide.md
+back_api_guide.md
 
 cspell.json
