@@ -5,6 +5,10 @@
   padding: 20px;
   font-family: inherit;
   overflow: hidden;
+  /* Flexbox 컨테이너로 설정하여 캘린더와 범례를 세로로 배치 */
+  display: flex;
+  flex-direction: column;
+  gap: 20px; /* 캘린더와 범례 사이의 간격 */
 }
 
 /* React Calendar 기본 스타일 오버라이드 */
@@ -172,21 +176,17 @@
   transform: scale(1.2) !important;
 }
 
-/* 진료 유형별 색상 */
+/* 진료 유형별 색상 - HomeScreen 색상과 동일하게 맞춤 */
 .record-consultation {
-  background: #007bff !important;
+  background: #2196f3 !important; /* 일반진료 - 파란색 */
 }
 
 .record-vaccination {
-  background: #28a745 !important;
-}
-
-.record-surgery {
-  background: #dc3545 !important;
+  background: #4caf50 !important; /* 예방접종 - 초록색 */
 }
 
 .record-examination {
-  background: #ffc107 !important;
+  background: #ff9800 !important; /* 건강검진 - 주황색 */
 }
 
 .more-records {
@@ -196,165 +196,251 @@
   margin-top: 2px !important;
 }
 
-/* 범례 */
+/* --- 범례 --- */
+/*
+  .calendar-legend: 범례 전체 컨테이너
+  .legend-items: 범례 항목들을 담는 flex 컨테이너
+  .legend-item: 개별 범례 항목
+*/
+
 .calendar-legend {
-  margin-top: 20px;
-  padding: 16px;
+  /* margin-top 제거 - gap으로 간격 조정 */
+  margin-top: 0;
+
+  /* 패딩, 배경, 테두리는 그대로 유지 */
+  padding: 12px 8px;
   background: #f8f9fa;
   border-radius: 8px;
   border: 1px solid #e9ecef;
+
+  /* flex 컨테이너로 설정하여 내부 요소(.legend-title, .legend-items) 배치 */
+  display: flex;
+  flex-direction: column; /* 세로 방향으로 정렬 */
+
+  /* 고정 크기 관련 !important 제거. 유연한 레이아웃을 위해 기본값 사용 */
+  box-sizing: border-box;
+
+  /* 범례가 고정되지 않고 자연스럽게 배치되도록 설정 */
+  position: relative;
+  width: 100%;
 }
 
 .legend-title {
+  /* 제목 스타일 유지 */
   font-weight: 600;
   color: #495057;
-  margin-bottom: 12px;
+  margin-bottom: 16px;
   font-size: 14px;
+  text-align: center;
 }
 
 .legend-items {
+  /* 플렉스 컨테이너로 설정 */
   display: flex;
+  /* 항목 간 균등한 간격을 위해 gap 사용 */
+  gap: 12px;
+  /* 가로로 나란히 배치 */
+  flex-direction: row;
+  /* 모바일 화면에서 공간이 부족할 경우 줄바꿈 허용 */
   flex-wrap: wrap;
-  gap: 16px;
+  /* 가로 방향 중앙 정렬 */
+  justify-content: center;
+  /* 세로 방향 중앙 정렬 */
+  align-items: center;
+  /* 좌우 패딩을 퍼센트로 유지하여 유연성 확보 */
+  padding: 0 4%;
 }
 
 .legend-item {
+  /* 각 항목이 동일한 비율로 확장/축소되도록 flex: 1 대신 flex-basis와 flex-grow 조합 사용 */
+  flex: 1 1 auto;
+  min-width: 100px; /* 항목이 너무 작아지는 것을 방지 */
+
+  /* 내부 요소(.legend-dot, 텍스트)를 중앙에 배치 */
   display: flex;
   align-items: center;
+  justify-content: center;
   gap: 8px;
-  font-size: 12px;
+
+  /* 나머지 스타일 유지 */
   color: #495057;
+  padding: 8px 4px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+
+  /* 불필요한 white-space: nowrap 제거. 텍스트 줄바꿈 허용 */
+  white-space: normal;
+  text-align: center;
+}
+
+.legend-item:hover {
+  background-color: rgba(0, 0, 0, 0.05); /* 호버 시 배경색 변경 */
 }
 
 .legend-dot {
-  width: 12px;
-  height: 12px;
+  /* 크기를 고정하여 아이콘 역할을 수행 */
+  width: 16px;
+  height: 16px;
   border-radius: 50%;
+  flex-shrink: 0;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+
+/* 호버 효과는 그대로 유지 */
+.legend-dot:hover {
+  transform: scale(1.1);
+}
+
+/* !important 제거 */
+.calendar-legend .legend-dot.record-consultation {
+  background-color: #2196f3;
+}
+
+.calendar-legend .legend-dot.record-vaccination {
+  background-color: #4caf50;
+}
+
+.calendar-legend .legend-dot.record-examination {
+  background-color: #ff9800;
 }
 
 /* 모바일 최적화 */
 @media (max-width: 768px) {
   .medical-record-calendar {
     padding: 12px;
+    gap: 16px; /* 모바일에서 캘린더와 범례 사이의 간격 조정 */
   }
-  
+
   .react-calendar__navigation {
     margin-bottom: 16px;
     flex-wrap: wrap;
     gap: 8px;
   }
-  
+
   .react-calendar__navigation button {
     min-width: 36px;
     padding: 6px 8px;
     font-size: 14px;
     margin: 0 2px;
   }
-  
+
   .react-calendar__navigation__label {
     font-size: 16px;
     padding: 6px 8px;
     margin: 0 2px;
   }
-  
+
   .react-calendar__month-view__weekdays__weekday {
     padding: 8px 4px;
     font-size: 11px;
     margin: 0 1px;
   }
-  
+
   .react-calendar__tile {
     min-height: 60px;
     padding: 6px;
     font-size: 12px;
   }
-  
+
   .react-calendar__tile abbr {
     font-size: 12px;
     margin-bottom: 6px;
   }
-  
+
   .record-dot {
     width: 6px;
     height: 6px;
   }
-  
-  .legend-items {
-    gap: 12px;
+
+  .legend-dot {
+    width: 14px; /* 모바일에서도 적절한 크기 */
+    height: 14px;
   }
-  
+
+  .legend-items {
+    /* 모바일에서도 동일한 레이아웃 적용 */
+    justify-content: space-between;
+    padding: 0 3%; /* 모바일에서 퍼센트 기반 패딩 */
+    min-height: 44px; /* 모바일에서 최소 높이 조정 */
+  }
+
   .calendar-legend {
-    margin-top: 16px;
-    padding: 12px;
+    margin-top: 0; /* gap으로 간격 조정하므로 margin-top 제거 */
+    padding: 8px 4px; /* 모바일에서 더 작은 패딩 */
   }
 }
 
 @media (max-width: 480px) {
   .medical-record-calendar {
     padding: 8px;
+    gap: 12px; /* 작은 화면에서 캘린더와 범례 사이의 간격 조정 */
   }
-  
+
   .react-calendar__navigation {
     margin-bottom: 12px;
   }
-  
+
   .react-calendar__navigation button {
     min-width: 32px;
     padding: 4px 6px;
     font-size: 12px;
     margin: 0 1px;
   }
-  
+
   .react-calendar__navigation__label {
     font-size: 14px;
     padding: 4px 6px;
     margin: 0 1px;
   }
-  
+
   .react-calendar__month-view__weekdays__weekday {
     padding: 6px 2px;
     font-size: 10px;
     margin: 0;
   }
-  
+
   .react-calendar__tile {
     min-height: 50px;
     padding: 4px;
     font-size: 11px;
   }
-  
+
   .react-calendar__tile abbr {
     font-size: 11px;
     margin-bottom: 4px;
   }
-  
+
   .record-dot {
     width: 5px;
     height: 5px;
   }
-  
+
   .legend-items {
-    flex-direction: column;
-    gap: 8px;
+    /* 작은 화면에서도 동일한 레이아웃 적용 */
+    justify-content: space-between;
+    padding: 0 2%; /* 작은 화면에서 퍼센트 기반 패딩 */
+    min-height: 40px; /* 작은 화면에서 최소 높이 조정 */
   }
-  
+
   .calendar-legend {
-    margin-top: 12px;
-    padding: 8px;
+    margin-top: 0; /* gap으로 간격 조정하므로 margin-top 제거 */
+    padding: 6px 2px; /* 작은 화면에서 최소한의 패딩 */
   }
-  
+
   .legend-title {
     font-size: 12px;
     margin-bottom: 8px;
   }
-  
+
   .legend-item {
     font-size: 11px;
   }
-  
+
   .legend-dot {
-    width: 10px;
-    height: 10px;
+    width: 12px; /* 작은 화면에서도 터치하기 좋은 크기 */
+    height: 12px;
   }
 }
 
@@ -364,12 +450,12 @@
     min-height: 45px;
     padding: 2px;
   }
-  
+
   .react-calendar__tile abbr {
     font-size: 10px;
     margin-bottom: 2px;
   }
-  
+
   .record-dot {
     width: 4px;
     height: 4px;
