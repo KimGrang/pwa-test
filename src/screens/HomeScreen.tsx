@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo, useCallback } from 'react';
+import React, { useEffect, useMemo, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useDwonStoreAuth, useDwonStorePets, useDwonStoreMedicalRecords } from '../hooks/useDwonStoreAPI';
 import { TokenManager } from '../utils/token-manager';
@@ -25,7 +25,6 @@ interface User {
  */
 const HomeScreen: React.FC = () => {
   const navigate = useNavigate();
-  const [selectedDate, setSelectedDate] = useState<Date | null>(new Date());
 
   // Zustand stores
   const { currentUser, setCurrentUser, clearUser } = useUserStore();
@@ -249,14 +248,26 @@ const HomeScreen: React.FC = () => {
   }, [authLogout, clearUser, navigate]);
 
   // 날짜 선택 시 해당 날짜의 진료기록으로 이동
-  const handleDateSelect = useCallback((date: Date) => {
-    setSelectedDate(date);
-  }, []);
+  const handleDateSelect = useCallback(
+    (date: Date) => {
+      const dateKey = `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`;
+      const appointment = appointments[dateKey];
+
+      if (appointment && appointment.record) {
+        // 해당 날짜에 진료기록이 있으면 바로 상세 페이지로 이동
+        navigate(`/record/${appointment.record.id}`, {
+          state: { record: appointment.record },
+        });
+      }
+      // 진료기록이 없으면 아무것도 하지 않음
+    },
+    [appointments, navigate]
+  );
 
   // 진료기록 선택 시 상세 페이지로 이동
   const handleRecordSelect = useCallback(
     (record: (typeof medicalRecords)[0]) => {
-      navigate(`/medical-records/${record.id}`, {
+      navigate(`/record/${record.id}`, {
         state: { record },
       });
     },
@@ -302,75 +313,6 @@ const HomeScreen: React.FC = () => {
             onRecordSelect={handleRecordSelect}
           />
         </div>
-
-        {/* 선택된 날짜의 진료기록 상세 정보 */}
-        {selectedDate &&
-          appointments[`${selectedDate.getFullYear()}-${selectedDate.getMonth() + 1}-${selectedDate.getDate()}`] && (
-            <div className='selected-date-records'>
-              <h3>
-                📅 {selectedDate.getFullYear()}.{(selectedDate.getMonth() + 1).toString().padStart(2, '0')}.
-                {selectedDate.getDate().toString().padStart(2, '0')} 진료기록
-              </h3>
-              <div className='record-details'>
-                {appointments[`${selectedDate.getFullYear()}-${selectedDate.getMonth() + 1}-${selectedDate.getDate()}`]
-                  .record && (
-                  <div className='record-item'>
-                    <div className='record-header'>
-                      <span
-                        className='record-type'
-                        style={{
-                          backgroundColor:
-                            appointments[
-                              `${selectedDate.getFullYear()}-${selectedDate.getMonth() + 1}-${selectedDate.getDate()}`
-                            ].color,
-                        }}
-                      >
-                        {
-                          appointments[
-                            `${selectedDate.getFullYear()}-${selectedDate.getMonth() + 1}-${selectedDate.getDate()}`
-                          ].type
-                        }
-                      </span>
-                    </div>
-                    <div className='record-content'>
-                      <p>
-                        <strong>주요 증상:</strong>{' '}
-                        {
-                          appointments[
-                            `${selectedDate.getFullYear()}-${selectedDate.getMonth() + 1}-${selectedDate.getDate()}`
-                          ].record.chiefComplaint
-                        }
-                      </p>
-                      <p>
-                        <strong>진찰 내용:</strong>{' '}
-                        {
-                          appointments[
-                            `${selectedDate.getFullYear()}-${selectedDate.getMonth() + 1}-${selectedDate.getDate()}`
-                          ].record.examinationNotes
-                        }
-                      </p>
-                      <p>
-                        <strong>치료 계획:</strong>{' '}
-                        {
-                          appointments[
-                            `${selectedDate.getFullYear()}-${selectedDate.getMonth() + 1}-${selectedDate.getDate()}`
-                          ].record.treatmentPlan
-                        }
-                      </p>
-                      <p>
-                        <strong>후속 조치:</strong>{' '}
-                        {
-                          appointments[
-                            `${selectedDate.getFullYear()}-${selectedDate.getMonth() + 1}-${selectedDate.getDate()}`
-                          ].record.followUp
-                        }
-                      </p>
-                    </div>
-                  </div>
-                )}
-              </div>
-            </div>
-          )}
       </div>
     </div>
   );

@@ -101,13 +101,13 @@ const MedicalRecordCalendar: React.FC<MedicalRecordCalendarProps> = ({
     [recordsByDate, handleRecordClick]
   );
 
-  // 진료기록 타입 추출 (실제로는 record에서 추출해야 함)
+  // 진료기록 타입 추출 (examinationNotes 필드 기반)
   const getRecordType = (record: MedicalRecord): string => {
-    // 실제 구현에서는 record의 필드를 기반으로 타입을 결정
-    if (record.treatmentPlan?.includes('예방') || record.chiefComplaint?.includes('예방')) return 'VACCINATION';
-    if (record.treatmentPlan?.includes('수술') || record.chiefComplaint?.includes('수술')) return 'SURGERY';
-    if (record.treatmentPlan?.includes('검진') || record.chiefComplaint?.includes('검진')) return 'EXAMINATION';
-    return 'CONSULTATION';
+    // examinationNotes 필드를 기반으로 타입 결정
+    if (record.examinationNotes === '예방접종') return 'VACCINATION';
+    if (record.examinationNotes === '건강검진') return 'EXAMINATION';
+    if (record.examinationNotes === '일반진료') return 'CONSULTATION';
+    return 'CONSULTATION'; // 기본값
   };
 
   // 오늘 날짜 하이라이트
@@ -144,25 +144,21 @@ const MedicalRecordCalendar: React.FC<MedicalRecordCalendarProps> = ({
         className='react-calendar'
       />
 
-      {/* 진료기록 타입별 범례 */}
+      {/* 진료기록 타입별 범례 - 캘린더 하위에 배치 */}
       <div className='calendar-legend'>
-        <div className='legend-title'>진료 유형</div>
+        <div className='legend-title'>범례</div>
         <div className='legend-items'>
           <div className='legend-item'>
             <div className='legend-dot record-consultation'></div>
-            <span>상담</span>
+            <span>일반진료</span>
           </div>
           <div className='legend-item'>
             <div className='legend-dot record-vaccination'></div>
             <span>예방접종</span>
           </div>
           <div className='legend-item'>
-            <div className='legend-dot record-surgery'></div>
-            <span>수술</span>
-          </div>
-          <div className='legend-item'>
             <div className='legend-dot record-examination'></div>
-            <span>검사</span>
+            <span>건강검진</span>
           </div>
         </div>
       </div>
