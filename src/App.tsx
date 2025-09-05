@@ -6,6 +6,7 @@ import DetailRecord from './screens/DetailRecord';
 import LLMChat from './screens/LLMChat';
 import MoreScreen from './screens/MoreScreen';
 import UserMoreScreen from './screens/UserMoreScreen';
+import PetMoreScreen from './screens/PetMoreScreen';
 import PWAInstallButton from './components/PWAInstallButton';
 import Navigation from './components/Navigation';
 
@@ -37,6 +38,9 @@ const App: React.FC = () => {
 
             {/* 사용자 상세 정보 화면 */}
             <Route path='/user-more' element={<UserMoreScreen />} />
+
+            {/* 반려동물 관리 화면 */}
+            <Route path='/pet-more' element={<PetMoreScreen />} />
 
             {/* PWA 설치 안내 화면 */}
             <Route

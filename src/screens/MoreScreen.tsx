@@ -24,22 +24,11 @@ const MoreScreen: React.FC = () => {
   }, [navigate]);
 
   /**
-   * 반려동물 관리 화면으로 이동 (새 반려동물 추가)
+   * 반려동물 관리 화면으로 이동
    */
-  const handleAddPet = useCallback(() => {
-    alert('반려동물 추가 기능은 준비 중입니다.');
-  }, []);
-
-  /**
-   * 기존 반려동물 편집 화면으로 이동
-   */
-  const handleEditPet = useCallback(
-    (petId: number) => {
-      const pet = getPetById(petId);
-      alert(`반려동물 편집: ${pet?.name || '알 수 없음'}`);
-    },
-    [getPetById]
-  );
+  const handlePetManagement = useCallback(() => {
+    navigate('/pet-more');
+  }, [navigate]);
 
   /**
    * 알림 설정 화면으로 이동
@@ -95,7 +84,7 @@ const MoreScreen: React.FC = () => {
         <div className='section'>
           <div className='section-header'>
             <h3 className='section-title'>반려동물 관리</h3>
-            <button className='add-button' onClick={handleAddPet}>
+            <button className='add-button' onClick={handlePetManagement}>
               <span className='add-icon'>+</span>
             </button>
           </div>
@@ -103,12 +92,11 @@ const MoreScreen: React.FC = () => {
           {pets.length > 0 ? (
             <div className='pets-list'>
               {pets.map((pet) => (
-                <div key={pet.id} className='pet-item' onClick={() => handleEditPet(pet.id)}>
+                <div key={pet.id} className='pet-item' onClick={handlePetManagement}>
                   <div className='pet-info'>
                     <div className='pet-name'>{pet.name}</div>
                     <div className='pet-details'>
-                      {pet.gender === 'MALE' ? '수컷' : '암컷'} • {pet.weight || 0}kg •{' '}
-                      {new Date(pet.birthDate).getFullYear()}년생
+                      {pet.gender === 'MALE' ? '수컷' : '암컷'} • {pet.species}
                     </div>
                   </div>
                   <span className='chevron-icon'></span>
@@ -119,7 +107,7 @@ const MoreScreen: React.FC = () => {
             <div className='empty-state'>
               <div className='empty-icon'>🐕</div>
               <div className='empty-text'>등록된 반려동물이 없습니다</div>
-              <button className='add-pet-button' onClick={handleAddPet}>
+              <button className='add-pet-button' onClick={handlePetManagement}>
                 반려동물 추가하기
               </button>
             </div>
