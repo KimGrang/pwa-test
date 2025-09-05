@@ -46,6 +46,7 @@ interface UIState {
 
   setLoading: (key: string, loading: boolean) => void;
   clearLoading: (key: string) => void;
+  clearAll: () => void;
 }
 
 /**
@@ -152,6 +153,28 @@ export const useUIStore = create<UIState>()(
         delete rest[key];
         set({ loadingStates: rest });
       },
+
+      clearAll: () =>
+        set({
+          modals: {
+            datePicker: false,
+            hospitalSelector: false,
+            recordDetail: false,
+            settings: false,
+            help: false,
+          },
+          sidebar: {
+            isOpen: false,
+            activeTab: 'home',
+          },
+          notifications: {
+            isVisible: false,
+            message: '',
+            type: 'info',
+            duration: 3000,
+          },
+          loadingStates: {},
+        }),
     }),
     {
       name: 'ui-store',

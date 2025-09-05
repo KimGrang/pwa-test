@@ -22,6 +22,7 @@ interface AuthState {
   login: (tokens: AuthTokens) => void;
   logout: () => void;
   clearTokens: () => void;
+  clearAll: () => void;
 }
 
 /**
@@ -42,6 +43,8 @@ export const useAuthStore = create<AuthState>()(
       logout: () => set({ tokens: null, isAuthenticated: false }),
 
       clearTokens: () => set({ tokens: null, isAuthenticated: false }),
+
+      clearAll: () => set({ tokens: null, isAuthenticated: false }),
     }),
     {
       name: 'auth-store',

@@ -81,6 +81,9 @@ interface ChatState {
   getCurrentSession: () => ChatSession | null;
   getSessionById: (sessionId: string) => ChatSession | null;
   getSessionMessages: (sessionId: string) => ChatMessage[];
+
+  // 전체 데이터 삭제
+  clearAll: () => void;
 }
 
 /**
@@ -239,6 +242,25 @@ export const useChatStore = create<ChatState>()(
         const session = sessions.find((s) => s.id === sessionId);
         return session?.messages || [];
       },
+
+      clearAll: () =>
+        set({
+          sessions: [],
+          currentSessionId: null,
+          selectedModel: '',
+          availableModels: [],
+          isTyping: false,
+          isModelLoading: false,
+          modelLoadingProgress: 0,
+          settings: {
+            maxTokens: 512,
+            temperature: 0.7,
+            topP: 0.9,
+            repetitionPenalty: 1.1,
+            autoSave: true,
+            maxHistory: 100,
+          },
+        }),
     }),
     {
       name: 'chat-store',

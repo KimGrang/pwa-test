@@ -34,6 +34,7 @@ interface UserState {
   updateUserProfile: (updates: Partial<User>) => void;
   updatePreferences: (preferences: Partial<UserState['preferences']>) => void;
   clearUser: () => void;
+  clearAll: () => void;
 }
 
 /**
@@ -71,6 +72,17 @@ export const useUserStore = create<UserState>()(
       },
 
       clearUser: () => set({ currentUser: null }),
+
+      clearAll: () =>
+        set({
+          currentUser: null,
+          preferences: {
+            notifications: true,
+            emailNotifications: true,
+            pushNotifications: true,
+            privacyMode: false,
+          },
+        }),
     }),
     {
       name: 'user-store',

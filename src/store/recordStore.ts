@@ -57,6 +57,9 @@ interface RecordState {
   getRecordsByDate: (date: string) => MedicalRecord[];
   getRecordsByPet: (petId: number) => MedicalRecord[];
   getRecordsByHospital: (hospitalId: number) => MedicalRecord[];
+
+  // 전체 데이터 삭제
+  clearAll: () => void;
 }
 
 /**
@@ -134,6 +137,15 @@ export const useRecordStore = create<RecordState>()(
         const { records } = get();
         return records.filter((record) => record.hospitalId === hospitalId);
       },
+
+      clearAll: () =>
+        set({
+          records: [],
+          selectedRecord: null,
+          filters: {},
+          isLoading: false,
+          error: null,
+        }),
     }),
     {
       name: 'record-store',
