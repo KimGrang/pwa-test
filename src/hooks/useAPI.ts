@@ -5,12 +5,11 @@ import { ApiResponse, User, ChatMessage } from '../types';
 export {
   useDwonStoreAuth,
   useDwonStoreUser,
-  useDwonStoreHospital,
+  useDwonStoreHospitals,
   useDwonStorePets,
   useDwonStoreChat,
   useDwonStoreMedicalRecords,
   useDwonStoreVet,
-  useDwonStoreAdmin,
 } from './useDwonStoreAPI';
 
 /**

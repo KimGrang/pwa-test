@@ -267,6 +267,7 @@ const HomeScreen: React.FC = () => {
   // 진료기록 선택 시 상세 페이지로 이동
   const handleRecordSelect = useCallback(
     (record: (typeof medicalRecords)[0]) => {
+      console.log('🚀 진료기록 상세 페이지로 이동:', record);
       navigate(`/record/${record.id}`, {
         state: { record },
       });
@@ -275,19 +276,28 @@ const HomeScreen: React.FC = () => {
   );
 
   return (
-    <div className='screen-container'>
+    <div className='h-screen flex flex-col'>
       {/* 상단 헤더 */}
-      <div className='screen-header'>
-        <div className='header-left'>
-          <span className='hospital-name'>+ 응급동물병원</span>
+      <div className='bg-gray-800 text-white p-3 relative grid grid-cols-3 items-center sticky top-0 z-40 w-full min-h-11'>
+        <div className='flex items-center justify-start'>
+          <span className='text-lg font-semibold text-white'>+ 응급동물병원</span>
         </div>
-        <div className='header-right'>
+        <div className='flex items-center justify-center'>{/* 중앙 영역 (필요시 추가) */}</div>
+        <div className='flex items-center justify-end gap-3'>
           {!isAuthenticated ? (
-            <button className='log_in_button' onClick={handleLogin} disabled={authLoading}>
+            <button
+              className='bg-primary text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-primary-dark transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed'
+              onClick={handleLogin}
+              disabled={authLoading}
+            >
               {authLoading ? '로그인 중...' : '🔑 테스트 로그인'}
             </button>
           ) : (
-            <button className='log_in_button' onClick={handleLogout} disabled={authLoading}>
+            <button
+              className='bg-red-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-red-700 transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed'
+              onClick={handleLogout}
+              disabled={authLoading}
+            >
               🚪 로그아웃
             </button>
           )}
@@ -296,17 +306,18 @@ const HomeScreen: React.FC = () => {
 
       {/* 인증 오류 메시지 */}
       {authError && (
-        <div className='auth-error'>
+        <div className='bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mx-4 mt-4 flex justify-between items-center'>
           <span>{authError}</span>
-          <button onClick={clearAuthError}>✕</button>
+          <button onClick={clearAuthError} className='text-red-700 hover:text-red-900 font-bold text-lg leading-none'>
+            ✕
+          </button>
         </div>
       )}
 
       {/* 메인 콘텐츠 */}
-      <div className='screen-scrollable-content'>
+      <div className='main-content'>
         {/* 진료기록 캘린더 섹션 */}
         <div className='calendar-section'>
-          <h2 className='section-title'>진료기록 캘린더</h2>
           <MedicalRecordCalendar
             medicalRecords={medicalRecords}
             onDateSelect={handleDateSelect}

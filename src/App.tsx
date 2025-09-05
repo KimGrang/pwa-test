@@ -15,9 +15,9 @@ import Navigation from './components/Navigation';
 const App: React.FC = () => {
   return (
     <Router>
-      <div className='App'>
-        {/* 메인 콘텐츠 영역 */}
-        <main className='app-main'>
+      <div className='h-screen w-full max-w-3xl mx-auto bg-black text-white relative overflow-hidden flex flex-col'>
+        {/* 메인 콘텐츠 영역 - 스크롤 가능 */}
+        <main className='flex-1 relative overflow-hidden'>
           <Routes>
             {/* 홈 화면 - 캘린더 뷰 */}
             <Route path='/' element={<HomeScreen />} />
@@ -38,21 +38,25 @@ const App: React.FC = () => {
             <Route
               path='/install'
               element={
-                <div className='screen-base'>
-                  <div className='screen-header'>
-                    <h2>📱 PWA 설치</h2>
-                    <p>이 앱은 오프라인에서도 동작하며, 홈 화면에 설치할 수 있습니다.</p>
+                <div className='h-full bg-black text-white flex flex-col overflow-hidden'>
+                  <div className='bg-gray-800 p-4 text-center border-b border-gray-600 flex-shrink-0'>
+                    <h2 className='text-xl font-bold mb-2'>📱 PWA 설치</h2>
+                    <p className='text-sm text-gray-300'>
+                      이 앱은 오프라인에서도 동작하며, 홈 화면에 설치할 수 있습니다.
+                    </p>
                   </div>
-                  <div className='screen-content'>
+                  <div className='flex-1 overflow-y-auto p-4 pb-20'>
                     <PWAInstallButton />
-                    <div className='app-description'>
-                      <h3>PWA란?</h3>
-                      <p>Progressive Web App(PWA)은 웹 앱이지만 네이티브 앱과 같은 사용자 경험을 제공합니다.</p>
-                      <ul>
-                        <li>오프라인에서도 동작</li>
-                        <li>홈 화면에 설치 가능</li>
-                        <li>푸시 알림 지원</li>
-                        <li>빠른 로딩 속도</li>
+                    <div className='mt-6'>
+                      <h3 className='text-lg font-semibold mb-3'>PWA란?</h3>
+                      <p className='text-gray-300 mb-4'>
+                        Progressive Web App(PWA)은 웹 앱이지만 네이티브 앱과 같은 사용자 경험을 제공합니다.
+                      </p>
+                      <ul className='space-y-2 text-gray-300'>
+                        <li>• 오프라인에서도 동작</li>
+                        <li>• 홈 화면에 설치 가능</li>
+                        <li>• 푸시 알림 지원</li>
+                        <li>• 빠른 로딩 속도</li>
                       </ul>
                     </div>
                   </div>
@@ -62,7 +66,7 @@ const App: React.FC = () => {
           </Routes>
         </main>
 
-        {/* 네비게이션 바 */}
+        {/* 네비게이션 바 - 고정 위치 */}
         <Navigation />
       </div>
     </Router>

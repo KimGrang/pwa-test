@@ -1,7 +1,5 @@
 import React, { useState, useMemo, useCallback } from 'react';
-import Calendar from 'react-calendar';
-import 'react-calendar/dist/Calendar.css';
-import '../styles/MedicalRecordCalendar.css';
+import { ChevronLeft, ChevronRight } from 'lucide-react';
 
 // recordStore의 MedicalRecord 타입과 호환되는 인터페이스
 interface MedicalRecord {
@@ -19,30 +17,57 @@ interface MedicalRecord {
 
 interface MedicalRecordCalendarProps {
   medicalRecords: MedicalRecord[];
+  selectedDate?: Date;
   onDateSelect?: (date: Date) => void;
   onRecordSelect?: (record: MedicalRecord) => void;
 }
 
-type ValuePiece = Date | null;
-type Value = ValuePiece | [ValuePiece, ValuePiece];
-
 /**
- * React Calendar를 사용한 진료기록 캘린더
- * 커스텀 타일로 진료기록을 시각적으로 표시
+ * 커스텀 진료기록 캘린더
+ * Tailwind CSS를 활용한 깔끔하고 모던한 달력 UI
+ * 진료기록 표시 기능이 포함된 달력
  */
 const MedicalRecordCalendar: React.FC<MedicalRecordCalendarProps> = ({
   medicalRecords,
+  selectedDate,
   onDateSelect,
   onRecordSelect,
 }) => {
-  const [value, setValue] = useState<Value>(new Date());
+  const [currentDate, setCurrentDate] = useState(new Date());
+
+  // 달력에 표시할 모든 날짜들 생성 (항상 6주 = 42일)
+  const calendarDays: Date[] = useMemo(() => {
+    // 현재 월의 첫 번째 날
+    const firstDayOfMonth = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
+
+    // 달력 시작 날짜 (이전 월의 일부 날짜 포함)
+    const startDate = new Date(firstDayOfMonth);
+    startDate.setDate(startDate.getDate() - firstDayOfMonth.getDay());
+
+    const days: Date[] = [];
+    const currentCalendarDate = new Date(startDate);
+
+    // 정확히 42일(6주 × 7일)을 생성
+    for (let i = 0; i < 42; i++) {
+      days.push(new Date(currentCalendarDate));
+      currentCalendarDate.setDate(currentCalendarDate.getDate() + 1);
+    }
+
+    return days;
+  }, [currentDate]);
+
+  // 요일 헤더 배열
+  const dayNames = ['일', '월', '화', '수', '목', '금', '토'];
+
+  // 월 이름 배열
+  const monthNames = ['1월', '2월', '3월', '4월', '5월', '6월', '7월', '8월', '9월', '10월', '11월', '12월'];
 
   // 날짜별 진료기록 그룹화
   const recordsByDate = useMemo(() => {
     const grouped: Record<string, MedicalRecord[]> = {};
 
     medicalRecords.forEach((record) => {
-      const dateKey = new Date(record.visitDate).toDateString();
+      const dateKey = new Date(record.visitDate).toISOString().split('T')[0];
       if (!grouped[dateKey]) {
         grouped[dateKey] = [];
       }
@@ -52,113 +77,201 @@ const MedicalRecordCalendar: React.FC<MedicalRecordCalendarProps> = ({
     return grouped;
   }, [medicalRecords]);
 
-  // 날짜 변경 처리
-  const handleDateChange = useCallback(
-    (newValue: Value) => {
-      setValue(newValue);
-      if (newValue instanceof Date) {
-        onDateSelect?.(newValue);
+  // 헬퍼 함수들
+  const isToday = useCallback((date: Date) => {
+    const today = new Date();
+    return date.toDateString() === today.toDateString();
+  }, []);
+
+  const isCurrentMonth = useCallback(
+    (date: Date) => {
+      return date.getMonth() === currentDate.getMonth();
+    },
+    [currentDate]
+  );
+
+  const isSelected = useCallback(
+    (date: Date) => {
+      return selectedDate && date.toDateString() === selectedDate.toDateString();
+    },
+    [selectedDate]
+  );
+
+  // 진료기록 타입 추출
+  const getRecordType = useCallback((record: MedicalRecord): string => {
+    if (record.examinationNotes === '예방접종') return 'vaccination';
+    if (record.examinationNotes === '건강검진') return 'examination';
+    if (record.examinationNotes === '일반진료') return 'consultation';
+    return 'consultation'; // 기본값
+  }, []);
+
+  // 월 네비게이션
+  const navigateMonth = useCallback((direction: 'prev' | 'next') => {
+    setCurrentDate((prev) => {
+      const newDate = new Date(prev);
+      if (direction === 'prev') {
+        newDate.setMonth(newDate.getMonth() - 1);
+      } else {
+        newDate.setMonth(newDate.getMonth() + 1);
+      }
+      return newDate;
+    });
+  }, []);
+
+  // 년 네비게이션
+  const navigateYear = useCallback((direction: 'prev' | 'next') => {
+    setCurrentDate((prev) => {
+      const newDate = new Date(prev);
+      if (direction === 'prev') {
+        newDate.setFullYear(newDate.getFullYear() - 1);
+      } else {
+        newDate.setFullYear(newDate.getFullYear() + 1);
+      }
+      return newDate;
+    });
+  }, []);
+
+  // 날짜 클릭 처리
+  const handleDateClick = useCallback(
+    (date: Date) => {
+      const dateKey = date.toISOString().split('T')[0];
+      const dayRecords = recordsByDate[dateKey] || [];
+
+      onDateSelect?.(date);
+
+      // 진료기록이 있으면 첫 번째 기록 선택
+      if (dayRecords.length > 0) {
+        onRecordSelect?.(dayRecords[0]);
       }
     },
-    [onDateSelect]
+    [recordsByDate, onDateSelect, onRecordSelect]
   );
 
   // 진료기록 클릭 처리
   const handleRecordClick = useCallback(
-    (record: MedicalRecord, e: React.MouseEvent) => {
+    (record: MedicalRecord, e: React.MouseEvent | React.KeyboardEvent) => {
       e.stopPropagation();
+      console.log('🔍 진료기록 클릭됨:', record);
       onRecordSelect?.(record);
     },
     [onRecordSelect]
   );
 
-  // 커스텀 타일 렌더링
-  const tileContent = useCallback(
-    ({ date, view }: { date: Date; view: string }) => {
-      if (view !== 'month') return null;
-
-      const dateKey = date.toDateString();
-      const dayRecords = recordsByDate[dateKey] || [];
-
-      if (dayRecords.length === 0) return null;
-
-      return (
-        <div className='calendar-tile-content'>
-          <div className='records-indicator'>
-            {dayRecords.slice(0, 2).map((record) => (
-              <div
-                key={record.id}
-                className={`record-dot record-${getRecordType(record).toLowerCase()}`}
-                onClick={(e) => handleRecordClick(record, e)}
-                title={`${record.chiefComplaint} - ${new Date(record.visitDate).toLocaleDateString()}`}
-              />
-            ))}
-            {dayRecords.length > 2 && <div className='more-records'>+{dayRecords.length - 2}</div>}
-          </div>
-        </div>
-      );
-    },
-    [recordsByDate, handleRecordClick]
-  );
-
-  // 진료기록 타입 추출 (examinationNotes 필드 기반)
-  const getRecordType = (record: MedicalRecord): string => {
-    // examinationNotes 필드를 기반으로 타입 결정
-    if (record.examinationNotes === '예방접종') return 'VACCINATION';
-    if (record.examinationNotes === '건강검진') return 'EXAMINATION';
-    if (record.examinationNotes === '일반진료') return 'CONSULTATION';
-    return 'CONSULTATION'; // 기본값
-  };
-
-  // 오늘 날짜 하이라이트
-  const tileClassName = useCallback(
-    ({ date, view }: { date: Date; view: string }) => {
-      if (view !== 'month') return '';
-
-      const today = new Date();
-      const isToday = date.toDateString() === today.toDateString();
-      const dateKey = date.toDateString();
-      const hasRecords = recordsByDate[dateKey] && recordsByDate[dateKey].length > 0;
-
-      let className = '';
-      if (isToday) className += ' today';
-      if (hasRecords) className += ' has-records';
-
-      return className.trim();
-    },
-    [recordsByDate]
-  );
-
   return (
-    <div className='medical-record-calendar'>
-      <Calendar
-        onChange={handleDateChange}
-        value={value}
-        tileContent={tileContent}
-        tileClassName={tileClassName}
-        locale='ko-KR'
-        formatDay={(locale, date) => date.getDate().toString()}
-        showNeighboringMonth={false}
-        maxDetail='month'
-        minDetail='month'
-        className='react-calendar'
-      />
+    <div className='medical-calendar'>
+      {/* 헤더 - 월/년 네비게이션 */}
+      <div className='calendar-header'>
+        {/* 년 네비게이션 */}
+        <div className='calendar-year-nav'>
+          <button onClick={() => navigateYear('prev')} title='이전 년'>
+            {'<<'}
+          </button>
 
-      {/* 진료기록 타입별 범례 - 캘린더 하위에 배치 */}
+          <span className='calendar-year-text'>{currentDate.getFullYear()}년</span>
+
+          <button onClick={() => navigateYear('next')} title='다음 년'>
+            {'>>'}
+          </button>
+        </div>
+
+        {/* 월 네비게이션 */}
+        <div className='calendar-month-nav'>
+          <button onClick={() => navigateMonth('prev')} title='이전 달'>
+            <ChevronLeft size={20} />
+          </button>
+
+          <h2 className='calendar-month-text'>{monthNames[currentDate.getMonth()]}</h2>
+
+          <button onClick={() => navigateMonth('next')} title='다음 달'>
+            <ChevronRight size={20} />
+          </button>
+        </div>
+      </div>
+
+      {/* 요일 헤더 */}
+      <div className='calendar-day-names'>
+        {dayNames.map((day) => (
+          <div key={day} className='calendar-day-name'>
+            {day}
+          </div>
+        ))}
+      </div>
+
+      {/* 달력 그리드 */}
+      <div className='calendar-grid'>
+        {calendarDays.map((date, index) => {
+          const dateKey = date.toISOString().split('T')[0];
+          const dayRecords = recordsByDate[dateKey] || [];
+
+          const getRecordDotClass = (record: MedicalRecord) => {
+            const type = getRecordType(record);
+            switch (type) {
+              case 'consultation':
+                return 'consultation';
+              case 'vaccination':
+                return 'vaccination';
+              case 'examination':
+                return 'examination';
+              default:
+                return 'default';
+            }
+          };
+
+          return (
+            <button
+              key={index}
+              onClick={() => handleDateClick(date)}
+              className={`calendar-date-cell ${!isCurrentMonth(date) ? 'other-month' : ''} ${
+                isToday(date) ? 'today' : ''
+              } ${isSelected(date) ? 'selected' : ''}`}
+            >
+              <span className='calendar-date-number'>{date.getDate()}</span>
+
+              {/* 진료기록 표시 점들 */}
+              {dayRecords.length > 0 && (
+                <div className='calendar-record-dots'>
+                  {dayRecords.slice(0, 3).map((record) => (
+                    <div
+                      key={record.id}
+                      className={`calendar-record-dot ${getRecordDotClass(record)}`}
+                      onClick={(e) => handleRecordClick(record, e)}
+                      title={`${record.chiefComplaint} - ${date.toLocaleDateString()}`}
+                      role='button'
+                      tabIndex={0}
+                      onKeyDown={(e) => {
+                        if (e.key === 'Enter' || e.key === ' ') {
+                          e.preventDefault();
+                          handleRecordClick(record, e);
+                        }
+                      }}
+                      aria-label={`진료기록: ${record.chiefComplaint}`}
+                    />
+                  ))}
+                  {dayRecords.length > 3 && <span className='calendar-record-more'>+{dayRecords.length - 3}</span>}
+                </div>
+              )}
+            </button>
+          );
+        })}
+      </div>
+
+      {/* 범례 - 진료기록 타입만 */}
       <div className='calendar-legend'>
-        <div className='legend-title'>범례</div>
-        <div className='legend-items'>
-          <div className='legend-item'>
-            <div className='legend-dot record-consultation'></div>
-            <span>일반진료</span>
-          </div>
-          <div className='legend-item'>
-            <div className='legend-dot record-vaccination'></div>
-            <span>예방접종</span>
-          </div>
-          <div className='legend-item'>
-            <div className='legend-dot record-examination'></div>
-            <span>건강검진</span>
+        <div className='calendar-legend-section'>
+          <div className='calendar-legend-title'>진료기록 타입</div>
+          <div className='calendar-legend-items'>
+            <div className='calendar-legend-item small'>
+              <div className='calendar-legend-color small consultation'></div>
+              <span className='calendar-legend-text'>일반진료</span>
+            </div>
+            <div className='calendar-legend-item small'>
+              <div className='calendar-legend-color small vaccination'></div>
+              <span className='calendar-legend-text'>예방접종</span>
+            </div>
+            <div className='calendar-legend-item small'>
+              <div className='calendar-legend-color small examination'></div>
+              <span className='calendar-legend-text'>건강검진</span>
+            </div>
           </div>
         </div>
       </div>

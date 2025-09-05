@@ -13,23 +13,23 @@ const Navigation: React.FC = () => {
   };
 
   return (
-    <nav className='app-navigation'>
-      <div className='nav-container'>
-        <Link to='/' className={`nav-link ${isActive('/') ? 'active' : ''}`}>
-          <span className='nav-icon'>🏠</span>
-          <span className='nav-text'>홈</span>
+    <nav className='navigation'>
+      <div className='navigation-container'>
+        <Link to='/' className={`navigation-link ${isActive('/') ? 'active' : ''}`}>
+          <span className='navigation-icon'>🏠</span>
+          <span className='navigation-text'>홈</span>
         </Link>
-        <Link to='/records' className={`nav-link ${isActive('/records') ? 'active' : ''}`}>
-          <span className='nav-icon'>📋</span>
-          <span className='nav-text'>진료 기록</span>
+        <Link to='/records' className={`navigation-link ${isActive('/records') ? 'active' : ''}`}>
+          <span className='navigation-icon'>📋</span>
+          <span className='navigation-text'>진료 기록</span>
         </Link>
-        <Link to='/chat' className={`nav-link ${isActive('/chat') ? 'active' : ''}`}>
-          <span className='nav-icon'>💬</span>
-          <span className='nav-text'>AI 상담</span>
+        <Link to='/chat' className={`navigation-link ${isActive('/chat') ? 'active' : ''}`}>
+          <span className='navigation-icon'>💬</span>
+          <span className='navigation-text'>AI 상담</span>
         </Link>
-        <Link to='/more' className={`nav-link ${isActive('/more') ? 'active' : ''}`}>
-          <span className='nav-icon'>⚙️</span>
-          <span className='nav-text'>더보기</span>
+        <Link to='/more' className={`navigation-link ${isActive('/more') ? 'active' : ''}`}>
+          <span className='navigation-icon'>⚙️</span>
+          <span className='navigation-text'>더보기</span>
         </Link>
       </div>
     </nav>
