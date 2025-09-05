@@ -1,463 +1,321 @@
-.medical-record-calendar {
-  background: #ffffff;
-  border-radius: 12px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  padding: 20px;
-  font-family: inherit;
+/* ===== MedicalRecordCalendar 컴포넌트 스타일 ===== */
+
+.medical-calendar {
+  width: 80%; /* 화면 폭의 80% */
+  max-width: 28rem; /* max-w-lg에서 max-w-md로 줄임 */
+  margin: 0 auto;
+  background: white;
+  border-radius: 0.5rem;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
   overflow: hidden;
-  /* Flexbox 컨테이너로 설정하여 캘린더와 범례를 세로로 배치 */
+  border: 1px solid #e5e7eb;
+}
+
+/* 헤더 스타일 */
+.calendar-header {
+  background: #3b82f6; /* blue-500 */
+  color: white;
+  padding: 0.75rem; /* 1rem에서 0.75rem으로 줄임 */
+  border-radius: 0.5rem 0.5rem 0 0;
+}
+
+.calendar-year-nav {
   display: flex;
-  flex-direction: column;
-  gap: 20px; /* 캘린더와 범례 사이의 간격 */
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.5rem;
 }
 
-/* React Calendar 기본 스타일 오버라이드 */
-.react-calendar {
-  width: 100% !important;
-  max-width: 100% !important;
-  background: #ffffff !important;
-  border: none !important;
-  font-family: inherit !important;
-  line-height: 1.125em !important;
-  font-size: 14px !important;
+.calendar-year-nav button {
+  padding: 0.25rem;
+  border: none;
+  background: transparent;
+  color: white;
+  border-radius: 0.25rem;
+  cursor: pointer;
+  font-size: 0.75rem;
+  opacity: 0.75;
+  transition: all 0.2s;
 }
 
-/* 네비게이션 */
-.react-calendar__navigation {
-  display: flex !important;
-  margin-bottom: 20px !important;
-  align-items: center !important;
+.calendar-year-nav button:hover {
+  background: rgba(255, 255, 255, 0.1);
+  opacity: 1;
 }
 
-.react-calendar__navigation button {
-  min-width: 44px !important;
-  background: #f8f9fa !important;
-  border: 1px solid #dee2e6 !important;
-  border-radius: 6px !important;
-  padding: 8px 12px !important;
-  margin: 0 4px !important;
-  font-size: 16px !important;
-  color: #495057 !important;
-  cursor: pointer !important;
-  transition: all 0.2s ease !important;
-  flex-shrink: 0 !important;
+.calendar-year-text {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: white;
 }
 
-.react-calendar__navigation button:hover {
-  background: #e9ecef !important;
-  border-color: #adb5bd !important;
+.calendar-month-nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 }
 
-.react-calendar__navigation button:disabled {
-  background: #f8f9fa !important;
-  color: #adb5bd !important;
-  cursor: not-allowed !important;
+.calendar-month-nav button {
+  padding: 0.5rem;
+  border: none;
+  background: transparent;
+  color: white;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: all 0.2s;
 }
 
-.react-calendar__navigation__label {
-  font-weight: 600 !important;
-  font-size: 18px !important;
-  color: #212529 !important;
-  background: transparent !important;
-  border: none !important;
-  flex-grow: 1 !important;
-  text-align: center !important;
-  padding: 8px 12px !important;
-  margin: 0 4px !important;
-  border-radius: 6px !important;
+.calendar-month-nav button:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.calendar-month-text {
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: white;
 }
 
 /* 요일 헤더 */
-.react-calendar__month-view__weekdays {
-  text-align: center !important;
-  text-transform: uppercase !important;
-  font-weight: 600 !important;
-  font-size: 14px !important;
-  margin-bottom: 8px !important;
+.calendar-day-names {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  background: #f9fafb; /* gray-50 */
 }
 
-.react-calendar__month-view__weekdays__weekday {
-  padding: 12px 8px !important;
-  color: #495057 !important;
-  background: #f8f9fa !important;
-  border-radius: 6px !important;
-  margin: 0 2px !important;
-  font-size: 12px !important;
+.calendar-day-name {
+  padding: 0.5rem; /* 0.75rem에서 0.5rem으로 줄임 */
+  text-align: center;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #4b5563; /* gray-600 */
 }
 
-.react-calendar__month-view__weekdays__weekday abbr {
-  text-decoration: none !important;
-  border-bottom: none !important;
-  font-size: 12px !important;
+/* 달력 그리드 */
+.calendar-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
 }
 
-/* 날짜 타일 */
-.react-calendar__month-view__days {
-  display: grid !important;
-  grid-template-columns: repeat(7, 1fr) !important;
-  gap: 2px !important;
-}
-
-.react-calendar__tile {
-  max-width: 100% !important;
-  background: #ffffff !important;
-  border: 1px solid #e9ecef !important;
-  border-radius: 6px !important;
-  padding: 8px !important;
-  min-height: 80px !important;
-  display: flex !important;
-  flex-direction: column !important;
-  align-items: center !important;
-  justify-content: flex-start !important;
-  cursor: pointer !important;
-  transition: all 0.2s ease !important;
-  position: relative !important;
-  font-size: 14px !important;
-}
-
-.react-calendar__tile:hover {
-  background: #f8f9fa !important;
-  border-color: #adb5bd !important;
-  transform: translateY(-1px) !important;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1) !important;
-}
-
-.react-calendar__tile--active {
-  background: #007bff !important;
-  color: #ffffff !important;
-  border-color: #007bff !important;
-}
-
-.react-calendar__tile--now {
-  background: #e3f2fd !important;
-  border: 2px solid #2196f3 !important;
-  font-weight: 600 !important;
-}
-
-.react-calendar__tile--has-records {
-  background: #fff3cd !important;
-  border-color: #ffc107 !important;
-}
-
-.react-calendar__tile abbr {
-  font-size: 14px !important;
-  font-weight: 500 !important;
-  color: inherit !important;
-  text-decoration: none !important;
-  border-bottom: none !important;
-  margin-bottom: 8px !important;
-}
-
-/* 커스텀 타일 콘텐츠 */
-.calendar-tile-content {
-  width: 100% !important;
-  display: flex !important;
-  flex-direction: column !important;
-  align-items: center !important;
-  gap: 4px !important;
-}
-
-.records-indicator {
-  display: flex !important;
-  flex-direction: column !important;
-  align-items: center !important;
-  gap: 2px !important;
-}
-
-.record-dot {
-  width: 8px !important;
-  height: 8px !important;
-  border-radius: 50% !important;
-  cursor: pointer !important;
-  transition: transform 0.2s ease !important;
-}
-
-.record-dot:hover {
-  transform: scale(1.2) !important;
-}
-
-/* 진료 유형별 색상 - HomeScreen 색상과 동일하게 맞춤 */
-.record-consultation {
-  background: #2196f3 !important; /* 일반진료 - 파란색 */
-}
-
-.record-vaccination {
-  background: #4caf50 !important; /* 예방접종 - 초록색 */
-}
-
-.record-examination {
-  background: #ff9800 !important; /* 건강검진 - 주황색 */
-}
-
-.more-records {
-  font-size: 10px !important;
-  color: #6c757d !important;
-  font-weight: 500 !important;
-  margin-top: 2px !important;
-}
-
-/* --- 범례 --- */
-/*
-  .calendar-legend: 범례 전체 컨테이너
-  .legend-items: 범례 항목들을 담는 flex 컨테이너
-  .legend-item: 개별 범례 항목
-*/
-
-.calendar-legend {
-  /* margin-top 제거 - gap으로 간격 조정 */
-  margin-top: 0;
-
-  /* 패딩, 배경, 테두리는 그대로 유지 */
-  padding: 12px 8px;
-  background: #f8f9fa;
-  border-radius: 8px;
-  border: 1px solid #e9ecef;
-
-  /* flex 컨테이너로 설정하여 내부 요소(.legend-title, .legend-items) 배치 */
-  display: flex;
-  flex-direction: column; /* 세로 방향으로 정렬 */
-
-  /* 고정 크기 관련 !important 제거. 유연한 레이아웃을 위해 기본값 사용 */
-  box-sizing: border-box;
-
-  /* 범례가 고정되지 않고 자연스럽게 배치되도록 설정 */
+.calendar-date-cell {
   position: relative;
-  width: 100%;
-}
-
-.legend-title {
-  /* 제목 스타일 유지 */
-  font-weight: 600;
-  color: #495057;
-  margin-bottom: 16px;
-  font-size: 14px;
-  text-align: center;
-}
-
-.legend-items {
-  /* 플렉스 컨테이너로 설정 */
-  display: flex;
-  /* 항목 간 균등한 간격을 위해 gap 사용 */
-  gap: 12px;
-  /* 가로로 나란히 배치 */
-  flex-direction: row;
-  /* 모바일 화면에서 공간이 부족할 경우 줄바꿈 허용 */
-  flex-wrap: wrap;
-  /* 가로 방향 중앙 정렬 */
-  justify-content: center;
-  /* 세로 방향 중앙 정렬 */
-  align-items: center;
-  /* 좌우 패딩을 퍼센트로 유지하여 유연성 확보 */
-  padding: 0 4%;
-}
-
-.legend-item {
-  /* 각 항목이 동일한 비율로 확장/축소되도록 flex: 1 대신 flex-basis와 flex-grow 조합 사용 */
-  flex: 1 1 auto;
-  min-width: 100px; /* 항목이 너무 작아지는 것을 방지 */
-
-  /* 내부 요소(.legend-dot, 텍스트)를 중앙에 배치 */
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-
-  /* 나머지 스타일 유지 */
-  color: #495057;
-  padding: 8px 4px;
-  border-radius: 6px;
+  height: 3.5rem; /* 4rem에서 3.5rem으로 줄임 */
+  font-size: 0.875rem;
+  border-bottom: 1px solid #f3f4f6; /* border-gray-100 */
+  border-right: 1px solid #f3f4f6;
+  background: white;
   cursor: pointer;
-  transition: background-color 0.2s ease;
-
-  /* 불필요한 white-space: nowrap 제거. 텍스트 줄바꿈 허용 */
-  white-space: normal;
-  text-align: center;
+  transition: all 0.2s;
+  border: none;
+  padding: 0;
 }
 
-.legend-item:hover {
-  background-color: rgba(0, 0, 0, 0.05); /* 호버 시 배경색 변경 */
+.calendar-date-cell:hover {
+  background: #f9fafb; /* hover:bg-gray-50 */
 }
 
-.legend-dot {
-  /* 크기를 고정하여 아이콘 역할을 수행 */
-  width: 16px;
-  height: 16px;
+.calendar-date-cell:last-child {
+  border-right: none;
+}
+
+.calendar-date-cell:nth-last-child(-n + 7) {
+  border-bottom: none;
+}
+
+/* 날짜 텍스트 */
+.calendar-date-number {
+  position: absolute;
+  top: 0.5rem;
+  left: 50%;
+  transform: translateX(-50%);
+  font-weight: 500;
+  color: #374151; /* text-gray-700 */
+}
+
+/* 다른 달 날짜 */
+.calendar-date-cell.other-month .calendar-date-number {
+  color: #9ca3af; /* text-gray-400 */
+}
+
+/* 오늘 날짜 */
+.calendar-date-cell.today {
+  background: #dbeafe; /* bg-blue-100 */
+  font-weight: bold;
+}
+
+.calendar-date-cell.today .calendar-date-number {
+  color: #2563eb; /* text-blue-600 */
+}
+
+/* 선택된 날짜 */
+.calendar-date-cell.selected {
+  background: #3b82f6; /* bg-blue-500 */
+  color: white;
+}
+
+.calendar-date-cell.selected:hover {
+  background: #2563eb; /* hover:bg-blue-600 */
+}
+
+.calendar-date-cell.selected .calendar-date-number {
+  color: white;
+}
+
+/* 진료기록 점들 */
+.calendar-record-dots {
+  position: absolute;
+  bottom: 0.5rem;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 0.25rem;
+}
+
+.calendar-record-dot {
+  width: 0.375rem; /* w-1.5 */
+  height: 0.375rem; /* h-1.5 */
   border-radius: 50%;
-  flex-shrink: 0;
   cursor: pointer;
-  transition: transform 0.2s ease;
+  transition: transform 0.2s;
 }
 
-/* 호버 효과는 그대로 유지 */
-.legend-dot:hover {
-  transform: scale(1.1);
+.calendar-record-dot:hover {
+  transform: scale(1.25);
 }
 
-/* !important 제거 */
-.calendar-legend .legend-dot.record-consultation {
-  background-color: #2196f3;
+.calendar-record-dot.consultation {
+  background: #3b82f6; /* bg-blue-500 */
 }
 
-.calendar-legend .legend-dot.record-vaccination {
-  background-color: #4caf50;
+.calendar-record-dot.vaccination {
+  background: #10b981; /* bg-green-500 */
 }
 
-.calendar-legend .legend-dot.record-examination {
-  background-color: #ff9800;
+.calendar-record-dot.examination {
+  background: #f59e0b; /* bg-orange-500 */
 }
 
-/* 모바일 최적화 */
-@media (max-width: 768px) {
-  .medical-record-calendar {
-    padding: 12px;
-    gap: 16px; /* 모바일에서 캘린더와 범례 사이의 간격 조정 */
-  }
-
-  .react-calendar__navigation {
-    margin-bottom: 16px;
-    flex-wrap: wrap;
-    gap: 8px;
-  }
-
-  .react-calendar__navigation button {
-    min-width: 36px;
-    padding: 6px 8px;
-    font-size: 14px;
-    margin: 0 2px;
-  }
-
-  .react-calendar__navigation__label {
-    font-size: 16px;
-    padding: 6px 8px;
-    margin: 0 2px;
-  }
-
-  .react-calendar__month-view__weekdays__weekday {
-    padding: 8px 4px;
-    font-size: 11px;
-    margin: 0 1px;
-  }
-
-  .react-calendar__tile {
-    min-height: 60px;
-    padding: 6px;
-    font-size: 12px;
-  }
-
-  .react-calendar__tile abbr {
-    font-size: 12px;
-    margin-bottom: 6px;
-  }
-
-  .record-dot {
-    width: 6px;
-    height: 6px;
-  }
-
-  .legend-dot {
-    width: 14px; /* 모바일에서도 적절한 크기 */
-    height: 14px;
-  }
-
-  .legend-items {
-    /* 모바일에서도 동일한 레이아웃 적용 */
-    justify-content: space-between;
-    padding: 0 3%; /* 모바일에서 퍼센트 기반 패딩 */
-    min-height: 44px; /* 모바일에서 최소 높이 조정 */
-  }
-
-  .calendar-legend {
-    margin-top: 0; /* gap으로 간격 조정하므로 margin-top 제거 */
-    padding: 8px 4px; /* 모바일에서 더 작은 패딩 */
-  }
+.calendar-record-dot.default {
+  background: #9ca3af; /* bg-gray-400 */
 }
 
-@media (max-width: 480px) {
-  .medical-record-calendar {
-    padding: 8px;
-    gap: 12px; /* 작은 화면에서 캘린더와 범례 사이의 간격 조정 */
-  }
-
-  .react-calendar__navigation {
-    margin-bottom: 12px;
-  }
-
-  .react-calendar__navigation button {
-    min-width: 32px;
-    padding: 4px 6px;
-    font-size: 12px;
-    margin: 0 1px;
-  }
-
-  .react-calendar__navigation__label {
-    font-size: 14px;
-    padding: 4px 6px;
-    margin: 0 1px;
-  }
-
-  .react-calendar__month-view__weekdays__weekday {
-    padding: 6px 2px;
-    font-size: 10px;
-    margin: 0;
-  }
-
-  .react-calendar__tile {
-    min-height: 50px;
-    padding: 4px;
-    font-size: 11px;
-  }
-
-  .react-calendar__tile abbr {
-    font-size: 11px;
-    margin-bottom: 4px;
-  }
-
-  .record-dot {
-    width: 5px;
-    height: 5px;
-  }
-
-  .legend-items {
-    /* 작은 화면에서도 동일한 레이아웃 적용 */
-    justify-content: space-between;
-    padding: 0 2%; /* 작은 화면에서 퍼센트 기반 패딩 */
-    min-height: 40px; /* 작은 화면에서 최소 높이 조정 */
-  }
-
-  .calendar-legend {
-    margin-top: 0; /* gap으로 간격 조정하므로 margin-top 제거 */
-    padding: 6px 2px; /* 작은 화면에서 최소한의 패딩 */
-  }
-
-  .legend-title {
-    font-size: 12px;
-    margin-bottom: 8px;
-  }
-
-  .legend-item {
-    font-size: 11px;
-  }
-
-  .legend-dot {
-    width: 12px; /* 작은 화면에서도 터치하기 좋은 크기 */
-    height: 12px;
-  }
+.calendar-record-more {
+  font-size: 0.5rem; /* text-[8px] */
+  color: #6b7280; /* text-gray-500 */
+  font-weight: 500;
 }
 
-/* 매우 작은 화면 */
-@media (max-width: 360px) {
-  .react-calendar__tile {
-    min-height: 45px;
-    padding: 2px;
+/* 범례 */
+.calendar-legend {
+  padding: 0.75rem; /* 1rem에서 0.75rem으로 줄임 */
+  padding-bottom: 4rem; /* 하단에 추가 여백 */
+  background: #f9fafb; /* bg-gray-50 */
+}
+
+.calendar-legend-section {
+  margin-bottom: 0.75rem;
+}
+
+.calendar-legend-section:last-child {
+  margin-bottom: 0;
+}
+
+.calendar-legend-title {
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: #4b5563; /* text-gray-600 */
+  text-align: center;
+  margin-bottom: 0.5rem;
+}
+
+.calendar-legend-items {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.75rem;
+  font-size: 0.75rem;
+}
+
+.calendar-legend-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.calendar-legend-item.small {
+  gap: 0.25rem;
+}
+
+.calendar-legend-color {
+  flex-shrink: 0;
+  border-radius: 0.25rem;
+}
+
+.calendar-legend-color.large {
+  width: 0.75rem; /* w-3 */
+  height: 0.75rem; /* h-3 */
+}
+
+.calendar-legend-color.small {
+  width: 0.5rem; /* w-2 */
+  height: 0.5rem; /* h-2 */
+  border-radius: 50%;
+}
+
+.calendar-legend-color.today {
+  background: #dbeafe; /* bg-blue-100 */
+  border: 2px solid #93c5fd; /* border-blue-300 */
+}
+
+.calendar-legend-color.selected {
+  background: #3b82f6; /* bg-blue-500 */
+}
+
+.calendar-legend-color.other-month {
+  background: #e5e7eb; /* bg-gray-200 */
+}
+
+.calendar-legend-color.consultation {
+  background: #3b82f6; /* bg-blue-500 */
+}
+
+.calendar-legend-color.vaccination {
+  background: #10b981; /* bg-green-500 */
+}
+
+.calendar-legend-color.examination {
+  background: #f59e0b; /* bg-orange-500 */
+}
+
+.calendar-legend-text {
+  color: #4b5563; /* text-gray-600 */
+}
+
+.calendar-legend-text.other-month {
+  color: #9ca3af; /* text-gray-400 */
+}
+
+.calendar-legend-divider {
+  border-top: 1px solid #e5e7eb; /* border-gray-200 */
+  padding-top: 0.75rem;
+}
+
+/* 반응형 */
+@media (max-width: 640px) {
+  .medical-calendar {
+    width: 90%; /* 모바일에서 90%로 조정 */
+    max-width: 100%;
+    margin: 0 1rem;
   }
 
-  .react-calendar__tile abbr {
-    font-size: 10px;
-    margin-bottom: 2px;
+  .calendar-date-cell {
+    height: 3rem; /* 모바일에서 3rem 유지 */
   }
 
-  .record-dot {
-    width: 4px;
-    height: 4px;
+  .calendar-date-number {
+    top: 0.25rem;
+  }
+
+  .calendar-record-dots {
+    bottom: 0.25rem;
   }
 }

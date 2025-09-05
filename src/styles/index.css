@@ -1,14 +1,13 @@
 /* ===== 메인 스타일 파일 ===== */
 /* 모든 공통 스타일을 import하여 통합 관리 */
 
-/* 기본 스타일 시스템 */
+/* CSS 파일 import는 최상단에 위치 */
 @import './base.css';
-
-/* 공통 컴포넌트 스타일 */
 @import './components.css';
-
-/* 공통 레이아웃 스타일 */
 @import './layout.css';
+@import './MedicalRecordCalendar.css';
+@import './Navigation.css';
+@import './HomeScreen.css';
 
 /* ===== 추가 전역 스타일 ===== */
 
@@ -124,73 +123,97 @@ select:focus-visible {
 }
 
 /* ===== 반응형 헬퍼 ===== */
-.hidden { display: none !important; }
-.visible { display: block !important; }
+.hidden {
+  display: none !important;
+}
+.visible {
+  display: block !important;
+}
 
 /* 모바일 전용 */
 @media (max-width: 767px) {
-  .hidden-mobile { display: none !important; }
-  .visible-mobile { display: block !important; }
+  .hidden-mobile {
+    display: none !important;
+  }
+  .visible-mobile {
+    display: block !important;
+  }
 }
 
 /* 태블릿 전용 */
 @media (min-width: 768px) and (max-width: 1023px) {
-  .hidden-tablet { display: none !important; }
-  .visible-tablet { display: block !important; }
+  .hidden-tablet {
+    display: none !important;
+  }
+  .visible-tablet {
+    display: block !important;
+  }
 }
 
 /* 데스크톱 전용 */
 @media (min-width: 1024px) {
-  .hidden-desktop { display: none !important; }
-  .visible-desktop { display: block !important; }
+  .hidden-desktop {
+    display: none !important;
+  }
+  .visible-desktop {
+    display: block !important;
+  }
 }
 
 /* ===== 인쇄 스타일 ===== */
 @media print {
-  .no-print { display: none !important; }
-  
+  .no-print {
+    display: none !important;
+  }
+
   * {
     background: transparent !important;
     color: black !important;
     box-shadow: none !important;
     text-shadow: none !important;
   }
-  
-  a, a:visited {
+
+  a,
+  a:visited {
     text-decoration: underline;
   }
-  
+
   a[href]:after {
-    content: " (" attr(href) ")";
+    content: ' (' attr(href) ')';
   }
-  
+
   abbr[title]:after {
-    content: " (" attr(title) ")";
+    content: ' (' attr(title) ')';
   }
-  
-  pre, blockquote {
+
+  pre,
+  blockquote {
     border: 1px solid #999;
     page-break-inside: avoid;
   }
-  
+
   thead {
     display: table-header-group;
   }
-  
-  tr, img {
+
+  tr,
+  img {
     page-break-inside: avoid;
   }
-  
+
   img {
     max-width: 100% !important;
   }
-  
-  p, h2, h3 {
+
+  p,
+  h2,
+  h3 {
     orphans: 3;
     widows: 3;
   }
-  
-  h2, h3 {
+
+  h2,
+  h3 {
     page-break-after: avoid;
   }
 }
