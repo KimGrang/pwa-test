@@ -53,6 +53,7 @@ interface HospitalState {
   setLoading: (loading: boolean) => void;
   setError: (error: string | null) => void;
   clearError: () => void;
+  clearAll: () => void;
 }
 
 /**
@@ -114,6 +115,15 @@ export const useHospitalStore = create<HospitalState>()(
       setError: (error: string | null) => set({ error }),
 
       clearError: () => set({ error: null }),
+
+      clearAll: () =>
+        set({
+          hospitals: [],
+          myHospital: null,
+          selectedHospital: null,
+          isLoading: false,
+          error: null,
+        }),
     }),
     {
       name: 'hospital-store',

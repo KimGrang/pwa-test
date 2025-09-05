@@ -27,6 +27,7 @@ interface AppState {
   setLoading: (loading: boolean) => void;
   setError: (error: string | null) => void;
   resetApp: () => void;
+  clearAll: () => void;
 }
 
 /**
@@ -60,6 +61,16 @@ export const useAppStore = create<AppState>()(
       setError: (error: string | null) => set({ error }),
 
       resetApp: () =>
+        set({
+          isFirstLaunch: true,
+          lastLaunchDate: null,
+          theme: 'system',
+          language: 'ko',
+          isLoading: false,
+          error: null,
+        }),
+
+      clearAll: () =>
         set({
           isFirstLaunch: true,
           lastLaunchDate: null,

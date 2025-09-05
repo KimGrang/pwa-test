@@ -212,6 +212,20 @@
 
 /* 다크 모드 대응 */
 @media (prefers-color-scheme: dark) {
+  :root {
+    /* 다크 모드 색상 변수 */
+    --color-background: #000000;
+    --color-background-secondary: #1f2937;
+    --color-background-tertiary: #374151;
+    --color-text-primary: #ffffff;
+    --color-text-secondary: #d1d5db;
+    --color-text-muted: #9ca3af;
+    --color-text-inverse: #000000;
+    --color-border: #374151;
+    --color-border-light: #4b5563;
+    --color-border-dark: #6b7280;
+  }
+
   .screen-scrollable-content::-webkit-scrollbar-thumb,
   .screen-compact-content::-webkit-scrollbar-thumb {
     background: rgba(255, 255, 255, 0.2);
@@ -230,7 +244,9 @@
 
 /* 기본 헤더 스타일 */
 .screen-header {
-  text-align: center;
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  align-items: center;
   margin-bottom: var(--spacing-xl);
   padding: var(--spacing-md);
   border-bottom: 1px solid var(--color-border);
@@ -246,11 +262,455 @@
   width: 100%;
 }
 
+.header-left {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  width: 100%;
+}
+
+.header-right {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  width: 100%;
+}
+
 .title {
   font-size: var(--font-size-2xl);
   font-weight: var(--font-weight-bold);
   color: var(--color-text-primary);
   margin: 0;
+}
+
+.hospital-name {
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-secondary);
+}
+
+.user-greeting {
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text-primary);
+  padding: var(--spacing-xs) var(--spacing-sm);
+  background: var(--color-background-tertiary);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--color-border);
+}
+
+.back-button {
+  background: transparent;
+  border: none;
+  color: var(--color-text-primary);
+  font-size: var(--font-size-base);
+  cursor: pointer;
+  padding: var(--spacing-xs) var(--spacing-sm);
+  border-radius: var(--radius-md);
+  transition: all var(--transition-fast);
+}
+
+.back-button:hover {
+  background: var(--color-background-tertiary);
+}
+
+.profile-arrow {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.arrow-icon {
+  font-size: var(--font-size-lg);
+  color: var(--color-text-muted);
+  font-weight: var(--font-weight-bold);
+}
+
+.profile-role {
+  font-size: var(--font-size-xs);
+  color: var(--color-text-muted);
+  margin: 0;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.login-button {
+  background: var(--color-primary);
+  color: var(--color-text-inverse);
+  padding: var(--spacing-sm) var(--spacing-md);
+  border-radius: var(--radius-md);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  border: none;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.login-button:hover {
+  background: var(--color-primary-dark);
+}
+
+.login-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.logout-button {
+  background: var(--color-danger);
+  color: var(--color-text-inverse);
+  padding: var(--spacing-sm) var(--spacing-md);
+  border-radius: var(--radius-md);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  border: none;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.logout-button:hover {
+  background: var(--color-danger-dark);
+}
+
+.logout-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.error-message {
+  background: var(--color-danger-light);
+  border: 1px solid var(--color-danger);
+  color: var(--color-danger-dark);
+  padding: var(--spacing-md);
+  border-radius: var(--radius-md);
+  margin-bottom: var(--spacing-md);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.error-close-button {
+  background: transparent;
+  border: none;
+  color: var(--color-danger-dark);
+  font-weight: var(--font-weight-bold);
+  font-size: var(--font-size-lg);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.error-close-button:hover {
+  color: var(--color-danger);
+}
+
+.calendar-container {
+  display: flex;
+  justify-content: center;
+}
+
+/* MedicalRecords 전용 스타일 */
+.search-container {
+  display: flex;
+  align-items: center;
+  background: #1f2937; /* gray-800 */
+  border-radius: var(--radius-xl);
+  padding: var(--spacing-sm) var(--spacing-md);
+  gap: var(--spacing-sm);
+  width: 100%;
+}
+
+.search-input {
+  flex: 1;
+  border: none;
+  background: transparent;
+  font-size: var(--font-size-base);
+  outline: none;
+  width: 100%;
+  color: white;
+}
+
+.search-input::placeholder {
+  color: #9ca3af; /* gray-400 */
+}
+
+.search-clear-button,
+.search-icon-button {
+  background: transparent;
+  border: none;
+  font-size: var(--font-size-lg);
+  cursor: pointer;
+  color: #9ca3af; /* gray-400 */
+  transition: all var(--transition-fast);
+}
+
+.search-clear-button:hover,
+.search-icon-button:hover {
+  color: white;
+}
+
+.records-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+  width: 100%;
+}
+
+.record-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--spacing-md);
+  background: #1f2937; /* gray-800 */
+  border-radius: var(--radius-xl);
+  width: 100%;
+  cursor: pointer;
+  transition: all var(--transition-normal);
+}
+
+.record-item:hover {
+  background: #374151; /* gray-700 */
+}
+
+.record-item:active {
+  background: #4b5563; /* gray-600 */
+}
+
+.record-content {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xs);
+}
+
+.record-date {
+  font-size: var(--font-size-sm);
+  color: #9ca3af; /* gray-400 */
+}
+
+.record-title {
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-semibold);
+  color: white;
+}
+
+.record-details {
+  font-size: var(--font-size-sm);
+  color: #d1d5db; /* gray-300 */
+}
+
+.record-details p {
+  margin: var(--spacing-xs) 0;
+}
+
+.record-details strong {
+  color: #e5e7eb; /* gray-200 */
+}
+
+.record-pet-icon {
+  font-size: var(--font-size-2xl);
+}
+
+.empty-records {
+  text-align: center;
+  padding: var(--spacing-2xl) 0;
+  color: white;
+}
+
+.empty-message {
+  font-size: var(--font-size-lg);
+  margin-bottom: var(--spacing-sm);
+}
+
+.empty-search-message {
+  color: #9ca3af; /* gray-400 */
+}
+
+/* App.tsx 전용 스타일 */
+.app-container {
+  height: 100vh;
+  width: 100%;
+  max-width: 48rem; /* max-w-3xl */
+  margin: 0 auto;
+  background: var(--color-background-secondary);
+  color: var(--color-text-primary);
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.app-main {
+  flex: 1;
+  position: relative;
+  overflow: hidden;
+}
+
+.pwa-install-screen {
+  height: 100%;
+  background: black;
+  color: white;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.pwa-install-header {
+  background: #1f2937; /* gray-800 */
+  padding: var(--spacing-md);
+  text-align: center;
+  border-bottom: 1px solid #4b5563; /* border-gray-600 */
+  flex-shrink: 0;
+}
+
+.pwa-install-title {
+  font-size: var(--font-size-xl);
+  font-weight: var(--font-weight-bold);
+  margin-bottom: var(--spacing-sm);
+}
+
+.pwa-install-description {
+  font-size: var(--font-size-sm);
+  color: #d1d5db; /* text-gray-300 */
+}
+
+.pwa-install-content {
+  flex: 1;
+  overflow-y: auto;
+  padding: var(--spacing-md);
+  padding-bottom: 5rem; /* pb-20 */
+}
+
+.pwa-info-section {
+  margin-top: var(--spacing-lg);
+}
+
+.pwa-info-title {
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-semibold);
+  margin-bottom: var(--spacing-sm);
+}
+
+.pwa-info-description {
+  color: #d1d5db; /* text-gray-300 */
+  margin-bottom: var(--spacing-md);
+}
+
+.pwa-info-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-sm);
+  color: #d1d5db; /* text-gray-300 */
+}
+
+/* PWA 컴포넌트 전용 스타일 */
+.pwa-update-prompt-container {
+  position: fixed;
+  bottom: 1.25rem; /* bottom-5 */
+  right: 1.25rem; /* right-5 */
+  z-index: 50;
+}
+
+.pwa-update-prompt {
+  background: #1f2937; /* bg-gray-800 */
+  color: white;
+  padding: var(--spacing-md);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-xl);
+  max-width: 24rem; /* max-w-sm */
+  animation: slideUp 0.3s ease-out;
+}
+
+@keyframes slideUp {
+  from {
+    transform: translateY(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.pwa-update-message {
+  margin-bottom: var(--spacing-sm);
+  font-size: var(--font-size-sm);
+}
+
+.pwa-update-buttons {
+  display: flex;
+  gap: var(--spacing-sm);
+  justify-content: flex-end;
+}
+
+.pwa-update-refresh-button {
+  background: var(--color-primary);
+  color: var(--color-text-inverse);
+  padding: var(--spacing-sm) var(--spacing-md);
+  border-radius: var(--radius-sm);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-medium);
+  border: none;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.pwa-update-refresh-button:hover {
+  background: var(--color-primary-dark);
+}
+
+.pwa-update-close-button {
+  background: transparent;
+  color: #d1d5db; /* text-gray-300 */
+  border: 1px solid #6b7280; /* border-gray-500 */
+  padding: var(--spacing-sm) var(--spacing-md);
+  border-radius: var(--radius-sm);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-medium);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.pwa-update-close-button:hover {
+  background: #374151; /* hover:bg-gray-700 */
+}
+
+.pwa-install-status {
+  background: var(--color-success);
+  color: var(--color-text-inverse);
+  padding: var(--spacing-sm) var(--spacing-md);
+  border-radius: var(--radius-md);
+  font-weight: var(--font-weight-semibold);
+  border: 1px solid var(--color-success-dark);
+  box-shadow: var(--shadow-sm);
+  font-size: var(--font-size-sm);
+}
+
+.pwa-install-button {
+  background: var(--color-primary);
+  color: var(--color-text-inverse);
+  border: 2px solid var(--color-primary-dark);
+  border-radius: var(--radius-md);
+  padding: var(--spacing-sm) var(--spacing-lg);
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-bold);
+  cursor: pointer;
+  transition: all 250ms ease;
+  box-shadow: var(--shadow-sm);
+}
+
+.pwa-install-button:hover {
+  background: var(--color-primary-dark);
+  border-color: var(--color-primary-dark);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+
+.pwa-install-button:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px var(--color-primary), 0 0 0 4px rgba(59, 130, 246, 0.1);
+}
+
+.pwa-install-button:active {
+  transform: translateY(0);
+  box-shadow: var(--shadow-sm);
 }
 
 .screen-header h2 {

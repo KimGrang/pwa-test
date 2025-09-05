@@ -1,4 +1,5 @@
 import React, { useCallback } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useUserStore } from '../store/userStore';
 import { usePetStore } from '../store/petStore';
 import '../styles/base.css';
@@ -9,16 +10,18 @@ import '../styles/moreScreen.css';
  * 사용자 프로필, 반려동물 관리, 설정 메뉴 제공
  */
 const MoreScreen: React.FC = () => {
+  const navigate = useNavigate();
+
   // 스토어에서 사용자 정보와 반려동물 데이터 가져오기
   const { currentUser } = useUserStore();
   const { pets, getPetById } = usePetStore();
 
   /**
-   * 내 프로필 화면으로 이동 (현재는 알림)
+   * 사용자 상세 정보 화면으로 이동
    */
-  const handleProfileEdit = useCallback(() => {
-    alert('프로필 편집 기능은 준비 중입니다.');
-  }, []);
+  const handleUserProfile = useCallback(() => {
+    navigate('/user-more');
+  }, [navigate]);
 
   /**
    * 반려동물 관리 화면으로 이동 (새 반려동물 추가)
@@ -72,7 +75,7 @@ const MoreScreen: React.FC = () => {
       <div className='screen-compact-content'>
         {/* 사용자 프로필 섹션 */}
         <div className='profile-section'>
-          <div className='profile-card'>
+          <div className='profile-card' onClick={handleUserProfile}>
             <div className='profile-avatar'>
               <div className='avatar-circle'>
                 <span className='avatar-icon'>👤</span>
@@ -82,9 +85,9 @@ const MoreScreen: React.FC = () => {
               <div className='profile-name'>{currentUser?.name || '사용자님'}</div>
               <div className='profile-email'>{currentUser?.email || 'user@example.com'}</div>
             </div>
-            <button className='edit-profile-button' onClick={handleProfileEdit}>
-              <span className='edit-icon'>✏️</span>
-            </button>
+            <div className='profile-arrow'>
+              <span className='arrow-icon'>→</span>
+            </div>
           </div>
         </div>
 

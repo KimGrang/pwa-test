@@ -49,6 +49,9 @@ interface PetState {
   getPetById: (id: number) => Pet | undefined;
   getPetsByOwner: (ownerId: number) => Pet[];
   getPetsByHospital: (hospitalId: number) => Pet[];
+
+  // 전체 데이터 삭제
+  clearAll: () => void;
 }
 
 /**
@@ -118,6 +121,14 @@ export const usePetStore = create<PetState>()(
         const { pets } = get();
         return pets.filter((pet) => pet.hospitalId === hospitalId);
       },
+
+      clearAll: () =>
+        set({
+          pets: [],
+          selectedPet: null,
+          isLoading: false,
+          error: null,
+        }),
     }),
     {
       name: 'pet-store',

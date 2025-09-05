@@ -281,8 +281,20 @@ const HomeScreen: React.FC = () => {
     <div className='screen-container'>
       {/* 상단 헤더 */}
       <div className='screen-header'>
+        <div className='header-left'>
+          <span className='hospital-name'>+ 응급동물병원</span>
+        </div>
         <div className='header-center'>
           <span className='title'>홈</span>
+        </div>
+        <div className='header-right'>
+          {!isAuthenticated ? (
+            <button className='login-button' onClick={handleLogin} disabled={authLoading}>
+              {authLoading ? '로그인 중...' : '🔑 로그인'}
+            </button>
+          ) : (
+            <span className='user-greeting'>{currentUser?.name || '사용자'}님</span>
+          )}
         </div>
       </div>
 
@@ -290,46 +302,20 @@ const HomeScreen: React.FC = () => {
       <div className='screen-compact-content'>
         {/* 인증 오류 메시지 */}
         {authError && (
-          <div className='bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4 flex justify-between items-center'>
+          <div className='error-message'>
             <span>{authError}</span>
-            <button onClick={clearAuthError} className='text-red-700 hover:text-red-900 font-bold text-lg leading-none'>
+            <button onClick={clearAuthError} className='error-close-button'>
               ✕
             </button>
           </div>
         )}
-
-        {/* 로그인/로그아웃 버튼 섹션 */}
-        <div className='section'>
-          <div className='section-header'>
-            <h3 className='section-title'>계정 관리</h3>
-          </div>
-          <div className='flex justify-center'>
-            {!isAuthenticated ? (
-              <button
-                className='bg-primary text-white px-6 py-3 rounded-lg text-sm font-medium hover:bg-primary-dark transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed'
-                onClick={handleLogin}
-                disabled={authLoading}
-              >
-                {authLoading ? '로그인 중...' : '🔑 테스트 로그인'}
-              </button>
-            ) : (
-              <button
-                className='bg-red-600 text-white px-6 py-3 rounded-lg text-sm font-medium hover:bg-red-700 transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed'
-                onClick={handleLogout}
-                disabled={authLoading}
-              >
-                🚪 로그아웃
-              </button>
-            )}
-          </div>
-        </div>
 
         {/* 진료기록 캘린더 섹션 */}
         <div className='section'>
           <div className='section-header'>
             <h3 className='section-title'>진료기록 캘린더</h3>
           </div>
-          <div className='flex justify-center'>
+          <div className='calendar-container'>
             <MedicalRecordCalendar
               medicalRecords={medicalRecords}
               onDateSelect={handleDateSelect}
