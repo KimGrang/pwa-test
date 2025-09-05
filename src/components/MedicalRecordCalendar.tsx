@@ -1,5 +1,6 @@
-import React, { useState, useMemo, useCallback } from 'react';
+import React, { useMemo, useCallback } from 'react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
+import { useUIStore } from '../store/uiStore';
 
 // recordStore의 MedicalRecord 타입과 호환되는 인터페이스
 interface MedicalRecord {
@@ -29,11 +30,13 @@ interface MedicalRecordCalendarProps {
  */
 const MedicalRecordCalendar: React.FC<MedicalRecordCalendarProps> = ({
   medicalRecords,
-  selectedDate,
+  // selectedDate,
   onDateSelect,
   onRecordSelect,
 }) => {
-  const [currentDate, setCurrentDate] = useState(new Date());
+  // UI 스토어에서 캘린더 상태 가져오기
+  const { calendar, setCalendarCurrentDate, setCalendarSelectedDate } = useUIStore();
+  const currentDate = new Date(calendar.currentDate); // Date 객체로 변환
 
   // 달력에 표시할 모든 날짜들 생성 (항상 6주 = 42일)
   const calendarDays: Date[] = useMemo(() => {
@@ -92,9 +95,12 @@ const MedicalRecordCalendar: React.FC<MedicalRecordCalendarProps> = ({
 
   const isSelected = useCallback(
     (date: Date) => {
-      return selectedDate && date.toDateString() === selectedDate.toDateString();
+      const storeSelectedDate = calendar.selectedDate;
+      if (!storeSelectedDate) return false;
+      const selectedDateObj = new Date(storeSelectedDate); // Date 객체로 변환
+      return date.toDateString() === selectedDateObj.toDateString();
     },
-    [selectedDate]
+    [calendar.selectedDate]
   );
 
   // 진료기록 타입 추출
@@ -106,30 +112,32 @@ const MedicalRecordCalendar: React.FC<MedicalRecordCalendarProps> = ({
   }, []);
 
   // 월 네비게이션
-  const navigateMonth = useCallback((direction: 'prev' | 'next') => {
-    setCurrentDate((prev) => {
-      const newDate = new Date(prev);
+  const navigateMonth = useCallback(
+    (direction: 'prev' | 'next') => {
+      const newDate = new Date(currentDate);
       if (direction === 'prev') {
         newDate.setMonth(newDate.getMonth() - 1);
       } else {
         newDate.setMonth(newDate.getMonth() + 1);
       }
-      return newDate;
-    });
-  }, []);
+      setCalendarCurrentDate(newDate);
+    },
+    [currentDate, setCalendarCurrentDate]
+  );
 
   // 년 네비게이션
-  const navigateYear = useCallback((direction: 'prev' | 'next') => {
-    setCurrentDate((prev) => {
-      const newDate = new Date(prev);
+  const navigateYear = useCallback(
+    (direction: 'prev' | 'next') => {
+      const newDate = new Date(currentDate);
       if (direction === 'prev') {
         newDate.setFullYear(newDate.getFullYear() - 1);
       } else {
         newDate.setFullYear(newDate.getFullYear() + 1);
       }
-      return newDate;
-    });
-  }, []);
+      setCalendarCurrentDate(newDate);
+    },
+    [currentDate, setCalendarCurrentDate]
+  );
 
   // 날짜 클릭 처리
   const handleDateClick = useCallback(
@@ -137,6 +145,8 @@ const MedicalRecordCalendar: React.FC<MedicalRecordCalendarProps> = ({
       const dateKey = date.toISOString().split('T')[0];
       const dayRecords = recordsByDate[dateKey] || [];
 
+      // 스토어에 선택된 날짜 저장
+      setCalendarSelectedDate(date);
       onDateSelect?.(date);
 
       // 진료기록이 있으면 첫 번째 기록 선택
@@ -144,7 +154,7 @@ const MedicalRecordCalendar: React.FC<MedicalRecordCalendarProps> = ({
         onRecordSelect?.(dayRecords[0]);
       }
     },
-    [recordsByDate, onDateSelect, onRecordSelect]
+    [recordsByDate, onDateSelect, onRecordSelect, setCalendarSelectedDate]
   );
 
   // 진료기록 클릭 처리

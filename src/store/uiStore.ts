@@ -20,6 +20,12 @@ interface UIState {
     activeTab: string;
   };
 
+  // 캘린더 상태
+  calendar: {
+    currentDate: Date;
+    selectedDate: Date | null;
+  };
+
   // 알림 상태
   notifications: {
     isVisible: boolean;
@@ -46,6 +52,11 @@ interface UIState {
 
   setLoading: (key: string, loading: boolean) => void;
   clearLoading: (key: string) => void;
+
+  // 캘린더 액션
+  setCalendarCurrentDate: (date: Date) => void;
+  setCalendarSelectedDate: (date: Date | null) => void;
+
   clearAll: () => void;
 }
 
@@ -67,6 +78,11 @@ export const useUIStore = create<UIState>()(
       sidebar: {
         isOpen: false,
         activeTab: 'home',
+      },
+
+      calendar: {
+        currentDate: new Date(),
+        selectedDate: null,
       },
 
       notifications: {
@@ -154,6 +170,17 @@ export const useUIStore = create<UIState>()(
         set({ loadingStates: rest });
       },
 
+      // 캘린더 액션
+      setCalendarCurrentDate: (date: Date) => {
+        const { calendar } = get();
+        set({ calendar: { ...calendar, currentDate: date } });
+      },
+
+      setCalendarSelectedDate: (date: Date | null) => {
+        const { calendar } = get();
+        set({ calendar: { ...calendar, selectedDate: date } });
+      },
+
       clearAll: () =>
         set({
           modals: {
@@ -166,6 +193,10 @@ export const useUIStore = create<UIState>()(
           sidebar: {
             isOpen: false,
             activeTab: 'home',
+          },
+          calendar: {
+            currentDate: new Date(),
+            selectedDate: null,
           },
           notifications: {
             isVisible: false,
@@ -181,6 +212,7 @@ export const useUIStore = create<UIState>()(
       partialize: (state) => ({
         sidebar: state.sidebar,
         modals: state.modals,
+        calendar: state.calendar,
       }),
     }
   )

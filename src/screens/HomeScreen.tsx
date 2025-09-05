@@ -6,6 +6,7 @@ import { useUserStore } from '../store/userStore';
 import { useAuthStore } from '../store/authStore';
 import { useRecordStore } from '../store/recordStore';
 import { usePetStore } from '../store/petStore';
+import { useUIStore } from '../store/uiStore';
 import MedicalRecordCalendar from '../components/MedicalRecordCalendar';
 import '../styles/base.css';
 import '../styles/moreScreen.css';
@@ -33,6 +34,7 @@ const HomeScreen: React.FC = () => {
   const { tokens, isAuthenticated, login: authLogin, logout: authLogout } = useAuthStore();
   const { records: medicalRecords, setRecords: setMedicalRecords } = useRecordStore();
   const { setPets } = usePetStore();
+  const { calendar } = useUIStore();
 
   // example.com API 인증 Hook
   const { testLogin, loading: authLoading, error: authError, clearError: clearAuthError } = useDwonStoreAuth();
@@ -242,12 +244,12 @@ const HomeScreen: React.FC = () => {
   };
 
   // 로그아웃 처리
-  const handleLogout = useCallback(() => {
-    authLogout();
-    clearUser();
-    TokenManager.clearTokens();
-    navigate('/'); // 홈 화면으로 이동
-  }, [authLogout, clearUser, navigate]);
+  // const handleLogout = useCallback(() => {
+  //   authLogout();
+  //   clearUser();
+  //   TokenManager.clearTokens();
+  //   navigate('/'); // 홈 화면으로 이동
+  // }, [authLogout, clearUser, navigate]);
 
   // 날짜 선택 시 해당 날짜의 진료기록으로 이동
   const handleDateSelect = useCallback(
@@ -318,6 +320,7 @@ const HomeScreen: React.FC = () => {
           <div className='calendar-container'>
             <MedicalRecordCalendar
               medicalRecords={medicalRecords}
+              selectedDate={calendar.selectedDate || undefined}
               onDateSelect={handleDateSelect}
               onRecordSelect={handleRecordSelect}
             />
