@@ -7,6 +7,8 @@ import { useAuthStore } from '../store/authStore';
 import { useRecordStore } from '../store/recordStore';
 import { usePetStore } from '../store/petStore';
 import MedicalRecordCalendar from '../components/MedicalRecordCalendar';
+import '../styles/base.css';
+import '../styles/moreScreen.css';
 
 // User 타입 정의 (API 응답과 일치)
 interface User {
@@ -276,53 +278,64 @@ const HomeScreen: React.FC = () => {
   );
 
   return (
-    <div className='h-screen flex flex-col'>
+    <div className='screen-container'>
       {/* 상단 헤더 */}
-      <div className='bg-gray-800 text-white p-3 relative grid grid-cols-3 items-center sticky top-0 z-40 w-full min-h-11'>
-        <div className='flex items-center justify-start'>
-          <span className='text-lg font-semibold text-white'>+ 응급동물병원</span>
-        </div>
-        <div className='flex items-center justify-center'>{/* 중앙 영역 (필요시 추가) */}</div>
-        <div className='flex items-center justify-end gap-3'>
-          {!isAuthenticated ? (
-            <button
-              className='bg-primary text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-primary-dark transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed'
-              onClick={handleLogin}
-              disabled={authLoading}
-            >
-              {authLoading ? '로그인 중...' : '🔑 테스트 로그인'}
-            </button>
-          ) : (
-            <button
-              className='bg-red-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-red-700 transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed'
-              onClick={handleLogout}
-              disabled={authLoading}
-            >
-              🚪 로그아웃
-            </button>
-          )}
+      <div className='screen-header'>
+        <div className='header-center'>
+          <span className='title'>홈</span>
         </div>
       </div>
 
-      {/* 인증 오류 메시지 */}
-      {authError && (
-        <div className='bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mx-4 mt-4 flex justify-between items-center'>
-          <span>{authError}</span>
-          <button onClick={clearAuthError} className='text-red-700 hover:text-red-900 font-bold text-lg leading-none'>
-            ✕
-          </button>
-        </div>
-      )}
-
       {/* 메인 콘텐츠 */}
-      <div className='main-content'>
+      <div className='screen-compact-content'>
+        {/* 인증 오류 메시지 */}
+        {authError && (
+          <div className='bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4 flex justify-between items-center'>
+            <span>{authError}</span>
+            <button onClick={clearAuthError} className='text-red-700 hover:text-red-900 font-bold text-lg leading-none'>
+              ✕
+            </button>
+          </div>
+        )}
+
+        {/* 로그인/로그아웃 버튼 섹션 */}
+        <div className='section'>
+          <div className='section-header'>
+            <h3 className='section-title'>계정 관리</h3>
+          </div>
+          <div className='flex justify-center'>
+            {!isAuthenticated ? (
+              <button
+                className='bg-primary text-white px-6 py-3 rounded-lg text-sm font-medium hover:bg-primary-dark transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed'
+                onClick={handleLogin}
+                disabled={authLoading}
+              >
+                {authLoading ? '로그인 중...' : '🔑 테스트 로그인'}
+              </button>
+            ) : (
+              <button
+                className='bg-red-600 text-white px-6 py-3 rounded-lg text-sm font-medium hover:bg-red-700 transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed'
+                onClick={handleLogout}
+                disabled={authLoading}
+              >
+                🚪 로그아웃
+              </button>
+            )}
+          </div>
+        </div>
+
         {/* 진료기록 캘린더 섹션 */}
-        <div className='calendar-section'>
-          <MedicalRecordCalendar
-            medicalRecords={medicalRecords}
-            onDateSelect={handleDateSelect}
-            onRecordSelect={handleRecordSelect}
-          />
+        <div className='section'>
+          <div className='section-header'>
+            <h3 className='section-title'>진료기록 캘린더</h3>
+          </div>
+          <div className='flex justify-center'>
+            <MedicalRecordCalendar
+              medicalRecords={medicalRecords}
+              onDateSelect={handleDateSelect}
+              onRecordSelect={handleRecordSelect}
+            />
+          </div>
         </div>
       </div>
     </div>

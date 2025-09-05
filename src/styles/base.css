@@ -239,6 +239,20 @@
   box-sizing: border-box;
 }
 
+.header-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+}
+
+.title {
+  font-size: var(--font-size-2xl);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-text-primary);
+  margin: 0;
+}
+
 .screen-header h2 {
   font-size: var(--font-size-2xl);
   font-weight: var(--font-weight-bold);
