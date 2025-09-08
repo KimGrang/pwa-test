@@ -7,7 +7,7 @@ import LLMChat from './screens/LLMChat';
 import MoreScreen from './screens/MoreScreen';
 import UserMoreScreen from './screens/UserMoreScreen';
 import PetMoreScreen from './screens/PetMoreScreen';
-import PWAInstallButton from './components/PWAInstallButton';
+import InstallScreen from './screens/InstallScreen';
 import Navigation from './components/Navigation';
 
 /**
@@ -43,34 +43,7 @@ const App: React.FC = () => {
             <Route path='/pet-more' element={<PetMoreScreen />} />
 
             {/* PWA 설치 안내 화면 */}
-            <Route
-              path='/install'
-              element={
-                <div className='pwa-install-screen'>
-                  <div className='pwa-install-header'>
-                    <h2 className='pwa-install-title'>📱 PWA 설치</h2>
-                    <p className='pwa-install-description'>
-                      이 앱은 오프라인에서도 동작하며, 홈 화면에 설치할 수 있습니다.
-                    </p>
-                  </div>
-                  <div className='pwa-install-content'>
-                    <PWAInstallButton />
-                    <div className='pwa-info-section'>
-                      <h3 className='pwa-info-title'>PWA란?</h3>
-                      <p className='pwa-info-description'>
-                        Progressive Web App(PWA)은 웹 앱이지만 네이티브 앱과 같은 사용자 경험을 제공합니다.
-                      </p>
-                      <ul className='pwa-info-list'>
-                        <li>• 오프라인에서도 동작</li>
-                        <li>• 홈 화면에 설치 가능</li>
-                        <li>• 푸시 알림 지원</li>
-                        <li>• 빠른 로딩 속도</li>
-                      </ul>
-                    </div>
-                  </div>
-                </div>
-              }
-            />
+            <Route path='/install' element={<InstallScreen />} />
           </Routes>
         </main>
 

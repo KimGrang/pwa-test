@@ -247,18 +247,65 @@
   padding-right: var(--spacing-xs);
 }
 
-.menu-icon {
+.menu-text {
+  flex: 1;
+  font-size: var(--font-size-base);
+  color: var(--color-text-primary);
+  font-weight: var(--font-weight-normal);
+}
+
+/* PWA 설치 화면 전용 스타일 */
+.pwa-install-description {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-secondary);
+  margin-bottom: var(--spacing-md);
+  line-height: 1.5;
+}
+
+.pwa-install-button-container {
+  display: flex;
+  justify-content: center;
+  margin-top: var(--spacing-md);
+}
+
+.pwa-info-description {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-secondary);
+  margin-bottom: var(--spacing-md);
+  line-height: 1.5;
+}
+
+.pwa-features-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-sm);
+}
+
+.feature-item {
+  display: flex;
+  align-items: center;
+  padding: var(--spacing-sm);
+  background: var(--color-background-secondary);
+  border-radius: var(--radius-md);
+  transition: all var(--transition-fast);
+}
+
+.feature-item:hover {
+  background: var(--color-background-tertiary);
+  transform: translateX(4px);
+}
+
+.feature-icon {
   font-size: var(--font-size-lg);
   margin-right: var(--spacing-md);
   width: 24px;
   text-align: center;
 }
 
-.menu-text {
-  flex: 1;
-  font-size: var(--font-size-base);
+.feature-text {
+  font-size: var(--font-size-sm);
   color: var(--color-text-primary);
-  font-weight: var(--font-weight-normal);
+  font-weight: var(--font-weight-medium);
 }
 
 /* 반응형 디자인 */
