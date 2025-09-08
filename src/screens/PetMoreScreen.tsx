@@ -1,41 +1,54 @@
-import React, { useCallback, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useCallback, useState, useEffect } from 'react';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { usePetStore } from '../store/petStore';
+import { usePetAPIHook } from '../hooks/usePetAPI';
 import '../styles/base.css';
 import '../styles/moreScreen.css';
 
 /**
- * 반려동물 관리 화면 컴포넌트
- * 반려동물 목록 표시, 추가, 편집, 삭제 기능 제공
+ * 반려동물 편집/추가 화면 컴포넌트
+ * 반려동물 추가, 편집, 삭제 기능 제공
  */
 const PetMoreScreen: React.FC = () => {
   const navigate = useNavigate();
-  const { pets, addPet, updatePet, removePet, isLoading: storeLoading } = usePetStore();
+  const [searchParams] = useSearchParams();
+  const { pets, addPet, updatePet, removePet, setPets } = usePetStore();
+  const {
+    createPet,
+    updatePet: updatePetAPI,
+    deletePet: deletePetAPI,
+    fetchMyPets,
+    loading: isLoading,
+    error: apiError,
+  } = usePetAPIHook();
 
   // 편집 모드 상태
   const [isEditing, setIsEditing] = useState(false);
   const [editingPetId, setEditingPetId] = useState<number | null>(null);
-  const [isLoading, setIsLoading] = useState(false);
 
-  // 새 반려동물/편집 데이터
+  // 목록 새로고침 함수
+  const refreshPetsList = useCallback(async () => {
+    try {
+      const petsData = await fetchMyPets(1, 50);
+      if (petsData) {
+        setPets(petsData);
+      }
+    } catch (error) {
+      console.error('목록 새로고침 오류:', error);
+      // API 오류 시 기존 store 데이터 유지 (사용자에게 알리지 않음)
+      console.log('API 오류로 인해 기존 데이터를 유지합니다.');
+    }
+  }, [fetchMyPets, setPets]);
+
+  // 새 반려동물/편집 데이터 (API 문서에 맞춰 수정)
   const [petData, setPetData] = useState({
     name: '',
-    species: '',
-    breed: '',
-    age: 0,
     gender: 'MALE' as 'MALE' | 'FEMALE',
     weight: 0,
-    color: '',
+    neutered: false,
     birthDate: '',
-    microchipNumber: '',
+    profileImageUrl: null as string | null,
   });
-
-  /**
-   * 뒤로가기 처리
-   */
-  const handleGoBack = useCallback(() => {
-    navigate('/more');
-  }, [navigate]);
 
   /**
    * 새 반려동물 추가 모드 시작
@@ -43,14 +56,11 @@ const PetMoreScreen: React.FC = () => {
   const handleAddPet = useCallback(() => {
     setPetData({
       name: '',
-      species: '',
-      breed: '',
-      age: 0,
       gender: 'MALE',
       weight: 0,
-      color: '',
+      neutered: false,
       birthDate: '',
-      microchipNumber: '',
+      profileImageUrl: null,
     });
     setEditingPetId(null);
     setIsEditing(true);
@@ -61,25 +71,38 @@ const PetMoreScreen: React.FC = () => {
    */
   const handleEditPet = useCallback(
     (petId: number) => {
+      // Store에서 반려동물 정보를 가져옴
       const pet = pets.find((p) => p.id === petId);
       if (pet) {
         setPetData({
           name: pet.name || '',
-          species: pet.species || '',
-          breed: pet.breed || '',
-          age: pet.age || 0,
           gender: pet.gender || 'MALE',
           weight: pet.weight || 0,
-          color: pet.color || '',
+          neutered: pet.neutered || false,
           birthDate: pet.birthDate || '',
-          microchipNumber: pet.microchipNumber || '',
+          profileImageUrl: pet.profileImageUrl || null,
         });
         setEditingPetId(petId);
         setIsEditing(true);
+      } else {
+        alert('반려동물 정보를 찾을 수 없습니다.');
+        navigate('/more');
       }
     },
-    [pets]
+    [pets, navigate]
   );
+
+  // URL 쿼리 파라미터 확인하여 추가/편집 모드로 시작
+  useEffect(() => {
+    const mode = searchParams.get('mode');
+    const petId = searchParams.get('id');
+
+    if (mode === 'add') {
+      handleAddPet();
+    } else if (mode === 'edit' && petId) {
+      handleEditPet(parseInt(petId));
+    }
+  }, [searchParams, handleAddPet, handleEditPet]);
 
   /**
    * 편집 취소
@@ -89,16 +112,14 @@ const PetMoreScreen: React.FC = () => {
     setEditingPetId(null);
     setPetData({
       name: '',
-      species: '',
-      breed: '',
-      age: 0,
       gender: 'MALE',
       weight: 0,
-      color: '',
+      neutered: false,
       birthDate: '',
-      microchipNumber: '',
+      profileImageUrl: null,
     });
-  }, []);
+    navigate('/more'); // 취소 시 MoreScreen으로 이동
+  }, [navigate]);
 
   /**
    * 반려동물 저장
@@ -110,71 +131,77 @@ const PetMoreScreen: React.FC = () => {
       return;
     }
 
-    if (!petData.species.trim()) {
-      alert('반려동물 종을 입력해주세요.');
-      return;
-    }
-
-    setIsLoading(true);
+    // setIsLoading(true);
     try {
       if (editingPetId) {
-        // 기존 반려동물 수정
-        updatePet(editingPetId, petData);
-        alert('반려동물 정보가 수정되었습니다.');
+        // 기존 반려동물 수정 - API 호출
+        const updatedPet = await updatePetAPI(editingPetId, petData);
+        if (updatedPet) {
+          // 로컬 상태도 업데이트
+          updatePet(editingPetId, petData);
+          // 목록 직접 새로고침
+          await refreshPetsList();
+          alert('반려동물 정보가 수정되었습니다.');
+          navigate('/more'); // 수정 후 MoreScreen으로 이동
+        } else {
+          alert('반려동물 정보 수정에 실패했습니다.');
+        }
       } else {
-        // 새 반려동물 추가 (임시 ID 생성)
-        const newPet = {
-          ...petData,
-          id: Date.now(), // 임시 ID
-          ownerId: 1, // 임시 ownerId
-          hospitalId: 1, // 임시 hospitalId
-          createdAt: new Date().toISOString(),
-          updatedAt: new Date().toISOString(),
-        };
-        addPet(newPet);
-        alert('반려동물이 추가되었습니다.');
+        // 새 반려동물 추가 - API 호출
+        const newPet = await createPet(petData);
+        if (newPet) {
+          // 로컬 상태도 업데이트
+          addPet(newPet);
+          // 목록 직접 새로고침
+          await refreshPetsList();
+          alert('반려동물이 추가되었습니다.');
+          navigate('/more'); // 추가 후 MoreScreen으로 이동
+        } else {
+          alert('반려동물 추가에 실패했습니다.');
+        }
       }
-
-      setIsEditing(false);
-      setEditingPetId(null);
-      setPetData({
-        name: '',
-        species: '',
-        breed: '',
-        age: 0,
-        gender: 'MALE',
-        weight: 0,
-        color: '',
-        birthDate: '',
-        microchipNumber: '',
-      });
     } catch (error) {
       console.error('반려동물 저장 오류:', error);
-      alert('반려동물 저장 중 오류가 발생했습니다.');
+      const errorMessage = apiError || '반려동물 저장 중 오류가 발생했습니다.';
+      alert(errorMessage);
     } finally {
-      setIsLoading(false);
+      // setIsLoading(false);
     }
-  }, [petData, editingPetId, addPet, updatePet]);
+  }, [petData, editingPetId, updatePetAPI, createPet, addPet, updatePet, navigate, apiError, refreshPetsList]);
 
   /**
    * 반려동물 삭제
    */
   const handleDeletePet = useCallback(
-    (petId: number) => {
+    async (petId: number) => {
       const pet = pets.find((p) => p.id === petId);
       if (!pet) return;
 
       if (window.confirm(`정말 "${pet.name}"을(를) 삭제하시겠습니까?`)) {
         try {
-          removePet(petId);
-          alert('반려동물이 삭제되었습니다.');
+          // setIsLoading(true);
+          // API 호출로 삭제
+          const deletedPet = await deletePetAPI(petId);
+          if (deletedPet) {
+            // 로컬 상태도 업데이트
+            removePet(petId);
+            // 목록 직접 새로고침
+            await refreshPetsList();
+            alert('반려동물이 삭제되었습니다.');
+            navigate('/more'); // 삭제 후 MoreScreen으로 이동
+          } else {
+            alert('반려동물 삭제에 실패했습니다.');
+          }
         } catch (error) {
           console.error('반려동물 삭제 오류:', error);
-          alert('반려동물 삭제 중 오류가 발생했습니다.');
+          const errorMessage = apiError || '반려동물 삭제 중 오류가 발생했습니다.';
+          alert(errorMessage);
+        } finally {
+          // setIsLoading(false);
         }
       }
     },
-    [pets, removePet]
+    [pets, deletePetAPI, removePet, navigate, apiError, refreshPetsList]
   );
 
   /**
@@ -197,21 +224,11 @@ const PetMoreScreen: React.FC = () => {
     <div className='screen-container'>
       {/* 상단 헤더 */}
       <div className='screen-header'>
-        <div className='header-left'>
-          <button className='back-button' onClick={handleGoBack}>
-            ← 뒤로
-          </button>
-        </div>
+        <div className='header-left'></div>
         <div className='header-center'>
           <span className='title'>반려동물 관리</span>
         </div>
-        <div className='header-right'>
-          {!isEditing && (
-            <button className='add-button' onClick={handleAddPet}>
-              + 추가
-            </button>
-          )}
-        </div>
+        <div className='header-right'></div>
       </div>
 
       {/* 메인 콘텐츠 */}
@@ -235,53 +252,101 @@ const PetMoreScreen: React.FC = () => {
                 />
               </div>
 
-              {/* 종 */}
+              {/* 중성화 여부 */}
               <div className='input-group'>
-                <label className='input-label'>종 *</label>
-                <input
-                  type='text'
-                  className='input-field'
-                  value={petData.species}
-                  onChange={(e) => setPetData((prev) => ({ ...prev, species: e.target.value }))}
-                  placeholder='예: 개, 고양이, 햄스터'
-                />
-              </div>
-
-              {/* 품종 */}
-              <div className='input-group'>
-                <label className='input-label'>품종</label>
-                <input
-                  type='text'
-                  className='input-field'
-                  value={petData.breed}
-                  onChange={(e) => setPetData((prev) => ({ ...prev, breed: e.target.value }))}
-                  placeholder='예: 골든리트리버, 페르시안'
-                />
-              </div>
-
-              {/* 나이 */}
-              <div className='input-group'>
-                <label className='input-label'>나이 (세)</label>
-                <input
-                  type='number'
-                  className='input-field'
-                  value={petData.age}
-                  onChange={(e) => setPetData((prev) => ({ ...prev, age: parseInt(e.target.value) || 0 }))}
-                  placeholder='나이를 입력하세요'
-                  min='0'
-                  max='30'
-                />
+                <label className='input-label'>중성화 여부</label>
+                <div className='radio-group'>
+                  <label className='radio-option'>
+                    <input
+                      type='radio'
+                      name='neutered'
+                      value='false'
+                      checked={!petData.neutered}
+                      onChange={() => setPetData((prev) => ({ ...prev, neutered: false }))}
+                    />
+                    <span className='radio-label'>미완료</span>
+                  </label>
+                  <label className='radio-option'>
+                    <input
+                      type='radio'
+                      name='neutered'
+                      value='true'
+                      checked={petData.neutered}
+                      onChange={() => setPetData((prev) => ({ ...prev, neutered: true }))}
+                    />
+                    <span className='radio-label'>완료</span>
+                  </label>
+                </div>
               </div>
 
               {/* 생년월일 */}
               <div className='input-group'>
                 <label className='input-label'>생년월일</label>
-                <input
-                  type='date'
-                  className='input-field'
-                  value={petData.birthDate}
-                  onChange={(e) => setPetData((prev) => ({ ...prev, birthDate: e.target.value }))}
-                />
+                <div className='date-selector'>
+                  <select
+                    className='date-select'
+                    value={petData.birthDate ? new Date(petData.birthDate).getFullYear() : ''}
+                    onChange={(e) => {
+                      const year = parseInt(e.target.value);
+                      const currentDate = petData.birthDate ? new Date(petData.birthDate) : new Date();
+                      const month = currentDate.getMonth() + 1;
+                      const day = currentDate.getDate();
+                      const newDate = new Date(year, month - 1, day);
+                      setPetData((prev) => ({ ...prev, birthDate: newDate.toISOString().split('T')[0] }));
+                    }}
+                  >
+                    <option value=''>연도 선택</option>
+                    {Array.from({ length: 41 }, (_, i) => {
+                      const currentYear = new Date().getFullYear();
+                      const year = currentYear - 20 + i;
+                      return (
+                        <option key={year} value={year}>
+                          {year}
+                        </option>
+                      );
+                    })}
+                  </select>
+
+                  <select
+                    className='date-select'
+                    value={petData.birthDate ? new Date(petData.birthDate).getMonth() + 1 : ''}
+                    onChange={(e) => {
+                      const month = parseInt(e.target.value);
+                      const currentDate = petData.birthDate ? new Date(petData.birthDate) : new Date();
+                      const year = currentDate.getFullYear();
+                      const day = currentDate.getDate();
+                      const newDate = new Date(year, month - 1, day);
+                      setPetData((prev) => ({ ...prev, birthDate: newDate.toISOString().split('T')[0] }));
+                    }}
+                  >
+                    <option value=''>월 선택</option>
+                    {Array.from({ length: 12 }, (_, i) => (
+                      <option key={i + 1} value={i + 1}>
+                        {i + 1}
+                      </option>
+                    ))}
+                  </select>
+
+                  <select
+                    className='date-select'
+                    value={petData.birthDate ? new Date(petData.birthDate).getDate() : ''}
+                    onChange={(e) => {
+                      const day = parseInt(e.target.value);
+                      const currentDate = petData.birthDate ? new Date(petData.birthDate) : new Date();
+                      const year = currentDate.getFullYear();
+                      const month = currentDate.getMonth() + 1;
+                      const newDate = new Date(year, month - 1, day);
+                      setPetData((prev) => ({ ...prev, birthDate: newDate.toISOString().split('T')[0] }));
+                    }}
+                  >
+                    <option value=''>일 선택</option>
+                    {Array.from({ length: 31 }, (_, i) => (
+                      <option key={i + 1} value={i + 1}>
+                        {i + 1}
+                      </option>
+                    ))}
+                  </select>
+                </div>
                 {petData.birthDate && <div className='input-hint'>{calculateAge(petData.birthDate)}</div>}
               </div>
 
@@ -328,91 +393,27 @@ const PetMoreScreen: React.FC = () => {
                 />
               </div>
 
-              {/* 색상 */}
-              <div className='input-group'>
-                <label className='input-label'>색상</label>
-                <input
-                  type='text'
-                  className='input-field'
-                  value={petData.color}
-                  onChange={(e) => setPetData((prev) => ({ ...prev, color: e.target.value }))}
-                  placeholder='예: 갈색, 흰색, 검은색'
-                />
-              </div>
-
-              {/* 마이크로칩 번호 */}
-              <div className='input-group'>
-                <label className='input-label'>마이크로칩 번호</label>
-                <input
-                  type='text'
-                  className='input-field'
-                  value={petData.microchipNumber}
-                  onChange={(e) => setPetData((prev) => ({ ...prev, microchipNumber: e.target.value }))}
-                  placeholder='마이크로칩 번호를 입력하세요'
-                />
-              </div>
-
               {/* 액션 버튼 */}
               <div className='form-actions'>
                 <button className='action-button primary' onClick={handleSavePet} disabled={isLoading}>
                   {isLoading ? '저장 중...' : '저장'}
                 </button>
+                {editingPetId && (
+                  <button
+                    className='action-button danger'
+                    onClick={() => handleDeletePet(editingPetId)}
+                    disabled={isLoading}
+                  >
+                    삭제
+                  </button>
+                )}
                 <button className='action-button' onClick={handleCancelEdit} disabled={isLoading}>
                   취소
                 </button>
               </div>
             </div>
           </div>
-        ) : (
-          /* 목록 모드 */
-          <div className='section'>
-            <h3 className='section-title'>내 반려동물</h3>
-
-            {storeLoading ? (
-              <div className='loading-container'>
-                <div className='loading-spinner'></div>
-                <span>로딩 중...</span>
-              </div>
-            ) : pets.length === 0 ? (
-              <div className='empty-state'>
-                <div className='empty-icon'>🐾</div>
-                <div className='empty-title'>등록된 반려동물이 없습니다</div>
-                <div className='empty-description'>새 반려동물을 추가해보세요</div>
-                <button className='action-button primary' onClick={handleAddPet}>
-                  반려동물 추가
-                </button>
-              </div>
-            ) : (
-              <div className='pet-list'>
-                {pets.map((pet) => (
-                  <div key={pet.id} className='pet-card'>
-                    <div className='pet-avatar'>
-                      <div className='pet-icon'>🐕</div>
-                    </div>
-                    <div className='pet-info'>
-                      <div className='pet-name'>{pet.name}</div>
-                      <div className='pet-details'>
-                        <span className='pet-detail'>{pet.species}</span>
-                        {pet.breed && <span className='pet-detail'>{pet.breed}</span>}
-                        <span className='pet-detail'>{pet.age}세</span>
-                        <span className='pet-detail'>{pet.gender === 'MALE' ? '수컷' : '암컷'}</span>
-                        {pet.weight > 0 && <span className='pet-detail'>{pet.weight}kg</span>}
-                      </div>
-                    </div>
-                    <div className='pet-actions'>
-                      <button className='action-button small' onClick={() => handleEditPet(pet.id)}>
-                        편집
-                      </button>
-                      <button className='action-button small danger' onClick={() => handleDeletePet(pet.id)}>
-                        삭제
-                      </button>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            )}
-          </div>
-        )}
+        ) : null}
       </div>
     </div>
   );

@@ -20,3 +20,6 @@ export * from './prescription';
 
 // PWA 관련 타입
 export * from './pwa';
+
+// 반려동물 관련 타입
+export * from './pet';
