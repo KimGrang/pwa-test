@@ -1,29 +1,12 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
-
-/**
- * 반려동물 인터페이스 (백엔드 API 응답 구조에 맞춤)
- */
-interface Pet {
-  id: number;
-  name: string;
-  species: string;
-  breed: string;
-  age: number;
-  gender: 'MALE' | 'FEMALE';
-  weight: number;
-  color: string;
-  birthDate: string;
-  microchipNumber?: string;
-  ownerId: number;
-  hospitalId: number;
-  createdAt: string;
-  updatedAt: string;
-}
+import { Pet } from '../types/pet';
 
 /**
  * 반려동물 상태 인터페이스
+ * API 문서에 맞춰 업데이트
  */
+
 interface PetState {
   // 반려동물 목록
   pets: Pet[];
@@ -35,6 +18,13 @@ interface PetState {
   isLoading: boolean;
   error: string | null;
 
+  // 페이지네이션 정보
+  pagination: {
+    page: number;
+    limit: number;
+    total: number;
+  };
+
   // 액션
   setPets: (pets: Pet[]) => void;
   setSelectedPet: (pet: Pet | null) => void;
@@ -44,11 +34,11 @@ interface PetState {
   setLoading: (loading: boolean) => void;
   setError: (error: string | null) => void;
   clearError: () => void;
+  setPagination: (pagination: { page: number; limit: number; total: number }) => void;
 
   // 유틸리티 함수
   getPetById: (id: number) => Pet | undefined;
-  getPetsByOwner: (ownerId: number) => Pet[];
-  getPetsByHospital: (hospitalId: number) => Pet[];
+  getPetsByUserId: (userId: number) => Pet[];
 
   // 전체 데이터 삭제
   clearAll: () => void;
@@ -65,6 +55,11 @@ export const usePetStore = create<PetState>()(
       selectedPet: null,
       isLoading: false,
       error: null,
+      pagination: {
+        page: 1,
+        limit: 10,
+        total: 0,
+      },
 
       // 액션
       setPets: (pets: Pet[]) => set({ pets }),
@@ -106,20 +101,17 @@ export const usePetStore = create<PetState>()(
 
       clearError: () => set({ error: null }),
 
+      setPagination: (pagination: { page: number; limit: number; total: number }) => set({ pagination }),
+
       // 유틸리티 함수
       getPetById: (id: number) => {
         const { pets } = get();
         return pets.find((pet) => pet.id === id);
       },
 
-      getPetsByOwner: (ownerId: number) => {
+      getPetsByUserId: (userId: number) => {
         const { pets } = get();
-        return pets.filter((pet) => pet.ownerId === ownerId);
-      },
-
-      getPetsByHospital: (hospitalId: number) => {
-        const { pets } = get();
-        return pets.filter((pet) => pet.hospitalId === hospitalId);
+        return pets.filter((pet) => pet.userId === userId);
       },
 
       clearAll: () =>
@@ -128,6 +120,11 @@ export const usePetStore = create<PetState>()(
           selectedPet: null,
           isLoading: false,
           error: null,
+          pagination: {
+            page: 1,
+            limit: 10,
+            total: 0,
+          },
         }),
     }),
     {
@@ -135,6 +132,7 @@ export const usePetStore = create<PetState>()(
       partialize: (state) => ({
         pets: state.pets,
         selectedPet: state.selectedPet,
+        pagination: state.pagination,
       }),
     }
   )

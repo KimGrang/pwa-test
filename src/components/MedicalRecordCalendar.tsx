@@ -36,7 +36,7 @@ const MedicalRecordCalendar: React.FC<MedicalRecordCalendarProps> = ({
 }) => {
   // UI 스토어에서 캘린더 상태 가져오기
   const { calendar, setCalendarCurrentDate, setCalendarSelectedDate } = useUIStore();
-  const currentDate = new Date(calendar.currentDate); // Date 객체로 변환
+  const currentDate = useMemo(() => new Date(calendar.currentDate), [calendar.currentDate]); // Date 객체로 변환
 
   // 달력에 표시할 모든 날짜들 생성 (항상 6주 = 42일)
   const calendarDays: Date[] = useMemo(() => {

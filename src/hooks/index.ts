@@ -8,6 +8,9 @@ export { default as useAxios } from './useAxios';
 // 범용 API Hook들
 export * from './useAPI';
 
+// 반려동물 API Hook
+export { default as usePetAPIHook } from './usePetAPI';
+
 // dwon.store 전용 API Hook들
 export * from './useDwonStoreAPI';
 

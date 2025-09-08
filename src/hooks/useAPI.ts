@@ -1,5 +1,13 @@
 import useAxios from './useAxios';
-import { ApiResponse, User, ChatMessage } from '../types';
+import {
+  ApiResponse,
+  User,
+  ChatMessage,
+  CreatePetRequest,
+  UpdatePetRequest,
+  PetListResponse,
+  PetResponse,
+} from '../types';
 
 // dwon.store API Hook들 re-export
 export {
@@ -113,6 +121,30 @@ export const useTreatmentAPI = () => {
     createTreatment: (treatmentData: Record<string, unknown>) => post('/', treatmentData),
     updateTreatment: (id: number, treatmentData: Record<string, unknown>) => put(`/${id}`, treatmentData),
     deleteTreatment: (id: number) => del(`/${id}`),
+    clearError,
+  };
+};
+
+// 반려동물 관련 API Hook
+export const usePetAPI = () => {
+  const { data, loading, error, get, post, patch, del, clearError } = useAxios<PetResponse | PetListResponse>('/pets');
+
+  return {
+    petData: data?.data || null,
+    loading,
+    error,
+    // 반려동물 등록
+    createPet: (petData: CreatePetRequest) => post('/', petData),
+    // 반려동물 정보 수정
+    updatePet: (id: number, petData: UpdatePetRequest) => patch(`/${id}`, petData),
+    // 반려동물 삭제
+    deletePet: (id: number) => del(`/${id}`),
+    // 내 반려동물 목록 조회
+    getMyPets: (page: number = 1, limit: number = 10) => get(`/my-pets?page=${page}&limit=${limit}`),
+    // 특정 반려동물 조회
+    getPetById: (id: number) => get(`/${id}`),
+    // 전체 반려동물 조회 (관리자용)
+    getAllPets: (page: number = 1, limit: number = 10) => get(`?page=${page}&limit=${limit}`),
     clearError,
   };
 };
