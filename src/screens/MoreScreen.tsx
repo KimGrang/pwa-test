@@ -14,7 +14,7 @@ const MoreScreen: React.FC = () => {
 
   // 스토어에서 사용자 정보와 반려동물 데이터 가져오기
   const { currentUser } = useUserStore();
-  const { pets, getPetById } = usePetStore();
+  const { pets } = usePetStore();
 
   /**
    * 사용자 상세 정보 화면으로 이동
@@ -51,13 +51,22 @@ const MoreScreen: React.FC = () => {
     alert('약관 및 개인정보처리방침 기능은 준비 중입니다.');
   }, []);
 
+  /**
+   * 웹앱 설치 화면으로 이동
+   */
+  const handleWebAppInstall = useCallback(() => {
+    navigate('/install');
+  }, [navigate]);
+
   return (
     <div className='screen-container'>
       {/* 상단 헤더 */}
       <div className='screen-header'>
+        <div className='header-left'>{/* 빈 공간 - 중앙 정렬을 위한 플레이스홀더 */}</div>
         <div className='header-center'>
           <span className='title'>더보기</span>
         </div>
+        <div className='header-right'>{/* 빈 공간 - 중앙 정렬을 위한 플레이스홀더 */}</div>
       </div>
 
       {/* 메인 콘텐츠 */}
@@ -119,20 +128,22 @@ const MoreScreen: React.FC = () => {
           <h3 className='section-title'>설정</h3>
 
           <div className='menu-item' onClick={handleNotifications}>
-            <span className='menu-icon'>🔔</span>
             <span className='menu-text'>알림 설정</span>
             <span className='chevron-icon'></span>
           </div>
 
           <div className='menu-item' onClick={handleHospitalSettings}>
-            <span className='menu-icon'>🏥</span>
             <span className='menu-text'>병원 설정</span>
             <span className='chevron-icon'></span>
           </div>
 
           <div className='menu-item' onClick={handleTerms}>
-            <span className='menu-icon'>📜</span>
             <span className='menu-text'>약관 및 개인정보처리방침</span>
+            <span className='chevron-icon'></span>
+          </div>
+
+          <div className='menu-item' onClick={handleWebAppInstall}>
+            <span className='menu-text'>웹앱 설치</span>
             <span className='chevron-icon'></span>
           </div>
         </div>

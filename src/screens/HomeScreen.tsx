@@ -279,12 +279,17 @@ const HomeScreen: React.FC = () => {
     [navigate]
   );
 
+  // 사용자 이름 클릭 시 UserMoreScreen으로 이동
+  const handleUserProfileClick = useCallback(() => {
+    navigate('/user-more');
+  }, [navigate]);
+
   return (
     <div className='screen-container'>
       {/* 상단 헤더 */}
       <div className='screen-header'>
         <div className='header-left'>
-          <span className='hospital-name'>+ 응급동물병원</span>
+          <span className='hospital-name'></span>
         </div>
         <div className='header-center'>
           <span className='title'>홈</span>
@@ -295,7 +300,9 @@ const HomeScreen: React.FC = () => {
               {authLoading ? '로그인 중...' : '🔑 로그인'}
             </button>
           ) : (
-            <span className='user-greeting'>{currentUser?.name || '사용자'}님</span>
+            <button className='user-greeting' onClick={handleUserProfileClick}>
+              {currentUser?.name || '사용자'}님
+            </button>
           )}
         </div>
       </div>

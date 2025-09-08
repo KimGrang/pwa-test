@@ -163,9 +163,11 @@ const LLMChat: React.FC = () => {
     <div className='screen-container'>
       {/* 상단 헤더 */}
       <div className='screen-header'>
+        <div className='header-left'>{/* 빈 공간 - 중앙 정렬을 위한 플레이스홀더 */}</div>
         <div className='header-center'>
           <span className='title'>AI 상담</span>
         </div>
+        <div className='header-right'>{/* 빈 공간 - 중앙 정렬을 위한 플레이스홀더 */}</div>
       </div>
 
       {/* 메인 콘텐츠 */}

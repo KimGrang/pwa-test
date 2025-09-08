@@ -117,13 +117,11 @@ const UserMoreScreen: React.FC = () => {
           <h3 className='section-title'>계정 관리</h3>
 
           <div className='menu-item' onClick={handleLogout}>
-            <span className='menu-icon'>🚪</span>
             <span className='menu-text'>로그아웃</span>
             <span className='chevron-icon'></span>
           </div>
 
           <div className='menu-item' onClick={handleWithdrawal}>
-            <span className='menu-icon'>🗑️</span>
             <span className='menu-text'>회원탈퇴</span>
             <span className='chevron-icon'></span>
           </div>
