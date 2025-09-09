@@ -1,20 +1,12 @@
 import React, { useMemo, useCallback } from 'react';
-import { ChevronLeftIcon, ChevronRightIcon } from '@heroicons/react/24/outline';
+import {
+  ChevronLeftIcon,
+  ChevronRightIcon,
+  ChevronDoubleLeftIcon,
+  ChevronDoubleRightIcon,
+} from '@heroicons/react/24/outline';
 import { useUIStore } from '../store/uiStore';
-
-// recordStore의 MedicalRecord 타입과 호환되는 인터페이스
-interface MedicalRecord {
-  id: number;
-  petId: number;
-  hospitalId: number;
-  vetId: number;
-  visitDate: string;
-  chiefComplaint: string;
-  examinationNotes: string;
-  treatmentPlan: string;
-  followUp: string;
-  createdAt: string;
-}
+import { MedicalRecord } from '../types/medical-record';
 
 interface MedicalRecordCalendarProps {
   medicalRecords: MedicalRecord[];
@@ -174,13 +166,13 @@ const MedicalRecordCalendar: React.FC<MedicalRecordCalendarProps> = ({
         {/* 년 네비게이션 */}
         <div className='calendar-year-nav'>
           <button onClick={() => navigateYear('prev')} title='이전 년'>
-            {'<<'}
+            <ChevronDoubleLeftIcon className='w-5 h-5' />
           </button>
 
           <span className='calendar-year-text'>{currentDate.getFullYear()}년</span>
 
           <button onClick={() => navigateYear('next')} title='다음 년'>
-            {'>>'}
+            <ChevronDoubleRightIcon className='w-5 h-5' />
           </button>
         </div>
 

@@ -98,7 +98,7 @@ const DetailRecord: React.FC = () => {
               </div>
               {pet && (
                 <div className='pet-name-badge'>
-                  <HeartIcon className='w-4 h-4 mr-1' />
+                  <HeartIcon className='navigation-icon mr-1' />
                   {pet.name}
                 </div>
               )}
@@ -109,7 +109,7 @@ const DetailRecord: React.FC = () => {
           <div className='record-details-section'>
             <div className='detail-section'>
               <h3 className='section-title'>
-                <ClipboardDocumentListIcon className='w-4 h-4 mr-1' />
+                <ClipboardDocumentListIcon className='navigation-icon mr-1' />
                 주요 증상
               </h3>
               <div className='section-content'>
@@ -179,12 +179,12 @@ const DetailRecord: React.FC = () => {
 
           {/* 액션 버튼들 */}
           <div className='action-buttons'>
-            <button className='action-button secondary' onClick={() => navigate('/records')}>
-              <ClipboardDocumentListIcon className='w-4 h-4 mr-1' />
+            <button className='action-button primary' onClick={() => navigate('/records')}>
+              <ClipboardDocumentListIcon className='navigation-icon mr-1' />
               진료기록 목록
             </button>
             <button className='action-button primary' onClick={() => navigate('/')}>
-              <HomeIcon className='w-4 h-4 mr-1' />
+              <HomeIcon className='navigation-icon mr-1' />
               홈으로
             </button>
           </div>

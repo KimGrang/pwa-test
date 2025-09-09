@@ -142,7 +142,9 @@ const HomeScreen: React.FC = () => {
             petsResponse.data.length > 0
           ) {
             console.log('🐕 반려동물 데이터:', petsResponse.data);
-            setPets(petsResponse.data);
+            // 먼저 등록된 반려동물이 위에 오도록 역순 정렬 (id 기준)
+            const sortedPets = [...petsResponse.data].sort((a, b) => a.id - b.id);
+            setPets(sortedPets);
 
             // 첫 번째 반려동물의 진료기록 가져오기
             const recordsResponse = await getRecordsByPet(petsResponse.data[0].id);
@@ -302,7 +304,7 @@ const HomeScreen: React.FC = () => {
                 '로그인 중...'
               ) : (
                 <>
-                  <KeyIcon className='w-4 h-4 mr-1' />
+                  <KeyIcon className='size-4' />
                   로그인
                 </>
               )}
@@ -322,16 +324,13 @@ const HomeScreen: React.FC = () => {
           <div className='error-message'>
             <span>{authError}</span>
             <button onClick={clearAuthError} className='error-close-button'>
-              <XMarkIcon className='w-4 h-4' />
+              <XMarkIcon className='size-4' />
             </button>
           </div>
         )}
 
         {/* 진료기록 캘린더 섹션 */}
         <div className='section'>
-          <div className='section-header'>
-            <h3 className='section-title'>진료기록 캘린더</h3>
-          </div>
           <div className='calendar-container'>
             <MedicalRecordCalendar
               medicalRecords={medicalRecords}

@@ -8,11 +8,10 @@ export interface MedicalRecord {
   vetId: number;
   visitDate: string; // API 응답에서는 visitDate 사용
   chiefComplaint: string;
-  examinationNotes?: string;
-  treatmentPlan?: string;
-  followUp?: string;
+  examinationNotes: string;
+  treatmentPlan: string;
+  followUp: string;
   createdAt: string;
-  updatedAt: string;
 }
 
 /**
