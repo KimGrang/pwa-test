@@ -2,7 +2,7 @@ import { useCallback } from 'react';
 import useAxios from './useAxios';
 import { getCurrentConfig, DWON_STORE_ENDPOINTS, DWON_STORE_PAGINATION } from '../config/dwon-store-config';
 import { ApiResponse, User, LoginCredentials, ChatMessage } from '../types';
-import { CreatePetRequest } from '../types/pet';
+import { CreatePetRequest, PetWithRecordsResponse } from '../types/pet';
 import { CreateMedicalRecordRequest } from '../types/medical-record';
 import { CreateVetRequest } from '../types/vet';
 
@@ -130,10 +130,22 @@ export const useDwonStorePets = () => {
     getCurrentConfig().BASE_URL
   );
 
+  // 기존 반려동물 조회 (주석처리 예정)
   const getMyPets = useCallback(
     (params: PaginationParams = {}) => {
       const { page = DWON_STORE_PAGINATION.DEFAULT_PAGE, limit = DWON_STORE_PAGINATION.DEFAULT_LIMIT } = params;
       return get(`${DWON_STORE_ENDPOINTS.PETS.MY_PETS}?page=${page}&limit=${limit}`);
+    },
+    [get]
+  );
+
+  // 새로운 API: 반려동물과 진료기록 함께 조회 (N+1 문제 해결)
+  const getMyPetsWithRecords = useCallback(
+    (params: PaginationParams = {}) => {
+      const { page = DWON_STORE_PAGINATION.DEFAULT_PAGE, limit = DWON_STORE_PAGINATION.DEFAULT_LIMIT } = params;
+      return get(
+        `${DWON_STORE_ENDPOINTS.PETS.MY_PETS_WITH_RECORDS}?page=${page}&limit=${limit}`
+      ) as Promise<PetWithRecordsResponse | null>;
     },
     [get]
   );
@@ -153,7 +165,8 @@ export const useDwonStorePets = () => {
     petsData: data?.data || null,
     loading,
     error,
-    getMyPets,
+    getMyPets, // 기존 함수 (주석처리 예정)
+    getMyPetsWithRecords, // 새로운 함수
     getPetById,
     createPet,
     updatePet,

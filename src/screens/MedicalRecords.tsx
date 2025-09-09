@@ -3,8 +3,11 @@ import { useNavigate } from 'react-router-dom';
 import { XMarkIcon, HeartIcon, MagnifyingGlassIcon } from '@heroicons/react/24/outline';
 import { useRecordStore } from '../store/recordStore';
 import { usePetStore } from '../store/petStore';
+import { useUIStore } from '../store/uiStore';
+import PetFilter from '../components/PetFilter';
 import '../styles/base.css';
 import '../styles/moreScreen.css';
+import '../styles/PetFilter.css';
 
 /**
  * 진료 기록 화면 컴포넌트
@@ -16,12 +19,19 @@ const TreatmentRecords: React.FC = () => {
 
   // recordStore에서 진료기록 데이터 가져오기
   const { records } = useRecordStore();
-  const { getPetById } = usePetStore();
+  const { pets, getPetById } = usePetStore();
+  const { filters, setSelectedPetId } = useUIStore();
 
-  // 진료기록을 날짜순으로 정렬하고 검색 필터링
+  // 진료기록을 날짜순으로 정렬하고 검색 및 반려동물 필터링
   const filteredRecords = useMemo(() => {
     return records
       .filter((record) => {
+        // 반려동물 필터링
+        if (filters.selectedPetId && record.petId !== filters.selectedPetId) {
+          return false;
+        }
+
+        // 검색어 필터링
         const searchLower = searchQuery.toLowerCase();
         return (
           record.chiefComplaint.toLowerCase().includes(searchLower) ||
@@ -31,7 +41,7 @@ const TreatmentRecords: React.FC = () => {
         );
       })
       .sort((a, b) => new Date(b.visitDate).getTime() - new Date(a.visitDate).getTime());
-  }, [records, searchQuery]);
+  }, [records, searchQuery, filters.selectedPetId]);
 
   return (
     <div className='screen-container'>
@@ -46,6 +56,16 @@ const TreatmentRecords: React.FC = () => {
 
       {/* 메인 콘텐츠 */}
       <div className='screen-compact-content'>
+        {/* 반려동물 필터 */}
+        {pets.length > 0 && (
+          <PetFilter
+            pets={pets}
+            selectedPetId={filters.selectedPetId}
+            onPetSelect={setSelectedPetId}
+            className='mb-4'
+          />
+        )}
+
         {/* 검색 섹션 */}
         <div className='section'>
           <div className='section-header'>

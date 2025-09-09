@@ -26,6 +26,11 @@ interface UIState {
     selectedDate: Date | null;
   };
 
+  // 필터 상태
+  filters: {
+    selectedPetId: number | null;
+  };
+
   // 알림 상태
   notifications: {
     isVisible: boolean;
@@ -57,6 +62,9 @@ interface UIState {
   setCalendarCurrentDate: (date: Date) => void;
   setCalendarSelectedDate: (date: Date | null) => void;
 
+  // 필터 액션
+  setSelectedPetId: (petId: number | null) => void;
+
   clearAll: () => void;
 }
 
@@ -83,6 +91,10 @@ export const useUIStore = create<UIState>()(
       calendar: {
         currentDate: new Date(),
         selectedDate: null,
+      },
+
+      filters: {
+        selectedPetId: null,
       },
 
       notifications: {
@@ -181,6 +193,12 @@ export const useUIStore = create<UIState>()(
         set({ calendar: { ...calendar, selectedDate: date } });
       },
 
+      // 필터 액션
+      setSelectedPetId: (petId: number | null) => {
+        const { filters } = get();
+        set({ filters: { ...filters, selectedPetId: petId } });
+      },
+
       clearAll: () =>
         set({
           modals: {
@@ -198,6 +216,9 @@ export const useUIStore = create<UIState>()(
             currentDate: new Date(),
             selectedDate: null,
           },
+          filters: {
+            selectedPetId: null,
+          },
           notifications: {
             isVisible: false,
             message: '',
@@ -213,6 +234,7 @@ export const useUIStore = create<UIState>()(
         sidebar: state.sidebar,
         modals: state.modals,
         calendar: state.calendar,
+        filters: state.filters,
       }),
     }
   )
