@@ -29,6 +29,10 @@
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
 }
 
+.pet-filter-trigger:hover .pet-filter-trigger-heroicon {
+  color: var(--color-primary);
+}
+
 .pet-filter-trigger:focus {
   outline: none;
   border-color: var(--color-primary);
@@ -47,6 +51,15 @@
   font-size: 1.25rem;
   line-height: 1;
   flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.pet-filter-trigger-heroicon {
+  width: 20px;
+  height: 20px;
+  color: var(--color-text-secondary);
 }
 
 .pet-filter-trigger-avatar {
@@ -149,6 +162,10 @@
   font-weight: 500;
 }
 
+.pet-filter-option.selected .pet-filter-option-heroicon {
+  color: var(--color-primary);
+}
+
 .pet-filter-option:focus {
   outline: none;
   background: var(--color-background-hover);
@@ -158,6 +175,15 @@
   font-size: 1.125rem;
   line-height: 1;
   flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.pet-filter-option-heroicon {
+  width: 18px;
+  height: 18px;
+  color: var(--color-text-secondary);
 }
 
 .pet-filter-option-avatar {
@@ -198,12 +224,22 @@
     height: 18px;
   }
 
+  .pet-filter-trigger-heroicon {
+    width: 18px;
+    height: 18px;
+  }
+
   .pet-filter-option {
     padding: 0.625rem 0.875rem;
     font-size: 0.8125rem;
   }
 
   .pet-filter-option-avatar {
+    width: 16px;
+    height: 16px;
+  }
+
+  .pet-filter-option-heroicon {
     width: 16px;
     height: 16px;
   }
@@ -224,12 +260,22 @@
     height: 16px;
   }
 
+  .pet-filter-trigger-heroicon {
+    width: 16px;
+    height: 16px;
+  }
+
   .pet-filter-option {
     padding: 0.5rem 0.75rem;
     font-size: 0.75rem;
   }
 
   .pet-filter-option-avatar {
+    width: 14px;
+    height: 14px;
+  }
+
+  .pet-filter-option-heroicon {
     width: 14px;
     height: 14px;
   }
