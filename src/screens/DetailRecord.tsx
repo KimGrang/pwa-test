@@ -1,5 +1,6 @@
 import React from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
+import { HeartIcon, ClipboardDocumentListIcon, HomeIcon } from '@heroicons/react/24/outline';
 import { useRecordStore } from '../store/recordStore';
 import { usePetStore } from '../store/petStore';
 
@@ -95,14 +96,22 @@ const DetailRecord: React.FC = () => {
               <div className='record-type-badge' style={{ backgroundColor: recordTypeColor }}>
                 {record.chiefComplaint}
               </div>
-              {pet && <div className='pet-name-badge'>🐕 {pet.name}</div>}
+              {pet && (
+                <div className='pet-name-badge'>
+                  <HeartIcon className='w-4 h-4 mr-1' />
+                  {pet.name}
+                </div>
+              )}
             </div>
           </div>
 
           {/* 진료기록 상세 정보 */}
           <div className='record-details-section'>
             <div className='detail-section'>
-              <h3 className='section-title'>📋 주요 증상</h3>
+              <h3 className='section-title'>
+                <ClipboardDocumentListIcon className='w-4 h-4 mr-1' />
+                주요 증상
+              </h3>
               <div className='section-content'>
                 <p>{record.chiefComplaint}</p>
               </div>
@@ -171,10 +180,12 @@ const DetailRecord: React.FC = () => {
           {/* 액션 버튼들 */}
           <div className='action-buttons'>
             <button className='action-button secondary' onClick={() => navigate('/records')}>
-              📋 진료기록 목록
+              <ClipboardDocumentListIcon className='w-4 h-4 mr-1' />
+              진료기록 목록
             </button>
             <button className='action-button primary' onClick={() => navigate('/')}>
-              🏠 홈으로
+              <HomeIcon className='w-4 h-4 mr-1' />
+              홈으로
             </button>
           </div>
         </div>

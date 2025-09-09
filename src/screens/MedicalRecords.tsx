@@ -1,5 +1,6 @@
 import React, { useState, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { XMarkIcon, HeartIcon, MagnifyingGlassIcon } from '@heroicons/react/24/outline';
 import { useRecordStore } from '../store/recordStore';
 import { usePetStore } from '../store/petStore';
 import '../styles/base.css';
@@ -60,10 +61,12 @@ const TreatmentRecords: React.FC = () => {
             />
             {searchQuery && (
               <button className='search-clear-button' onClick={() => setSearchQuery('')}>
-                ✕
+                <XMarkIcon className='w-4 h-4' />
               </button>
             )}
-            <button className='search-icon-button'>🔍</button>
+            <button className='search-icon-button'>
+              <MagnifyingGlassIcon className='w-4 h-4' />
+            </button>
           </div>
         </div>
 
@@ -99,7 +102,10 @@ const TreatmentRecords: React.FC = () => {
                       )}
                     </div>
                   </div>
-                  <div className='record-pet-icon'>{getPetById(record.petId)?.name || '🐕'}</div>
+                  <div className='record-pet-icon'>
+                    <HeartIcon className='w-4 h-4' />
+                    {getPetById(record.petId)?.name || '반려동물'}
+                  </div>
                 </div>
               ))
             ) : (

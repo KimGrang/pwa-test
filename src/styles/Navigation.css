@@ -49,7 +49,8 @@
 }
 
 .navigation-icon {
-  font-size: 1.5rem; /* text-2xl */
+  width: 1.5rem; /* w-6 */
+  height: 1.5rem; /* h-6 */
 }
 
 .navigation-text {
