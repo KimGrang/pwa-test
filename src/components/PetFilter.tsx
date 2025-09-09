@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Pet } from '../types/pet';
-import { ChevronDownIcon } from '@heroicons/react/24/outline';
+import { ChevronDownIcon, HeartIcon, UserGroupIcon } from '@heroicons/react/24/outline';
 
 interface PetFilterProps {
   pets: Pet[];
@@ -53,8 +53,10 @@ const PetFilter: React.FC<PetFilterProps> = ({ pets, selectedPetId, onPetSelect,
           <span className='pet-filter-trigger-icon'>
             {selectedPet?.profileImageUrl ? (
               <img src={selectedPet.profileImageUrl} alt={selectedPet.name} className='pet-filter-trigger-avatar' />
+            ) : selectedPet ? (
+              <HeartIcon className='pet-filter-trigger-heroicon' />
             ) : (
-              '🐾'
+              <UserGroupIcon className='pet-filter-trigger-heroicon' />
             )}
           </span>
           <span className='pet-filter-trigger-text'>{displayText}</span>
@@ -73,7 +75,9 @@ const PetFilter: React.FC<PetFilterProps> = ({ pets, selectedPetId, onPetSelect,
               role='option'
               aria-selected={selectedPetId === null}
             >
-              <span className='pet-filter-option-icon'>🐾</span>
+              <span className='pet-filter-option-icon'>
+                <UserGroupIcon className='pet-filter-option-heroicon' />
+              </span>
               <span className='pet-filter-option-text'>전체</span>
               {selectedPetId === null && <span className='pet-filter-check'>✓</span>}
             </button>
@@ -92,7 +96,7 @@ const PetFilter: React.FC<PetFilterProps> = ({ pets, selectedPetId, onPetSelect,
                   {pet.profileImageUrl ? (
                     <img src={pet.profileImageUrl} alt={pet.name} className='pet-filter-option-avatar' />
                   ) : (
-                    '🐕'
+                    <HeartIcon className='pet-filter-option-heroicon' />
                   )}
                 </span>
                 <span className='pet-filter-option-text'>{pet.name}</span>
