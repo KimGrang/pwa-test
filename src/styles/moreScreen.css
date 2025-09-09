@@ -46,6 +46,12 @@
   color: var(--color-primary);
 }
 
+.avatar-heroicon {
+  width: 24px;
+  height: 24px;
+  color: var(--color-primary);
+}
+
 .profile-info {
   flex: 1;
   display: flex;
@@ -74,7 +80,19 @@
   transition: transform var(--transition-normal);
 }
 
+.arrow-heroicon {
+  width: 20px;
+  height: 20px;
+  color: var(--color-text-secondary);
+  transition: all var(--transition-normal);
+}
+
 .profile-card:hover .arrow-icon {
+  transform: translateX(2px);
+}
+
+.profile-card:hover .arrow-heroicon {
+  color: var(--color-primary);
   transform: translateX(2px);
 }
 
@@ -173,9 +191,26 @@
   transition: all var(--transition-normal);
 }
 
+.chevron-heroicon {
+  width: 16px;
+  height: 16px;
+  color: var(--color-text-secondary);
+  transition: all var(--transition-normal);
+}
+
 .pet-item:hover .chevron-icon {
   border-color: var(--color-primary);
   transform: rotate(-45deg) translateX(2px);
+}
+
+.pet-item:hover .chevron-heroicon {
+  color: var(--color-primary);
+  transform: translateX(2px);
+}
+
+.menu-item:hover .chevron-heroicon {
+  color: var(--color-primary);
+  transform: translateX(2px);
 }
 
 /* 빈 상태 */
@@ -268,6 +303,11 @@
     font-size: var(--font-size-xl);
   }
 
+  .avatar-heroicon {
+    width: 28px;
+    height: 28px;
+  }
+
   .profile-name {
     font-size: var(--font-size-lg);
   }
@@ -340,6 +380,11 @@
 
   .avatar-icon {
     font-size: var(--font-size-2xl);
+  }
+
+  .avatar-heroicon {
+    width: 32px;
+    height: 32px;
   }
 
   .profile-name {

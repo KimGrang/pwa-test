@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { HeartIcon } from '@heroicons/react/24/outline';
+import { HeartIcon, ChevronRightIcon, UserIcon } from '@heroicons/react/24/outline';
 import { useUserStore } from '../store/userStore';
 import { usePetStore } from '../store/petStore';
 import { usePetAPIHook } from '../hooks/usePetAPI';
@@ -111,7 +111,7 @@ const MoreScreen: React.FC = () => {
           <div className='profile-card' onClick={handleUserProfile}>
             <div className='profile-avatar'>
               <div className='avatar-circle'>
-                <span className='avatar-icon'>👤</span>
+                <UserIcon className='avatar-heroicon' />
               </div>
             </div>
             <div className='profile-info'>
@@ -119,7 +119,7 @@ const MoreScreen: React.FC = () => {
               <div className='profile-email'>{currentUser?.email || 'user@example.com'}</div>
             </div>
             <div className='profile-arrow'>
-              <span className='arrow-icon'>→</span>
+              <ChevronRightIcon className='arrow-heroicon' />
             </div>
           </div>
         </div>
@@ -148,7 +148,7 @@ const MoreScreen: React.FC = () => {
                         {pet.neutered && ' • 중성화완료'}
                       </div>
                     </div>
-                    <span className='chevron-icon'></span>
+                    <ChevronRightIcon className='chevron-heroicon' />
                   </div>
                 ))}
               </div>
@@ -179,22 +179,22 @@ const MoreScreen: React.FC = () => {
 
           <div className='menu-item' onClick={handleNotifications}>
             <span className='menu-text'>알림 설정</span>
-            <span className='chevron-icon'></span>
+            <ChevronRightIcon className='chevron-heroicon' />
           </div>
 
           <div className='menu-item' onClick={handleHospitalSettings}>
             <span className='menu-text'>병원 설정</span>
-            <span className='chevron-icon'></span>
+            <ChevronRightIcon className='chevron-heroicon' />
           </div>
 
           <div className='menu-item' onClick={handleTerms}>
             <span className='menu-text'>약관 및 개인정보처리방침</span>
-            <span className='chevron-icon'></span>
+            <ChevronRightIcon className='chevron-heroicon' />
           </div>
 
           <div className='menu-item' onClick={handleWebAppInstall}>
             <span className='menu-text'>웹앱 설치</span>
-            <span className='chevron-icon'></span>
+            <ChevronRightIcon className='chevron-heroicon' />
           </div>
         </div>
       </div>
