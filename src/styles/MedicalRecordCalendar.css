@@ -27,20 +27,34 @@
 }
 
 .calendar-year-nav button {
-  padding: 0.25rem;
+  padding: 0.25rem 0.5rem;
   border: none;
   background: transparent;
   color: white;
   border-radius: 0.25rem;
   cursor: pointer;
   font-size: 0.75rem;
-  opacity: 0.75;
+  opacity: 0.9;
   transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.calendar-year-nav button svg {
+  color: white !important;
+  fill: none !important;
+  stroke: white !important;
+  stroke-width: 2 !important;
+  width: 1.25rem !important;
+  height: 1.25rem !important;
+  display: block !important;
 }
 
 .calendar-year-nav button:hover {
   background: rgba(255, 255, 255, 0.1);
   opacity: 1;
+  transform: scale(1.05);
 }
 
 .calendar-year-text {
@@ -63,10 +77,24 @@
   border-radius: 50%;
   cursor: pointer;
   transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.calendar-month-nav button svg {
+  color: white !important;
+  fill: none !important;
+  stroke: white !important;
+  stroke-width: 2 !important;
+  width: 1.25rem !important;
+  height: 1.25rem !important;
+  display: block !important;
 }
 
 .calendar-month-nav button:hover {
   background: rgba(255, 255, 255, 0.1);
+  transform: scale(1.05);
 }
 
 .calendar-month-text {
@@ -206,13 +234,17 @@
 
 /* 범례 */
 .calendar-legend {
-  padding: 0.5rem; /* 0.75rem에서 0.5rem으로 더 줄임 */
-  padding-bottom: 1rem; /* 4rem에서 2rem으로 줄임 */
+  padding: 0.25rem; /* 더 줄임 */
+  padding-bottom: 0.5rem; /* 더 줄임 */
   background: #f9fafb; /* bg-gray-50 */
+  margin-top: 0.5rem; /* 캘린더와 범례 사이 간격 추가 */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 .calendar-legend-section {
-  margin-bottom: 0.5rem; /* 0.75rem에서 0.5rem으로 줄임 */
+  margin-bottom: 0.25rem; /* 더 줄임 */
 }
 
 .calendar-legend-section:last-child {
@@ -225,20 +257,25 @@
   color: #4b5563; /* text-gray-600 */
   text-align: center;
   margin-bottom: 0.5rem;
+  white-space: nowrap;
 }
 
 .calendar-legend-items {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
   gap: 0.5rem;
   font-size: 0.75rem;
+  max-width: 200px;
+  margin: 0 auto;
+  justify-items: center;
 }
 
 .calendar-legend-item {
   display: flex;
+  flex-direction: row;
   align-items: center;
   gap: 0.5rem;
+  white-space: nowrap;
 }
 
 .calendar-legend-item.small {

@@ -306,27 +306,7 @@ body {
   font-weight: 500;
 }
 
-/* 캘린더 범례 */
-.calendar-legend {
-  position: fixed;
-  bottom: calc(10% + 60px);
-  left: 50%;
-  transform: translateX(-50%);
-  width: calc(100% - 20%);
-  max-width: calc(768px - 20%);
-  padding: 12px 10%;
-  background-color: #1a1a1a;
-  border-radius: 12px;
-  border: 1px solid #333;
-  z-index: 999;
-}
-
-.calendar-legend h3 {
-  margin-bottom: 8px;
-  color: #ffffff;
-  font-size: 0.9rem;
-  text-align: center;
-}
+/* 캘린더 범례는 MedicalRecordCalendar.css에서 관리 */
 
 .legend-items {
   display: flex;
@@ -943,6 +923,13 @@ body {
   cursor: pointer;
   transition: all 0.3s ease;
   min-width: 120px;
+  max-width: none;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  white-space: nowrap;
 }
 
 .action-button.primary {
@@ -965,6 +952,8 @@ body {
   background: rgba(255, 255, 255, 0.2);
   transform: translateY(-2px);
 }
+
+/* DetailRecord 액션 버튼 아이콘은 Navigation과 동일한 스타일 사용 */
 
 .back-button {
   background: rgba(255, 255, 255, 0.1);
