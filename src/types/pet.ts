@@ -64,3 +64,57 @@ export interface PetResponse {
   data: Pet;
   message: string;
 }
+
+/**
+ * 병원 정보 타입 (진료기록에 포함)
+ */
+export interface Hospital {
+  id: number;
+  name: string;
+  address: string;
+  phone: string;
+}
+
+/**
+ * 수의사 정보 타입 (진료기록에 포함)
+ */
+export interface Vet {
+  id: number;
+  name: string;
+  licenseNumber: string;
+  specialization: string;
+}
+
+/**
+ * 진료기록이 포함된 반려동물 타입 (N+1 문제 해결용)
+ */
+export interface PetWithMedicalRecords extends Pet {
+  medicalRecords: Array<{
+    id: number;
+    petId: number;
+    hospitalId: number;
+    vetId: number;
+    visitDate: string;
+    chiefComplaint: string;
+    examinationNotes: string;
+    treatmentPlan: string;
+    followUp: string;
+    createdAt: string;
+    updatedAt: string;
+    hospital: Hospital;
+    vet: Vet;
+  }>;
+}
+
+/**
+ * 반려동물과 진료기록 함께 조회 응답 타입
+ */
+export interface PetWithRecordsResponse {
+  success: boolean;
+  data: PetWithMedicalRecords[];
+  pagination: {
+    page: number;
+    limit: number;
+    total: number;
+  };
+}

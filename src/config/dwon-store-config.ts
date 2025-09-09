@@ -72,6 +72,7 @@ export const DWON_STORE_ENDPOINTS = {
   // 반려동물 관련
   PETS: {
     MY_PETS: '/pets/my-pets',
+    MY_PETS_WITH_RECORDS: '/pets/my-pets-with-records', // N+1 문제 해결을 위한 새로운 엔드포인트
     CREATE: '/pets',
     DETAIL: (id: number) => `/pets/${id}`,
   },

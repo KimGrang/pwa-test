@@ -1,0 +1,271 @@
+/* PetFilter 드롭다운 컴포넌트 스타일 */
+.pet-filter-dropdown {
+  position: relative;
+  width: 100%;
+  max-width: 200px;
+  margin-bottom: 1rem;
+}
+
+/* 드롭다운 트리거 버튼 */
+.pet-filter-trigger {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.75rem 1rem;
+  background: var(--color-background);
+  border: 2px solid var(--color-border);
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-size: 0.875rem;
+  color: var(--color-text);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.pet-filter-trigger:hover {
+  border-color: var(--color-primary);
+  background: var(--color-background-hover);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+.pet-filter-trigger:focus {
+  outline: none;
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px rgba(var(--color-primary-rgb), 0.1);
+}
+
+.pet-filter-trigger-content {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex: 1;
+  min-width: 0;
+}
+
+.pet-filter-trigger-icon {
+  font-size: 1.25rem;
+  line-height: 1;
+  flex-shrink: 0;
+}
+
+.pet-filter-trigger-avatar {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 1px solid var(--color-border);
+}
+
+.pet-filter-trigger-text {
+  font-weight: 500;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.pet-filter-chevron {
+  width: 16px;
+  height: 16px;
+  color: var(--color-text-secondary);
+  transition: transform 0.2s ease;
+  flex-shrink: 0;
+}
+
+.pet-filter-chevron.open {
+  transform: rotate(180deg);
+}
+
+/* 드롭다운 메뉴 */
+.pet-filter-dropdown-menu {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+  margin-top: 0.25rem;
+  background: var(--color-background);
+  border: 2px solid var(--color-border);
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+  overflow: hidden;
+  animation: dropdownFadeIn 0.2s ease;
+}
+
+@keyframes dropdownFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.pet-filter-dropdown-content {
+  max-height: 200px;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-primary) transparent;
+}
+
+.pet-filter-dropdown-content::-webkit-scrollbar {
+  width: 4px;
+}
+
+.pet-filter-dropdown-content::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.pet-filter-dropdown-content::-webkit-scrollbar-thumb {
+  background-color: var(--color-primary);
+  border-radius: 2px;
+}
+
+/* 드롭다운 옵션 */
+.pet-filter-option {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1rem;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.15s ease;
+  font-size: 0.875rem;
+  color: var(--color-text);
+  text-align: left;
+}
+
+.pet-filter-option:hover {
+  background: var(--color-background-hover);
+}
+
+.pet-filter-option.selected {
+  background: var(--color-primary-light);
+  color: var(--color-primary);
+  font-weight: 500;
+}
+
+.pet-filter-option:focus {
+  outline: none;
+  background: var(--color-background-hover);
+}
+
+.pet-filter-option-icon {
+  font-size: 1.125rem;
+  line-height: 1;
+  flex-shrink: 0;
+}
+
+.pet-filter-option-avatar {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 1px solid var(--color-border);
+}
+
+.pet-filter-option-text {
+  flex: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.pet-filter-check {
+  color: var(--color-primary);
+  font-weight: bold;
+  font-size: 0.875rem;
+  flex-shrink: 0;
+}
+
+/* 반응형 디자인 */
+@media (max-width: 768px) {
+  .pet-filter-dropdown {
+    max-width: 180px;
+  }
+
+  .pet-filter-trigger {
+    padding: 0.625rem 0.875rem;
+    font-size: 0.8125rem;
+  }
+
+  .pet-filter-trigger-avatar {
+    width: 18px;
+    height: 18px;
+  }
+
+  .pet-filter-option {
+    padding: 0.625rem 0.875rem;
+    font-size: 0.8125rem;
+  }
+
+  .pet-filter-option-avatar {
+    width: 16px;
+    height: 16px;
+  }
+}
+
+@media (max-width: 480px) {
+  .pet-filter-dropdown {
+    max-width: 160px;
+  }
+
+  .pet-filter-trigger {
+    padding: 0.5rem 0.75rem;
+    font-size: 0.75rem;
+  }
+
+  .pet-filter-trigger-avatar {
+    width: 16px;
+    height: 16px;
+  }
+
+  .pet-filter-option {
+    padding: 0.5rem 0.75rem;
+    font-size: 0.75rem;
+  }
+
+  .pet-filter-option-avatar {
+    width: 14px;
+    height: 14px;
+  }
+}
+
+/* 다크 모드 지원 */
+@media (prefers-color-scheme: dark) {
+  .pet-filter-trigger {
+    background: var(--color-background-dark, #1a1a1a);
+    border-color: var(--color-border-dark, #333);
+    color: var(--color-text-dark, #fff);
+  }
+
+  .pet-filter-trigger:hover {
+    background: var(--color-background-hover-dark, #2a2a2a);
+  }
+
+  .pet-filter-dropdown-menu {
+    background: var(--color-background-dark, #1a1a1a);
+    border-color: var(--color-border-dark, #333);
+  }
+
+  .pet-filter-option {
+    color: var(--color-text-dark, #fff);
+  }
+
+  .pet-filter-option:hover {
+    background: var(--color-background-hover-dark, #2a2a2a);
+  }
+
+  .pet-filter-option.selected {
+    background: var(--color-primary-light-dark, rgba(var(--color-primary-rgb), 0.15));
+  }
+
+  .pet-filter-trigger-avatar,
+  .pet-filter-option-avatar {
+    border-color: var(--color-border-dark, #333);
+  }
+}
