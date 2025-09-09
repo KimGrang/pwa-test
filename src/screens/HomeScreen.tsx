@@ -1,5 +1,6 @@
 import React, { useEffect, useMemo, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { KeyIcon, XMarkIcon } from '@heroicons/react/24/outline';
 import { useDwonStoreAuth, useDwonStorePets, useDwonStoreMedicalRecords } from '../hooks/useDwonStoreAPI';
 import { TokenManager } from '../utils/token-manager';
 import { useUserStore } from '../store/userStore';
@@ -297,7 +298,14 @@ const HomeScreen: React.FC = () => {
         <div className='header-right'>
           {!isAuthenticated ? (
             <button className='login-button' onClick={handleLogin} disabled={authLoading}>
-              {authLoading ? '로그인 중...' : '🔑 로그인'}
+              {authLoading ? (
+                '로그인 중...'
+              ) : (
+                <>
+                  <KeyIcon className='w-4 h-4 mr-1' />
+                  로그인
+                </>
+              )}
             </button>
           ) : (
             <button className='user-greeting' onClick={handleUserProfileClick}>
@@ -314,7 +322,7 @@ const HomeScreen: React.FC = () => {
           <div className='error-message'>
             <span>{authError}</span>
             <button onClick={clearAuthError} className='error-close-button'>
-              ✕
+              <XMarkIcon className='w-4 h-4' />
             </button>
           </div>
         )}

@@ -1,5 +1,5 @@
 import React, { useMemo, useCallback } from 'react';
-import { ChevronLeft, ChevronRight } from 'lucide-react';
+import { ChevronLeftIcon, ChevronRightIcon } from '@heroicons/react/24/outline';
 import { useUIStore } from '../store/uiStore';
 
 // recordStore의 MedicalRecord 타입과 호환되는 인터페이스
@@ -187,13 +187,13 @@ const MedicalRecordCalendar: React.FC<MedicalRecordCalendarProps> = ({
         {/* 월 네비게이션 */}
         <div className='calendar-month-nav'>
           <button onClick={() => navigateMonth('prev')} title='이전 달'>
-            <ChevronLeft size={20} />
+            <ChevronLeftIcon className='w-5 h-5' />
           </button>
 
           <h2 className='calendar-month-text'>{monthNames[currentDate.getMonth()]}</h2>
 
           <button onClick={() => navigateMonth('next')} title='다음 달'>
-            <ChevronRight size={20} />
+            <ChevronRightIcon className='w-5 h-5' />
           </button>
         </div>
       </div>

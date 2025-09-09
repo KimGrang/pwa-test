@@ -38,19 +38,15 @@ const InstallScreen: React.FC = () => {
           </p>
           <div className='pwa-features-list'>
             <div className='feature-item'>
-              <span className='feature-icon'>📱</span>
               <span className='feature-text'>오프라인에서도 동작</span>
             </div>
             <div className='feature-item'>
-              <span className='feature-icon'>🏠</span>
               <span className='feature-text'>홈 화면에 설치 가능</span>
             </div>
             <div className='feature-item'>
-              <span className='feature-icon'>🔔</span>
               <span className='feature-text'>푸시 알림 지원</span>
             </div>
             <div className='feature-item'>
-              <span className='feature-icon'>⚡</span>
               <span className='feature-text'>빠른 로딩 속도</span>
             </div>
           </div>

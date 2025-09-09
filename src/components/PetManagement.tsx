@@ -232,7 +232,7 @@ const PetManagement: React.FC = () => {
                 <label>프로필 이미지 URL</label>
                 <input
                   type='url'
-                  value={formData.profileImageUrl}
+                  value={formData.profileImageUrl || ''}
                   onChange={(e) => setFormData({ ...formData, profileImageUrl: e.target.value })}
                 />
               </div>

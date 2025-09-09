@@ -1,5 +1,6 @@
 import React, { useCallback, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { HeartIcon } from '@heroicons/react/24/outline';
 import { useUserStore } from '../store/userStore';
 import { usePetStore } from '../store/petStore';
 import { usePetAPIHook } from '../hooks/usePetAPI';
@@ -161,7 +162,9 @@ const MoreScreen: React.FC = () => {
             </>
           ) : (
             <div className='empty-state'>
-              <div className='empty-icon'>🐕</div>
+              <div className='empty-icon'>
+                <HeartIcon className='w-12 h-12 text-gray-400' />
+              </div>
               <div className='empty-text'>등록된 반려동물이 없습니다</div>
               <button className='add-pet-button' onClick={handleAddPet}>
                 반려동물 추가하기
