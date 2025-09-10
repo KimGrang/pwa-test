@@ -1,0 +1,212 @@
+/* 로그인 모달 스타일 */
+
+.login-modal-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: var(--spacing-md);
+}
+
+.login-modal {
+  background: var(--color-background);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-lg);
+  width: 100%;
+  max-width: 400px;
+  max-height: 90vh;
+  overflow: hidden;
+  animation: modalSlideIn 0.3s ease-out;
+}
+
+@keyframes modalSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-20px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.login-modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--spacing-lg);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.login-modal-title {
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text);
+  margin: 0;
+}
+
+.login-modal-close {
+  background: transparent;
+  border: none;
+  color: var(--color-text-secondary);
+  cursor: pointer;
+  padding: var(--spacing-xs);
+  border-radius: var(--radius-sm);
+  transition: all var(--transition-fast);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.login-modal-close:hover {
+  background: var(--color-background-hover);
+  color: var(--color-text);
+}
+
+.login-modal-close:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.login-modal-content {
+  padding: var(--spacing-lg);
+}
+
+.login-modal-description {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-secondary);
+  text-align: center;
+  margin: 0 0 var(--spacing-lg) 0;
+  line-height: 1.5;
+}
+
+.login-modal-error {
+  background: var(--color-danger-light);
+  border: 1px solid var(--color-danger);
+  color: var(--color-danger-dark);
+  padding: var(--spacing-md);
+  border-radius: var(--radius-md);
+  margin-bottom: var(--spacing-lg);
+  font-size: var(--font-size-sm);
+  text-align: center;
+}
+
+.login-modal-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+}
+
+.login-modal-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-sm);
+  padding: var(--spacing-md) var(--spacing-lg);
+  border: none;
+  border-radius: var(--radius-md);
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-medium);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  min-height: 48px;
+  position: relative;
+  overflow: hidden;
+}
+
+.login-modal-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.login-modal-button-icon {
+  font-size: var(--font-size-lg);
+  flex-shrink: 0;
+}
+
+/* 카카오 로그인 버튼 */
+.login-modal-button--kakao {
+  background: #fee500;
+  color: #3c1e1e;
+  border: 1px solid #fee500;
+}
+
+.login-modal-button--kakao:hover:not(:disabled) {
+  background: #fdd835;
+  border-color: #fdd835;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(254, 229, 0, 0.3);
+}
+
+.login-modal-button--kakao:active:not(:disabled) {
+  transform: translateY(0);
+  box-shadow: 0 2px 6px rgba(254, 229, 0, 0.2);
+}
+
+/* 테스트 로그인 버튼 */
+.login-modal-button--test {
+  background: var(--color-primary);
+  color: var(--color-text-inverse);
+  border: 1px solid var(--color-primary);
+}
+
+.login-modal-button--test:hover:not(:disabled) {
+  background: var(--color-primary-dark);
+  border-color: var(--color-primary-dark);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(var(--color-primary-rgb), 0.3);
+}
+
+.login-modal-button--test:active:not(:disabled) {
+  transform: translateY(0);
+  box-shadow: 0 2px 6px rgba(var(--color-primary-rgb), 0.2);
+}
+
+/* 로딩 상태 애니메이션 */
+.login-modal-button:disabled::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+  animation: loadingShimmer 1.5s infinite;
+}
+
+@keyframes loadingShimmer {
+  0% {
+    left: -100%;
+  }
+  100% {
+    left: 100%;
+  }
+}
+
+/* 반응형 디자인 */
+@media (max-width: 480px) {
+  .login-modal-backdrop {
+    padding: var(--spacing-sm);
+  }
+
+  .login-modal {
+    max-width: none;
+    width: 100%;
+  }
+
+  .login-modal-header,
+  .login-modal-content {
+    padding: var(--spacing-md);
+  }
+
+  .login-modal-button {
+    padding: var(--spacing-sm) var(--spacing-md);
+    font-size: var(--font-size-sm);
+  }
+}
