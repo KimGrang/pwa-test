@@ -12,12 +12,12 @@ import '../styles/moreScreen.css';
 const PetMoreScreen: React.FC = () => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
-  const { pets, addPet, updatePet, removePet, setPets } = usePetStore();
+  const { pets, addPet, updatePet, removePet } = usePetStore();
   const {
     createPet,
     updatePet: updatePetAPI,
     deletePet: deletePetAPI,
-    fetchMyPets,
+    // fetchMyPets,
     loading: isLoading,
     error: apiError,
   } = usePetAPIHook();
@@ -25,20 +25,6 @@ const PetMoreScreen: React.FC = () => {
   // 편집 모드 상태
   const [isEditing, setIsEditing] = useState(false);
   const [editingPetId, setEditingPetId] = useState<number | null>(null);
-
-  // 목록 새로고침 함수
-  const refreshPetsList = useCallback(async () => {
-    try {
-      const petsData = await fetchMyPets(1, 50);
-      if (petsData) {
-        setPets(petsData);
-      }
-    } catch (error) {
-      console.error('목록 새로고침 오류:', error);
-      // API 오류 시 기존 store 데이터 유지 (사용자에게 알리지 않음)
-      console.log('API 오류로 인해 기존 데이터를 유지합니다.');
-    }
-  }, [fetchMyPets, setPets]);
 
   // 새 반려동물/편집 데이터 (API 문서에 맞춰 수정)
   const [petData, setPetData] = useState({
@@ -137,10 +123,8 @@ const PetMoreScreen: React.FC = () => {
         // 기존 반려동물 수정 - API 호출
         const updatedPet = await updatePetAPI(editingPetId, petData);
         if (updatedPet) {
-          // 로컬 상태도 업데이트
-          updatePet(editingPetId, petData);
-          // 목록 직접 새로고침
-          await refreshPetsList();
+          // 로컬 상태 업데이트 (API 재호출 불필요)
+          updatePet(editingPetId, updatedPet);
           alert('반려동물 정보가 수정되었습니다.');
           navigate('/more'); // 수정 후 MoreScreen으로 이동
         } else {
@@ -150,10 +134,8 @@ const PetMoreScreen: React.FC = () => {
         // 새 반려동물 추가 - API 호출
         const newPet = await createPet(petData);
         if (newPet) {
-          // 로컬 상태도 업데이트
+          // 로컬 상태 업데이트 (API 재호출 불필요)
           addPet(newPet);
-          // 목록 직접 새로고침
-          await refreshPetsList();
           alert('반려동물이 추가되었습니다.');
           navigate('/more'); // 추가 후 MoreScreen으로 이동
         } else {
@@ -167,7 +149,7 @@ const PetMoreScreen: React.FC = () => {
     } finally {
       // setIsLoading(false);
     }
-  }, [petData, editingPetId, updatePetAPI, createPet, addPet, updatePet, navigate, apiError, refreshPetsList]);
+  }, [petData, editingPetId, updatePetAPI, createPet, addPet, updatePet, navigate, apiError]);
 
   /**
    * 반려동물 삭제
@@ -183,10 +165,8 @@ const PetMoreScreen: React.FC = () => {
           // API 호출로 삭제
           const deletedPet = await deletePetAPI(petId);
           if (deletedPet) {
-            // 로컬 상태도 업데이트
+            // 로컬 상태 업데이트 (API 재호출 불필요)
             removePet(petId);
-            // 목록 직접 새로고침
-            await refreshPetsList();
             alert('반려동물이 삭제되었습니다.');
             navigate('/more'); // 삭제 후 MoreScreen으로 이동
           } else {
@@ -201,7 +181,7 @@ const PetMoreScreen: React.FC = () => {
         }
       }
     },
-    [pets, deletePetAPI, removePet, navigate, apiError, refreshPetsList]
+    [pets, deletePetAPI, removePet, navigate, apiError]
   );
 
   /**

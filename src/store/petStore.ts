@@ -18,6 +18,9 @@ interface PetState {
   isLoading: boolean;
   error: string | null;
 
+  // 데이터 새로고침 필요 여부
+  needsRefresh: boolean;
+
   // 페이지네이션 정보
   pagination: {
     page: number;
@@ -35,6 +38,7 @@ interface PetState {
   setError: (error: string | null) => void;
   clearError: () => void;
   setPagination: (pagination: { page: number; limit: number; total: number }) => void;
+  setNeedsRefresh: (needsRefresh: boolean) => void;
 
   // 유틸리티 함수
   getPetById: (id: number) => Pet | undefined;
@@ -55,6 +59,7 @@ export const usePetStore = create<PetState>()(
       selectedPet: null,
       isLoading: false,
       error: null,
+      needsRefresh: false,
       pagination: {
         page: 1,
         limit: 10,
@@ -103,6 +108,8 @@ export const usePetStore = create<PetState>()(
 
       setPagination: (pagination: { page: number; limit: number; total: number }) => set({ pagination }),
 
+      setNeedsRefresh: (needsRefresh: boolean) => set({ needsRefresh }),
+
       // 유틸리티 함수
       getPetById: (id: number) => {
         const { pets } = get();
@@ -120,6 +127,7 @@ export const usePetStore = create<PetState>()(
           selectedPet: null,
           isLoading: false,
           error: null,
+          needsRefresh: false,
           pagination: {
             page: 1,
             limit: 10,

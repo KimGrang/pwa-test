@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useUserStore } from '../store/userStore';
 import { useAuthStore } from '../store/authStore';
@@ -9,6 +9,7 @@ import { useHospitalStore } from '../store/hospitalStore';
 import { useUIStore } from '../store/uiStore';
 import { useAppStore } from '../store/appStore';
 import { TokenManager } from '../utils/token-manager';
+import WithdrawModal from '../components/WithdrawModal';
 import '../styles/base.css';
 import '../styles/moreScreen.css';
 
@@ -18,6 +19,7 @@ import '../styles/moreScreen.css';
  */
 const UserMoreScreen: React.FC = () => {
   const navigate = useNavigate();
+  const [isWithdrawModalOpen, setIsWithdrawModalOpen] = useState(false);
 
   // 스토어에서 사용자 정보와 인증 상태 가져오기
   const { currentUser, clearAll: clearUserStore } = useUserStore();
@@ -63,14 +65,27 @@ const UserMoreScreen: React.FC = () => {
   ]);
 
   /**
-   * 회원탈퇴 처리
+   * 회원탈퇴 모달 열기
    */
   const handleWithdrawal = useCallback(() => {
-    if (window.confirm('앱에 등록된 진료 기록이 모두 삭제됩니다.\n정말 탈퇴하시겠습니까?')) {
-      // TODO: 회원탈퇴 API 호출
-      alert('회원탈퇴 기능은 준비 중입니다.');
-    }
+    setIsWithdrawModalOpen(true);
   }, []);
+
+  /**
+   * 회원탈퇴 모달 닫기
+   */
+  const handleCloseWithdrawModal = useCallback(() => {
+    setIsWithdrawModalOpen(false);
+  }, []);
+
+  /**
+   * 회원탈퇴 성공 후 처리
+   */
+  const handleWithdrawSuccess = useCallback(() => {
+    setIsWithdrawModalOpen(false);
+    // 홈 화면으로 이동
+    navigate('/');
+  }, [navigate]);
 
   /**
    * 뒤로가기 처리
@@ -127,6 +142,13 @@ const UserMoreScreen: React.FC = () => {
           </div>
         </div>
       </div>
+
+      {/* 회원 탈퇴 모달 */}
+      <WithdrawModal
+        isOpen={isWithdrawModalOpen}
+        onClose={handleCloseWithdrawModal}
+        onSuccess={handleWithdrawSuccess}
+      />
     </div>
   );
 };

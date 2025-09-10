@@ -109,6 +109,8 @@ export const useDwonStoreUser = () => {
 
   const deleteUser = useCallback(() => del(DWON_STORE_ENDPOINTS.USERS.PROFILE), [del]);
 
+  const withdraw = useCallback(() => del(DWON_STORE_ENDPOINTS.USERS.WITHDRAW), [del]);
+
   return {
     userData: data?.data || null,
     loading,
@@ -117,6 +119,7 @@ export const useDwonStoreUser = () => {
     updateProfile,
     changePassword,
     deleteUser,
+    withdraw,
     clearError,
   };
 };
