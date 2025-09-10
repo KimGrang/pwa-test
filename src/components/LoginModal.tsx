@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { XMarkIcon } from '@heroicons/react/24/outline';
+import { useAxios } from '../hooks/useAxios';
 import { useDwonStoreAuth, useDwonStorePets } from '../hooks/useDwonStoreAPI';
+import { getCurrentConfig } from '../config/dwon-store-config';
 import { useAuthStore } from '../store/authStore';
 import { useUserStore } from '../store/userStore';
 import { useRecordStore } from '../store/recordStore';
@@ -34,8 +36,9 @@ const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose }) => {
   const [error, setError] = useState<string | null>(null);
 
   // API 훅
-  const { kakaoLogin, testLogin, loading: authLoading } = useDwonStoreAuth();
+  const { testLogin, loading: authLoading } = useDwonStoreAuth();
   const { getMyPetsWithRecords } = useDwonStorePets();
+  const { get: axiosGet } = useAxios();
 
   // 스토어 훅
   const { login: setAuthTokens, logout: authLogout } = useAuthStore();
@@ -54,41 +57,14 @@ const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose }) => {
     setError(null);
 
     try {
-      // 카카오 로그인 데이터 (실제 구현에서는 카카오 SDK에서 받아온 데이터 사용)
-      const kakaoData = {
-        userId: 'kakao_user_id',
-        provider: 'KAKAO' as const,
-        accessToken: 'kakao_access_token',
-        refreshToken: 'kakao_refresh_token',
-        socialUser: {
-          email: 'user@kakao.com',
-          name: '카카오 사용자',
-        },
-      };
+      // 백엔드에서 카카오 로그인 URL 가져오기
+      const response = await axiosGet('/auth/kakao/url', {
+        baseURL: 'https://www.example.com/api',
+      });
+      const { authUrl } = response as { authUrl: string };
 
-      const response = await kakaoLogin(kakaoData);
-
-      // API 응답 구조에 맞게 처리
-      if (
-        response &&
-        typeof response === 'object' &&
-        'access_token' in response &&
-        'refresh_token' in response &&
-        'user' in response
-      ) {
-        // 인증 토큰 저장
-        setAuthTokens({
-          accessToken: response.access_token as string,
-          refreshToken: response.refresh_token as string,
-        });
-
-        // 사용자 정보 저장
-        setCurrentUser(response.user as User);
-
-        onClose();
-      } else {
-        setError('카카오 로그인에 실패했습니다.');
-      }
+      // 카카오 로그인 페이지로 리다이렉트
+      window.location.href = authUrl;
     } catch (err) {
       setError('카카오 로그인 중 오류가 발생했습니다.');
       console.error('카카오 로그인 오류:', err);
@@ -106,8 +82,10 @@ const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose }) => {
 
     try {
       console.log('📡 서버에 테스트 로그인 요청...');
+      console.log('🔧 현재 환경:', process.env.NODE_ENV || 'development');
+      console.log('🔧 getCurrentConfig():', getCurrentConfig());
 
-      // 서버 API 호출
+      // 서버 API 호출 (원래 방식 - localhost:4000 사용)
       const response = await testLogin();
 
       console.log('📥 전체 서버 응답:', response);
@@ -129,7 +107,7 @@ const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose }) => {
           access_token: response.access_token,
           refresh_token: response.refresh_token,
           user: response.user as User,
-          message: response.message as string,
+          message: (response as { message?: string }).message || '',
         };
 
         console.log('✅ 서버 응답:', loginData);

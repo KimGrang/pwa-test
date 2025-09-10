@@ -9,6 +9,7 @@ import UserMoreScreen from './screens/UserMoreScreen';
 import PetMoreScreen from './screens/PetMoreScreen';
 import InstallScreen from './screens/InstallScreen';
 import Navigation from './components/Navigation';
+import KakaoCallback from './components/KakaoCallback';
 
 /**
  * 메인 App 컴포넌트
@@ -44,6 +45,9 @@ const App: React.FC = () => {
 
             {/* PWA 설치 안내 화면 */}
             <Route path='/install' element={<InstallScreen />} />
+
+            {/* 카카오 로그인 콜백 */}
+            <Route path='/auth/kakao/callback' element={<KakaoCallback />} />
           </Routes>
         </main>
 
