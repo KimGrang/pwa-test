@@ -1,7 +1,7 @@
 import { useState, useCallback } from 'react';
 import useAxios from './useAxios';
 import { Pet, CreatePetRequest, UpdatePetRequest, PetResponse, PetListResponse } from '../types';
-import { API_CONFIG } from '../config/api-config';
+import { getCurrentConfig } from '../config/dwon-store-config';
 
 /**
  * 반려동물 API 전용 훅
@@ -33,7 +33,7 @@ interface UsePetAPIReturn {
 
 export const usePetAPIHook = (): UsePetAPIReturn => {
   const { loading, error, get, post, patch, del, clearError } = useAxios<PetResponse | PetListResponse>(
-    `${API_CONFIG.LOCAL_DEV.BASE_URL}/pets`
+    `${getCurrentConfig().BASE_URL}/pets`
   );
   const [pets, setPets] = useState<Pet[]>([]);
   const [currentPet, setCurrentPet] = useState<Pet | null>(null);

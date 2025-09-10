@@ -7,6 +7,7 @@
 ```typescript
 // components/LoginModal.tsx (기존 모달에 카카오 로그인 추가)
 import React, { useState } from 'react';
+import { useAxios } from '../hooks/useAxios';
 import { useDwonStoreAuth } from '../hooks/useDwonStoreAPI';
 import { useAuthStore } from '../store/authStore';
 import { useUserStore } from '../store/userStore';
@@ -16,7 +17,8 @@ const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose }) => {
   const [error, setError] = useState<string | null>(null);
 
   // API 훅
-  const { kakaoLogin, testLogin, loading: authLoading } = useDwonStoreAuth();
+  const { testLogin, loading: authLoading } = useDwonStoreAuth();
+  const { get: axiosGet } = useAxios('https://www.dwon.store/api');
 
   // 스토어 훅
   const { login: setAuthTokens } = useAuthStore();
@@ -31,8 +33,10 @@ const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose }) => {
 
     try {
       // 백엔드에서 카카오 로그인 URL 가져오기
-      const response = await fetch('http://localhost:4000/api/auth/kakao/url');
-      const { authUrl } = await response.json();
+      const response = await axiosGet('/auth/kakao/url', {
+        baseURL: 'https://www.dwon.store/api',
+      });
+      const { authUrl } = response;
 
       // 카카오 로그인 페이지로 리다이렉트
       window.location.href = authUrl;
@@ -426,7 +430,7 @@ const HomeScreen: React.FC = () => {
 
 2. **백엔드에서 카카오 로그인 URL 요청**
 
-   - `LoginModal`에서 `http://localhost:4000/api/auth/kakao/url` 호출
+   - `LoginModal`에서 `https://dwon.store/api/auth/kakao/url` 호출
    - 백엔드에서 카카오 OAuth URL 반환
 
 3. **카카오 로그인 페이지로 리다이렉트**
@@ -449,17 +453,17 @@ const HomeScreen: React.FC = () => {
 
 ## 8. 환경별 설정
 
-### 개발 환경
+### 현재 개발 환경 (프론트엔드 개발 중, 백엔드 배포 중)
 
-- 백엔드: `http://localhost:4000/api`
-- 프론트엔드: `http://localhost:5173`
-- 카카오 Redirect URI: `https://dwon.store/api/auth/kakao/callback`
+- 백엔드: `https://www.dwon.store/api` (배포된 상태)
+- 프론트엔드: `http://localhost:5173` (개발 중)
+- 카카오 Redirect URI: `https://www.dwon.store/api/auth/kakao/callback`
 
-### 프로덕션 환경
+### 완전한 프로덕션 환경 (향후)
 
-- 백엔드: `https://dwon.store/api`
-- 프론트엔드: `https://dwon.store` (또는 별도 도메인)
-- 카카오 Redirect URI: `https://dwon.store/api/auth/kakao/callback`
+- 백엔드: `https://www.dwon.store/api`
+- 프론트엔드: `https://www.dwon.store` (또는 별도 도메인)
+- 카카오 Redirect URI: `https://www.dwon.store/api/auth/kakao/callback`
 
 ## 9. 주요 특징
 

@@ -140,15 +140,10 @@ export const useDwonStorePets = () => {
   );
 
   // 새로운 API: 반려동물과 진료기록 함께 조회 (N+1 문제 해결)
-  const getMyPetsWithRecords = useCallback(
-    (params: PaginationParams = {}) => {
-      const { page = DWON_STORE_PAGINATION.DEFAULT_PAGE, limit = DWON_STORE_PAGINATION.DEFAULT_LIMIT } = params;
-      return get(
-        `${DWON_STORE_ENDPOINTS.PETS.MY_PETS_WITH_RECORDS}?page=${page}&limit=${limit}`
-      ) as Promise<PetWithRecordsResponse | null>;
-    },
-    [get]
-  );
+  const getMyPetsWithRecords = useCallback(() => {
+    // 백엔드 API는 페이지네이션을 지원하지 않음 (전체 데이터 반환)
+    return get(DWON_STORE_ENDPOINTS.PETS.MY_PETS_WITH_RECORDS) as Promise<PetWithRecordsResponse | null>;
+  }, [get]);
 
   const getPetById = useCallback((id: number) => get(DWON_STORE_ENDPOINTS.PETS.DETAIL(id)), [get]);
 

@@ -9,12 +9,12 @@
 export const DWON_STORE_CONFIG = {
   // 프로덕션 환경
   PRODUCTION: {
-    BASE_URL: 'https://dwon.store/api',
+    BASE_URL: 'https://www.dwon.store/api',
     TIMEOUT: 10000,
   },
   // 개발 환경
   DEVELOPMENT: {
-    BASE_URL: 'http://localhost:4000/api',
+    BASE_URL: 'https://www.dwon.store/api',
     TIMEOUT: 10000,
   },
   // 스테이징 환경
