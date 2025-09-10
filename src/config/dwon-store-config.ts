@@ -60,6 +60,7 @@ export const DWON_STORE_ENDPOINTS = {
     SOCIAL_LOGIN: '/users/social-login',
     TEST_LOGIN: '/users/test-login',
     CHANGE_PASSWORD: '/users/change-password',
+    WITHDRAW: '/users/withdraw',
   },
 
   // 병원 관련

@@ -3,14 +3,15 @@
 
 /* CSS 변수 정의 */
 :root {
-  /* 색상 시스템 - 모던하고 깔끔한 컬러 팔레트 */
-  --color-primary: #3b82f6;
-  --color-primary-dark: #2563eb;
-  --color-primary-light: #dbeafe;
+  /* 색상 시스템 - 세련된 의료/헬스케어 컬러 팔레트 */
+  --color-primary: #9aa6b2;
+  --color-primary-dark: #7a8a9a;
+  --color-primary-light: #d9eafd;
+  --color-primary-rgb: 154, 166, 178;
 
-  --color-secondary: #64748b;
-  --color-secondary-dark: #475569;
-  --color-secondary-light: #f1f5f9;
+  --color-secondary: #bcccdc;
+  --color-secondary-dark: #9aa6b2;
+  --color-secondary-light: #f8fafc;
 
   --color-success: #10b981;
   --color-success-dark: #059669;
@@ -23,26 +24,31 @@
   --color-danger: #ef4444;
   --color-danger-dark: #dc2626;
   --color-danger-light: #fee2e2;
+  --color-danger-rgb: 239, 68, 68;
 
   --color-info: #06b6d4;
   --color-info-dark: #0891b2;
   --color-info-light: #cffafe;
 
   /* 텍스트 색상 - 높은 대비와 가독성 */
-  --color-text-primary: #111827;
-  --color-text-secondary: #6b7280;
-  --color-text-muted: #9ca3af;
-  --color-text-inverse: #ffffff;
+  --color-text: #9aa6b2;
+  --color-text-primary: #9aa6b2;
+  --color-text-secondary: #bcccdc;
+  --color-text-muted: #d9eafd;
+  --color-text-inverse: #f8fafc;
+  --color-text-disabled: #bcccdc;
 
   /* 배경 색상 - 깔끔하고 현대적 */
-  --color-background: #ffffff;
-  --color-background-secondary: #f9fafb;
-  --color-background-tertiary: #f3f4f6;
+  --color-background: #f8fafc;
+  --color-background-secondary: #d9eafd;
+  --color-background-tertiary: #bcccdc;
+  --color-background-hover: #d9eafd;
+  --color-background-disabled: #bcccdc;
 
   /* 테두리 색상 - 미세한 구분감 */
-  --color-border: #e5e7eb;
-  --color-border-light: #f3f4f6;
-  --color-border-dark: #d1d5db;
+  --color-border: #bcccdc;
+  --color-border-light: #d9eafd;
+  --color-border-dark: #9aa6b2;
 
   /* 그림자 - 부드럽고 자연스러운 그림자 */
   --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
@@ -112,17 +118,22 @@
 /* 다크 모드 변수 - 현대적이고 눈에 편한 다크 테마 */
 @media (prefers-color-scheme: dark) {
   :root {
-    --color-text-primary: #f9fafb;
-    --color-text-secondary: #d1d5db;
-    --color-text-muted: #9ca3af;
+    --color-text: #f8fafc;
+    --color-text-primary: #f8fafc;
+    --color-text-secondary: #d9eafd;
+    --color-text-muted: #bcccdc;
+    --color-text-inverse: #9aa6b2;
+    --color-text-disabled: #bcccdc;
 
-    --color-background: #111827;
-    --color-background-secondary: #1f2937;
-    --color-background-tertiary: #374151;
+    --color-background: #1a1a1a;
+    --color-background-secondary: #2a2a2a;
+    --color-background-tertiary: #3a3a3a;
+    --color-background-hover: #2a2a2a;
+    --color-background-disabled: #3a3a3a;
 
-    --color-border: #374151;
-    --color-border-light: #4b5563;
-    --color-border-dark: #1f2937;
+    --color-border: #3a3a3a;
+    --color-border-light: #2a2a2a;
+    --color-border-dark: #4a4a4a;
   }
 }
 
@@ -212,33 +223,19 @@
 
 /* 다크 모드 대응 */
 @media (prefers-color-scheme: dark) {
-  :root {
-    /* 다크 모드 색상 변수 */
-    --color-background: #000000;
-    --color-background-secondary: #1f2937;
-    --color-background-tertiary: #374151;
-    --color-text-primary: #ffffff;
-    --color-text-secondary: #d1d5db;
-    --color-text-muted: #9ca3af;
-    --color-text-inverse: #000000;
-    --color-border: #374151;
-    --color-border-light: #4b5563;
-    --color-border-dark: #6b7280;
-  }
-
   .screen-scrollable-content::-webkit-scrollbar-thumb,
   .screen-compact-content::-webkit-scrollbar-thumb {
-    background: rgba(255, 255, 255, 0.2);
+    background: rgba(217, 234, 253, 0.3);
   }
 
   .screen-scrollable-content::-webkit-scrollbar-thumb:hover,
   .screen-compact-content::-webkit-scrollbar-thumb:hover {
-    background: rgba(255, 255, 255, 0.4);
+    background: rgba(217, 234, 253, 0.5);
   }
 
   .screen-scrollable-content,
   .screen-compact-content {
-    scrollbar-color: rgba(255, 255, 255, 0.2) transparent;
+    scrollbar-color: rgba(217, 234, 253, 0.3) transparent;
   }
 }
 
@@ -509,7 +506,7 @@
 .search-container {
   display: flex;
   align-items: center;
-  background: #1f2937; /* gray-800 */
+  background: var(--color-background-tertiary);
   border-radius: var(--radius-xl);
   padding: var(--spacing-sm) var(--spacing-md);
   gap: var(--spacing-sm);
@@ -523,11 +520,11 @@
   font-size: var(--font-size-base);
   outline: none;
   width: 100%;
-  color: white;
+  color: var(--color-text-primary);
 }
 
 .search-input::placeholder {
-  color: #9ca3af; /* gray-400 */
+  color: var(--color-text-muted);
 }
 
 .search-clear-button,
@@ -536,13 +533,13 @@
   border: none;
   font-size: var(--font-size-lg);
   cursor: pointer;
-  color: #9ca3af; /* gray-400 */
+  color: var(--color-text-muted);
   transition: all var(--transition-fast);
 }
 
 .search-clear-button:hover,
 .search-icon-button:hover {
-  color: white;
+  color: var(--color-text-primary);
 }
 
 .records-list {
@@ -557,7 +554,7 @@
   align-items: center;
   justify-content: space-between;
   padding: var(--spacing-md);
-  background: #1f2937; /* gray-800 */
+  background: var(--color-background-tertiary);
   border-radius: var(--radius-xl);
   width: 100%;
   cursor: pointer;
@@ -565,11 +562,11 @@
 }
 
 .record-item:hover {
-  background: #374151; /* gray-700 */
+  background: var(--color-background-hover);
 }
 
 .record-item:active {
-  background: #4b5563; /* gray-600 */
+  background: var(--color-border);
 }
 
 .record-content {
@@ -580,18 +577,18 @@
 
 .record-date {
   font-size: var(--font-size-sm);
-  color: #9ca3af; /* gray-400 */
+  color: var(--color-text-muted);
 }
 
 .record-title {
   font-size: var(--font-size-base);
   font-weight: var(--font-weight-semibold);
-  color: white;
+  color: var(--color-text-primary);
 }
 
 .record-details {
   font-size: var(--font-size-sm);
-  color: #d1d5db; /* gray-300 */
+  color: var(--color-text-secondary);
 }
 
 .record-details p {
@@ -599,7 +596,7 @@
 }
 
 .record-details strong {
-  color: #e5e7eb; /* gray-200 */
+  color: var(--color-text-primary);
 }
 
 .record-pet-icon {
@@ -609,7 +606,7 @@
 .empty-records {
   text-align: center;
   padding: var(--spacing-2xl) 0;
-  color: white;
+  color: var(--color-text-primary);
 }
 
 .empty-message {
@@ -618,7 +615,7 @@
 }
 
 .empty-search-message {
-  color: #9ca3af; /* gray-400 */
+  color: var(--color-text-muted);
 }
 
 /* App.tsx 전용 스타일 */
@@ -643,18 +640,18 @@
 
 .pwa-install-screen {
   height: 100%;
-  background: black;
-  color: white;
+  background: var(--color-background);
+  color: var(--color-text-primary);
   display: flex;
   flex-direction: column;
   overflow: hidden;
 }
 
 .pwa-install-header {
-  background: #1f2937; /* gray-800 */
+  background: var(--color-background-tertiary);
   padding: var(--spacing-md);
   text-align: center;
-  border-bottom: 1px solid #4b5563; /* border-gray-600 */
+  border-bottom: 1px solid var(--color-border);
   flex-shrink: 0;
 }
 
@@ -666,7 +663,7 @@
 
 .pwa-install-description {
   font-size: var(--font-size-sm);
-  color: #d1d5db; /* text-gray-300 */
+  color: var(--color-text-secondary);
 }
 
 .pwa-install-content {
@@ -687,7 +684,7 @@
 }
 
 .pwa-info-description {
-  color: #d1d5db; /* text-gray-300 */
+  color: var(--color-text-secondary);
   margin-bottom: var(--spacing-md);
 }
 
@@ -695,7 +692,7 @@
   display: flex;
   flex-direction: column;
   gap: var(--spacing-sm);
-  color: #d1d5db; /* text-gray-300 */
+  color: var(--color-text-secondary);
 }
 
 /* PWA 컴포넌트 전용 스타일 */
@@ -707,8 +704,8 @@
 }
 
 .pwa-update-prompt {
-  background: #1f2937; /* bg-gray-800 */
-  color: white;
+  background: var(--color-background-tertiary);
+  color: var(--color-text-primary);
   padding: var(--spacing-md);
   border-radius: var(--radius-md);
   box-shadow: var(--shadow-xl);
@@ -756,8 +753,8 @@
 
 .pwa-update-close-button {
   background: transparent;
-  color: #d1d5db; /* text-gray-300 */
-  border: 1px solid #6b7280; /* border-gray-500 */
+  color: var(--color-text-secondary);
+  border: 1px solid var(--color-border);
   padding: var(--spacing-sm) var(--spacing-md);
   border-radius: var(--radius-sm);
   font-size: var(--font-size-xs);
@@ -767,7 +764,7 @@
 }
 
 .pwa-update-close-button:hover {
-  background: #374151; /* hover:bg-gray-700 */
+  background: var(--color-background-hover);
 }
 
 .pwa-install-status {
