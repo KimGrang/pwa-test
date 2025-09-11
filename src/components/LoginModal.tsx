@@ -1,15 +1,39 @@
 import React, { useState } from 'react';
 import { XMarkIcon } from '@heroicons/react/24/outline';
 import { useAxios } from '../hooks/useAxios';
-import { useDwonStoreAuth, useDwonStorePets } from '../hooks/useDwonStoreAPI';
+import { useDwonStoreAuth, useDwonStorePets, useDwonStoreHospitals } from '../hooks/useDwonStoreAPI';
 import { getCurrentConfig } from '../config/dwon-store-config';
 import { useAuthStore } from '../store/authStore';
 import { useUserStore } from '../store/userStore';
 import { useRecordStore } from '../store/recordStore';
 import { usePetStore } from '../store/petStore';
 import { TokenManager } from '../utils/token-manager';
+import { processLoginData } from '../utils/loginPostProcess';
 import { Pet } from '../types/pet';
 import { MedicalRecord } from '../types/medical-record';
+
+// Hospital 타입 정의 (임시)
+interface Hospital {
+  id: string;
+  name: string;
+  address: string;
+  phone: string;
+  email: string;
+  website?: string;
+  description?: string;
+  specialties: string[];
+  operatingHours: {
+    [key: string]: {
+      open: string;
+      close: string;
+      isOpen: boolean;
+    };
+  };
+  location: {
+    latitude: number;
+    longitude: number;
+  };
+}
 
 // User 타입 정의 (API 응답과 일치)
 interface User {
@@ -18,6 +42,7 @@ interface User {
   name: string;
   role: 'USER' | 'ADMIN' | 'HOSPITAL_ADMIN' | 'VET' | 'OWNER';
   hospitalId?: number;
+  hospital?: Hospital;
   SNS?: string;
   isTestAccount?: boolean;
 }
@@ -38,11 +63,12 @@ const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose }) => {
   // API 훅
   const { testLogin, loading: authLoading } = useDwonStoreAuth();
   const { getMyPetsWithRecords } = useDwonStorePets();
+  const { getMyHospital } = useDwonStoreHospitals();
   const { get: axiosGet } = useAxios();
 
   // 스토어 훅
   const { login: setAuthTokens, logout: authLogout } = useAuthStore();
-  const { setCurrentUser, clearUser } = useUserStore();
+  const { clearUser } = useUserStore();
   const { setRecords: setMedicalRecords } = useRecordStore();
   const { setPets } = usePetStore();
 
@@ -113,7 +139,6 @@ const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose }) => {
         console.log('✅ 서버 응답:', loginData);
 
         // Zustand store에 데이터 저장
-        setCurrentUser(loginData.user);
         setAuthTokens({
           accessToken: loginData.access_token,
           refreshToken: loginData.refresh_token,
@@ -136,6 +161,10 @@ const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose }) => {
         });
 
         console.log('✅ 테스트 로그인 성공! 데이터를 로드합니다.');
+
+        // 공통 로그인 후처리 함수 호출 (사용자 정보 + 병원 정보 처리)
+        console.log('⏰ 로그인 성공 - processLoginData 호출');
+        await processLoginData(loginData.user, getMyHospital);
 
         // 로그인 성공 후 즉시 데이터 로드
         console.log('⏰ 로그인 성공 - loadPetsWithMedicalRecords 호출');

@@ -1,24 +1,53 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import HomeScreen from './screens/HomeScreen';
-import MedicalRecords from './screens/MedicalRecords';
-import DetailRecord from './screens/DetailRecord';
+import MedicalRecords from './screens/RecordScreen';
+import DetailRecord from './screens/RecordDetailScreen';
 import LLMChat from './screens/LLMChat';
 import MoreScreen from './screens/MoreScreen';
-import UserMoreScreen from './screens/UserMoreScreen';
-import PetMoreScreen from './screens/PetMoreScreen';
+import UserMoreScreen from './screens/MoreUserScreen';
+import PetMoreScreen from './screens/MorePetScreen';
 import InstallScreen from './screens/InstallScreen';
 import Navigation from './components/Navigation';
 import KakaoCallback from './components/KakaoCallback';
+import { usePWA } from './hooks/usePWA';
 
 /**
  * 메인 App 컴포넌트
  * 동물병원 PWA 앱의 전체 구조와 라우팅을 관리
  */
 const App: React.FC = () => {
+  const { offlineReady, needRefresh, updateServiceWorker, closePrompt } = usePWA();
+
   return (
     <Router>
       <div className='app-container'>
+        {/* PWA 상태 알림 */}
+        {(offlineReady || needRefresh) && (
+          <div className='pwa-global-notification'>
+            <div className='pwa-notification-content'>
+              {offlineReady && (
+                <div className='pwa-notification-item success'>
+                  <span className='notification-icon'>✅</span>
+                  <span className='notification-text'>앱이 오프라인에서 사용 가능합니다.</span>
+                </div>
+              )}
+              {needRefresh && (
+                <div className='pwa-notification-item update'>
+                  <span className='notification-icon'>🔄</span>
+                  <span className='notification-text'>새 콘텐츠를 사용할 수 있습니다.</span>
+                  <button className='notification-update-button' onClick={() => updateServiceWorker(true)}>
+                    새로고침
+                  </button>
+                </div>
+              )}
+              <button className='notification-close-button' onClick={closePrompt}>
+                ✕
+              </button>
+            </div>
+          </div>
+        )}
+
         {/* 메인 콘텐츠 영역 - 스크롤 가능 */}
         <main className='app-main'>
           <Routes>
