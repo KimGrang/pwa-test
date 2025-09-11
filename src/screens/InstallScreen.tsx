@@ -30,6 +30,34 @@ const InstallScreen: React.FC = () => {
           </div>
         </div>
 
+        {/* 설치 방법 섹션 */}
+        <div className='section'>
+          <h3 className='section-title'>📋 설치 방법</h3>
+          <div className='install-steps'>
+            <div className='install-step'>
+              <div className='step-number'>1</div>
+              <div className='step-content'>
+                <h4>Chrome/Edge 브라우저</h4>
+                <p>주소창 오른쪽의 "설치" 아이콘을 클릭하거나, 메뉴(⋮) → "앱 설치"를 선택하세요.</p>
+              </div>
+            </div>
+            <div className='install-step'>
+              <div className='step-number'>2</div>
+              <div className='step-content'>
+                <h4>Safari (iOS)</h4>
+                <p>공유 버튼(□↗)을 누르고 "홈 화면에 추가"를 선택하세요.</p>
+              </div>
+            </div>
+            <div className='install-step'>
+              <div className='step-number'>3</div>
+              <div className='step-content'>
+                <h4>Firefox</h4>
+                <p>주소창의 "+" 아이콘을 클릭하거나, 메뉴 → "페이지 설치"를 선택하세요.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
         {/* PWA 정보 섹션 */}
         <div className='section'>
           <h3 className='section-title'>PWA란?</h3>

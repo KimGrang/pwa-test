@@ -11,7 +11,6 @@ export default defineConfig({
       workbox: {
         maximumFileSizeToCacheInBytes: 10 * 1024 * 1024, // 10MB로 증가
         globPatterns: ['**/*.{js,css,html,ico,png,svg,woff2}'],
-        globIgnores: ['**/models/*.gguf'], // GGUF 파일 제외
         // Background Sync, Periodic Sync, Push Notifications 지원
         runtimeCaching: [
           {
@@ -115,9 +114,6 @@ export default defineConfig({
             if (id.includes('react')) {
               return 'react-vendor';
             }
-            if (id.includes('@wllama')) {
-              return 'wllama-vendor';
-            }
             return 'vendor';
           }
         },
@@ -148,7 +144,6 @@ export default defineConfig({
     reportCompressedSize: true,
   },
   optimizeDeps: {
-    include: ['@wllama/wllama'],
     // 의존성 최적화
     force: true,
     // ESBuild 최적화

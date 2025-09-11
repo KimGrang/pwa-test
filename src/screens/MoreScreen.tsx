@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { ChevronRightIcon, UserIcon } from '@heroicons/react/24/outline';
 import { useUserStore } from '../store/userStore';
 import { usePetStore } from '../store/petStore';
+import { useInstallPrompt } from '../hooks/useInstallPrompt';
 import '../styles/base.css';
 import '../styles/moreScreen.css';
 
@@ -16,6 +17,9 @@ const MoreScreen: React.FC = () => {
   // 스토어에서 사용자 정보와 반려동물 데이터 가져오기
   const { currentUser } = useUserStore();
   const { pets } = usePetStore();
+
+  // PWA 설치 관련 훅
+  const { isInstallable, isInstalled, promptInstall } = useInstallPrompt();
 
   /**
    * 사용자 상세 정보 화면으로 이동
@@ -63,11 +67,21 @@ const MoreScreen: React.FC = () => {
   }, []);
 
   /**
-   * 웹앱 설치 화면으로 이동
+   * 웹앱 설치 처리
    */
   const handleWebAppInstall = useCallback(() => {
-    navigate('/install');
-  }, [navigate]);
+    if (isInstalled) {
+      alert('앱이 이미 설치되어 있습니다.');
+      return;
+    }
+
+    if (isInstallable) {
+      promptInstall();
+    } else {
+      // 설치 불가능한 경우 설치 안내 화면으로 이동
+      navigate('/install');
+    }
+  }, [isInstalled, isInstallable, promptInstall, navigate]);
 
   return (
     <div className='screen-container'>
@@ -161,7 +175,9 @@ const MoreScreen: React.FC = () => {
           </div>
 
           <div className='menu-item' onClick={handleWebAppInstall}>
-            <span className='menu-text'>웹앱 설치</span>
+            <span className='menu-text'>
+              {isInstalled ? '✅ 앱이 설치됨' : isInstallable ? '📱 앱 설치' : '웹앱 설치'}
+            </span>
             <ChevronRightIcon className='chevron-heroicon' />
           </div>
         </div>
