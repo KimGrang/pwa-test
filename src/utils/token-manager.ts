@@ -65,29 +65,81 @@ export class TokenManager {
   }
 
   /**
-   * 보안 검증
+   * 토큰 마이그레이션 체크 (한 번만 실행)
    */
-  private static validateSecurity(): boolean {
+  private static checkMigration(): void {
     try {
       const flag = localStorage.getItem(TOKEN_KEYS.SECURITY_FLAG);
-      return flag === this.SECURITY_SIGNATURE;
+
+      // 마이그레이션이 필요한 경우 (보안 플래그가 없고 토큰이 있는 경우)
+      if (!flag && (localStorage.getItem(TOKEN_KEYS.ACCESS_TOKEN) || localStorage.getItem('authToken'))) {
+        console.log('🔄 기존 토큰 마이그레이션 중...');
+        this.migrateLegacyTokens();
+      }
     } catch (error) {
-      console.warn('보안 검증 실패:', error);
-      return false;
+      console.warn('마이그레이션 체크 실패:', error);
     }
   }
 
   /**
-   * Access Token 조회 (보안 검증 + 만료 체크)
+   * 기존 토큰을 새로운 보안 시스템으로 마이그레이션
+   */
+  private static migrateLegacyTokens(): void {
+    try {
+      // 기존 토큰들 조회
+      const legacyAccessToken = localStorage.getItem('authToken') || localStorage.getItem(TOKEN_KEYS.ACCESS_TOKEN);
+      const legacyRefreshToken = localStorage.getItem(TOKEN_KEYS.REFRESH_TOKEN);
+      const legacyUserData = localStorage.getItem(TOKEN_KEYS.USER_DATA);
+
+      console.log('🔄 마이그레이션 대상 토큰들:', {
+        hasAccessToken: !!legacyAccessToken,
+        hasRefreshToken: !!legacyRefreshToken,
+        hasUserData: !!legacyUserData,
+      });
+
+      if (legacyAccessToken) {
+        // 보안 플래그 설정
+        localStorage.setItem(TOKEN_KEYS.SECURITY_FLAG, this.SECURITY_SIGNATURE);
+
+        // Access Token 마이그레이션
+        localStorage.setItem(TOKEN_KEYS.ACCESS_TOKEN, legacyAccessToken);
+        this.memoryCache.set(TOKEN_KEYS.ACCESS_TOKEN, legacyAccessToken);
+
+        // Refresh Token 마이그레이션 (있는 경우)
+        if (legacyRefreshToken) {
+          localStorage.setItem(TOKEN_KEYS.REFRESH_TOKEN, legacyRefreshToken);
+        }
+
+        // User Data 마이그레이션 (있는 경우)
+        if (legacyUserData) {
+          localStorage.setItem(TOKEN_KEYS.USER_DATA, legacyUserData);
+        }
+
+        // 만료 시간 설정 (기본 15분)
+        const expiryTime = Date.now() + 15 * 60 * 1000;
+        localStorage.setItem(TOKEN_KEYS.TOKEN_EXPIRY, expiryTime.toString());
+
+        // 기존 authToken 정리
+        if (localStorage.getItem('authToken')) {
+          localStorage.removeItem('authToken');
+        }
+
+        console.log('✅ 기존 토큰 마이그레이션 완료');
+      } else {
+        console.log('⚠️ 마이그레이션할 토큰이 없습니다');
+      }
+    } catch (error) {
+      console.error('토큰 마이그레이션 실패:', error);
+    }
+  }
+
+  /**
+   * Access Token 조회 (마이그레이션 체크 + 만료 체크)
    */
   static getAccessToken(): string | null {
     try {
-      // 보안 검증
-      if (!this.validateSecurity()) {
-        console.warn('보안 검증 실패 - 토큰 접근 거부');
-        this.clearTokens();
-        return null;
-      }
+      // 마이그레이션 체크 (한 번만 실행)
+      this.checkMigration();
 
       // 만료 시간 체크
       if (this.isTokenExpired()) {
@@ -116,16 +168,10 @@ export class TokenManager {
   }
 
   /**
-   * Refresh Token 조회 (보안 검증 포함)
+   * Refresh Token 조회
    */
   static getRefreshToken(): string | null {
     try {
-      // 보안 검증
-      if (!this.validateSecurity()) {
-        console.warn('보안 검증 실패 - Refresh Token 접근 거부');
-        return null;
-      }
-
       return localStorage.getItem(TOKEN_KEYS.REFRESH_TOKEN);
     } catch (error) {
       console.error('Refresh Token 조회 실패:', error);
@@ -138,10 +184,6 @@ export class TokenManager {
    */
   static getUserData(): unknown | null {
     try {
-      if (!this.validateSecurity()) {
-        return null;
-      }
-
       const userData = localStorage.getItem(TOKEN_KEYS.USER_DATA);
       return userData ? JSON.parse(userData) : null;
     } catch (error) {
@@ -213,11 +255,6 @@ export class TokenManager {
    */
   static updateAccessToken(accessToken: string, expiresIn?: number): void {
     try {
-      if (!this.validateSecurity()) {
-        console.warn('보안 검증 실패 - 토큰 업데이트 거부');
-        return;
-      }
-
       const expiryTime = expiresIn ? Date.now() + expiresIn * 1000 : Date.now() + 15 * 60 * 1000;
 
       this.memoryCache.set(TOKEN_KEYS.ACCESS_TOKEN, accessToken);
@@ -235,10 +272,6 @@ export class TokenManager {
    */
   static updateUserData(userData: unknown): void {
     try {
-      if (!this.validateSecurity()) {
-        return;
-      }
-
       localStorage.setItem(TOKEN_KEYS.USER_DATA, JSON.stringify(userData));
     } catch (error) {
       console.error('사용자 데이터 업데이트 실패:', error);
@@ -246,21 +279,19 @@ export class TokenManager {
   }
 
   /**
-   * 보안 상태 체크
+   * 토큰 상태 체크
    */
-  static getSecurityStatus(): {
+  static getTokenStatus(): {
     hasAccessToken: boolean;
     hasRefreshToken: boolean;
     isExpired: boolean;
     shouldRefresh: boolean;
-    isSecure: boolean;
   } {
     return {
       hasAccessToken: !!this.getAccessToken(),
       hasRefreshToken: !!this.getRefreshToken(),
       isExpired: this.isTokenExpired(),
       shouldRefresh: this.shouldRefreshToken(),
-      isSecure: this.validateSecurity(),
     };
   }
 }
