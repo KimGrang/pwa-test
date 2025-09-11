@@ -51,7 +51,7 @@ src/
 
 ### 2. 사용 가능한 모델들
 
-- `https://www.example.com/models/euro_gguf.gguf` - nginx 서버에서 제공하는 Euro 모델 (1.64GB)
+- `https://example.com/models/euro_gguf.gguf` - nginx 서버에서 제공하는 Euro 모델 (1.64GB)
 
 ### 3. 성능 팁
 
@@ -75,7 +75,7 @@ src/
 
 #### 주요 설정
 
-- **서버 주소**: `https://www.example.com`
+- **서버 주소**: `https://example.com`
 - **모델 경로**: `/models/euro_gguf.gguf`
 - **파일 크기**: 1.64GB
 - **다운로드 최적화**: Range 요청 지원, 청크 전송
@@ -127,7 +127,7 @@ add_header Accept-Ranges bytes;
 
 - 브라우저 콘솔에서 에러 메시지 확인
 - 네트워크 연결 상태 확인
-- nginx 서버 상태 확인 (`http://www.example.com/health`)
+- nginx 서버 상태 확인 (`http://example.com/health`)
 - 모델 파일 경로 확인
 - CORS 설정 확인 (nginx 서버에서 `Access-Control-Allow-Origin *` 설정)
 

@@ -53,7 +53,7 @@ const LLMChat: React.FC = () => {
   // useEffect(() => {
   //   if (!isLoaded && !isLoading && !error) {
   //     console.log('🚀 wllama 모델 자동 로드 시작...');
-  //     loadModel('https://www.example.com/models/euro_gguf.gguf');
+  //     loadModel(`${import.meta.env.VITE_MODEL_BASE_URL || 'https://www.example.com'}${import.meta.env.VITE_MODEL_FILE_PATH || '/models/euro_gguf.gguf'}`);
   //   }
   //   // eslint-disable-next-line react-hooks/exhaustive-deps
   // }, [isLoaded, isLoading, error]); // loadModel 제거로 무한 루프 방지

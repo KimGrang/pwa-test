@@ -18,7 +18,7 @@ const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose }) => {
 
   // API 훅
   const { testLogin, loading: authLoading } = useDwonStoreAuth();
-  const { get: axiosGet } = useAxios('https://www.example.com/api');
+  const { get: axiosGet } = useAxios(import.meta.env.VITE_API_BASE_URL || 'https://example.com/api');
 
   // 스토어 훅
   const { login: setAuthTokens } = useAuthStore();
@@ -34,7 +34,7 @@ const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose }) => {
     try {
       // 백엔드에서 카카오 로그인 URL 가져오기
       const response = await axiosGet('/auth/kakao/url', {
-        baseURL: 'https://www.example.com/api',
+        baseURL: import.meta.env.VITE_API_BASE_URL || 'https://example.com/api',
       });
       const { authUrl } = response;
 
@@ -430,7 +430,7 @@ const HomeScreen: React.FC = () => {
 
 2. **백엔드에서 카카오 로그인 URL 요청**
 
-   - `LoginModal`에서 `https://example.com/api/auth/kakao/url` 호출
+   - `LoginModal`에서 `${import.meta.env.VITE_API_BASE_URL}/auth/kakao/url` 호출
    - 백엔드에서 카카오 OAuth URL 반환
 
 3. **카카오 로그인 페이지로 리다이렉트**
@@ -439,7 +439,7 @@ const HomeScreen: React.FC = () => {
 
 4. **카카오에서 백엔드로 콜백**
 
-   - 카카오 → `https://example.com/api/auth/kakao/callback?code=xxx`
+   - 카카오 → `${import.meta.env.VITE_API_BASE_URL}/auth/kakao/callback?code=xxx`
 
 5. **백엔드에서 OAuth 처리 후 프론트엔드로 리다이렉트**
 
@@ -455,15 +455,15 @@ const HomeScreen: React.FC = () => {
 
 ### 현재 개발 환경 (프론트엔드 개발 중, 백엔드 배포 중)
 
-- 백엔드: `https://www.example.com/api` (배포된 상태)
+- 백엔드: `${import.meta.env.VITE_API_BASE_URL}` (배포된 상태)
 - 프론트엔드: `http://localhost:5173` (개발 중)
-- 카카오 Redirect URI: `https://www.example.com/api/auth/kakao/callback`
+- 카카오 Redirect URI: `${import.meta.env.VITE_API_BASE_URL}/auth/kakao/callback`
 
 ### 완전한 프로덕션 환경 (향후)
 
-- 백엔드: `https://www.example.com/api`
-- 프론트엔드: `https://www.example.com` (또는 별도 도메인)
-- 카카오 Redirect URI: `https://www.example.com/api/auth/kakao/callback`
+- 백엔드: `${import.meta.env.VITE_API_BASE_URL}`
+- 프론트엔드: `https://example.com` (또는 별도 도메인)
+- 카카오 Redirect URI: `${import.meta.env.VITE_API_BASE_URL}/auth/kakao/callback`
 
 ## 9. 주요 특징
 

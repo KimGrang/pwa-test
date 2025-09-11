@@ -9,17 +9,17 @@
 export const DWON_STORE_CONFIG = {
   // 프로덕션 환경
   PRODUCTION: {
-    BASE_URL: 'https://www.example.com/api',
+    BASE_URL: import.meta.env.VITE_API_BASE_URL,
     TIMEOUT: 10000,
   },
   // 개발 환경
   DEVELOPMENT: {
-    BASE_URL: 'https://www.example.com/api',
+    BASE_URL: import.meta.env.VITE_API_BASE_URL,
     TIMEOUT: 10000,
   },
   // 스테이징 환경
   STAGING: {
-    BASE_URL: 'https://staging.example.com/api',
+    BASE_URL: import.meta.env.VITE_API_STAGING_URL,
     TIMEOUT: 10000,
   },
 };

@@ -29,6 +29,9 @@ dist-ssr
 # Build artifacts
 dev-dist/
 
+# Environment variables
+.env
+
 back_api_guide.md
 
 cspell.json
