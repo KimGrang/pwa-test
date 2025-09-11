@@ -1,30 +1,6 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
-
-/**
- * 병원 정보 인터페이스
- */
-interface Hospital {
-  id: string;
-  name: string;
-  address: string;
-  phone: string;
-  email: string;
-  website?: string;
-  description?: string;
-  specialties: string[];
-  operatingHours: {
-    [key: string]: {
-      open: string;
-      close: string;
-      isOpen: boolean;
-    };
-  };
-  location: {
-    latitude: number;
-    longitude: number;
-  };
-}
+import type { Hospital } from '../types/hospital';
 
 /**
  * 병원 상태 인터페이스
@@ -48,8 +24,8 @@ interface HospitalState {
   setMyHospital: (hospital: Hospital | null) => void;
   setSelectedHospital: (hospital: Hospital | null) => void;
   addHospital: (hospital: Hospital) => void;
-  updateHospital: (id: string, updates: Partial<Hospital>) => void;
-  removeHospital: (id: string) => void;
+  updateHospital: (id: number, updates: Partial<Hospital>) => void;
+  removeHospital: (id: number) => void;
   setLoading: (loading: boolean) => void;
   setError: (error: string | null) => void;
   clearError: () => void;
@@ -81,7 +57,7 @@ export const useHospitalStore = create<HospitalState>()(
         set({ hospitals: [...hospitals, hospital] });
       },
 
-      updateHospital: (id: string, updates: Partial<Hospital>) => {
+      updateHospital: (id: number, updates: Partial<Hospital>) => {
         const { hospitals, myHospital } = get();
         const updatedHospitals = hospitals.map((hospital) =>
           hospital.id === id ? { ...hospital, ...updates } : hospital
@@ -95,7 +71,7 @@ export const useHospitalStore = create<HospitalState>()(
         }
       },
 
-      removeHospital: (id: string) => {
+      removeHospital: (id: number) => {
         const { hospitals, myHospital, selectedHospital } = get();
         const filteredHospitals = hospitals.filter((hospital) => hospital.id !== id);
 
@@ -135,3 +111,6 @@ export const useHospitalStore = create<HospitalState>()(
     }
   )
 );
+
+// Hospital 타입 re-export
+export type { Hospital } from '../types/hospital';

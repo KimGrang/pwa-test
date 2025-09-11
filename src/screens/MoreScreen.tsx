@@ -50,21 +50,21 @@ const MoreScreen: React.FC = () => {
    */
   const handleNotifications = useCallback(() => {
     navigate('/notification');
-  }, []);
+  }, [navigate]);
 
   /**
    * 병원 설정 화면으로 이동
    */
   const handleHospitalSettings = useCallback(() => {
     navigate('/hospital');
-  }, []);
+  }, [navigate]);
 
   /**
    * 약관 화면으로 이동
    */
   const handleTerms = useCallback(() => {
     navigate('/terms');
-  }, []);
+  }, [navigate]);
 
   /**
    * 웹앱 설치 처리

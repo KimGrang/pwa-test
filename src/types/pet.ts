@@ -1,3 +1,6 @@
+// Hospital 타입은 types/hospital.ts에서 import
+import type { Hospital } from './hospital';
+
 /**
  * 반려동물 타입 (백엔드 API 응답 기반)
  * API 문서에 맞춰 수정
@@ -63,16 +66,6 @@ export interface PetResponse {
   success: boolean;
   data: Pet;
   message: string;
-}
-
-/**
- * 병원 정보 타입 (진료기록에 포함)
- */
-export interface Hospital {
-  id: number;
-  name: string;
-  address: string;
-  phone: string;
 }
 
 /**

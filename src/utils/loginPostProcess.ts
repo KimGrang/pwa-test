@@ -1,28 +1,6 @@
 import { useUserStore } from '../store/userStore';
 import { useHospitalStore } from '../store/hospitalStore';
-
-// Hospital 타입 정의
-interface Hospital {
-  id: string;
-  name: string;
-  address: string;
-  phone: string;
-  email: string;
-  website?: string;
-  description?: string;
-  specialties: string[];
-  operatingHours: {
-    [key: string]: {
-      open: string;
-      close: string;
-      isOpen: boolean;
-    };
-  };
-  location: {
-    latitude: number;
-    longitude: number;
-  };
-}
+import type { Hospital } from '../types/hospital';
 
 // User 타입 정의
 interface User {
@@ -62,8 +40,8 @@ export const processLoginData = async (user: User, getMyHospital: () => Promise<
       // 병원 ID만 있는 경우, 별도 API로 병원 정보 조회
       console.log('🏥 병원 ID만 존재, 병원 정보 조회 API 호출:', user.hospitalId);
       try {
-        const hospitalResponse = (await getMyHospital()) as { data?: Hospital };
-        if (hospitalResponse && hospitalResponse.data) {
+        const hospitalResponse = (await getMyHospital()) as { success: boolean; data?: Hospital };
+        if (hospitalResponse && hospitalResponse.success && hospitalResponse.data) {
           console.log('🏥 병원 정보 조회 성공:', hospitalResponse.data);
           setMyHospital(hospitalResponse.data);
         } else {

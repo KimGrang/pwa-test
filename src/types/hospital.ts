@@ -1,19 +1,24 @@
 /**
- * 병원 타입 (API 응답 구조 기반)
+ * 병원 타입 (백엔드 API 응답 구조에 맞춤)
  */
 export interface Hospital {
   id: number;
   name: string;
-  licenseNumber: string; // API 응답에서는 camelCase
+  licenseNumber: string;
   address: string;
   phone: string;
-  email?: string;
-  business_hours?: Record<string, unknown>; // JSON 타입 (기존 호환성 유지)
-  specialties?: string[];
-  services?: string[];
-  facilities?: string[];
-  latitude?: number;
-  longitude?: number;
+  email: string;
+  specialties: string[];
+  services: string[];
+  facilities: string[];
+  latitude: number;
+  longitude: number;
+  userInfo?: {
+    id: number;
+    name: string;
+    role: string;
+    email: string;
+  };
 }
 
 /**
@@ -34,16 +39,15 @@ export interface MyHospitalResponse {
  */
 export interface CreateHospitalRequest {
   name: string;
-  licenseNumber: string; // API 가이드와 일치하도록 camelCase로 변경
+  licenseNumber: string;
   address: string;
   phone: string;
-  email?: string;
-  description?: string; // API 가이드에 맞춰 추가
-  specialties: string[]; // API 가이드에 맞춰 필수로 변경
-  services: string[]; // API 가이드에 맞춰 필수로 변경
-  facilities: string[]; // API 가이드에 맞춰 필수로 변경
-  latitude: number; // API 가이드에 맞춰 필수로 변경
-  longitude: number; // API 가이드에 맞춰 필수로 변경
+  email: string;
+  specialties: string[];
+  services: string[];
+  facilities: string[];
+  latitude: number;
+  longitude: number;
 }
 
 /**
@@ -51,11 +55,10 @@ export interface CreateHospitalRequest {
  */
 export interface UpdateHospitalRequest {
   name?: string;
-  licenseNumber?: string; // API 가이드와 일치하도록 camelCase로 변경
+  licenseNumber?: string;
   address?: string;
   phone?: string;
   email?: string;
-  description?: string;
   specialties?: string[];
   services?: string[];
   facilities?: string[];
