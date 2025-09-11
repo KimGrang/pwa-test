@@ -10,6 +10,10 @@ import PetMoreScreen from './screens/MorePetScreen';
 import InstallScreen from './screens/InstallScreen';
 import Navigation from './components/Navigation';
 import KakaoCallback from './components/KakaoCallback';
+import HospitalScreen from './screens/HospitalScreen';
+import NotificationScreen from './screens/NotificationScreen';
+import TermsScreen from './screens/TermsScreen';
+
 import { usePWA } from './hooks/usePWA';
 
 /**
@@ -77,6 +81,15 @@ const App: React.FC = () => {
 
             {/* 카카오 로그인 콜백 */}
             <Route path='/auth/kakao/callback' element={<KakaoCallback />} />
+
+            {/* 병원 설정 화면 */}
+            <Route path='/hospital' element={<HospitalScreen />} />
+
+            {/* 알림 설정 화면 */}
+            <Route path='/notification' element={<NotificationScreen />} />
+
+            {/* 약관 및 개인정보처리방침 화면 */}
+            <Route path='/terms' element={<TermsScreen />} />
           </Routes>
         </main>
 

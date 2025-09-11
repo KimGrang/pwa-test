@@ -49,21 +49,21 @@ const MoreScreen: React.FC = () => {
    * 알림 설정 화면으로 이동
    */
   const handleNotifications = useCallback(() => {
-    alert('알림 설정 기능은 준비 중입니다.');
+    navigate('/notification');
   }, []);
 
   /**
    * 병원 설정 화면으로 이동
    */
   const handleHospitalSettings = useCallback(() => {
-    alert('병원 설정 기능은 준비 중입니다.');
+    navigate('/hospital');
   }, []);
 
   /**
    * 약관 화면으로 이동
    */
   const handleTerms = useCallback(() => {
-    alert('약관 및 개인정보처리방침 기능은 준비 중입니다.');
+    navigate('/terms');
   }, []);
 
   /**

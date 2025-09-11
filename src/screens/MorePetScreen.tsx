@@ -380,14 +380,14 @@ const PetMoreScreen: React.FC = () => {
                 </button>
                 {editingPetId && (
                   <button
-                    className='action-button danger'
+                    className='action-button secondary'
                     onClick={() => handleDeletePet(editingPetId)}
                     disabled={isLoading}
                   >
                     삭제
                   </button>
                 )}
-                <button className='action-button' onClick={handleCancelEdit} disabled={isLoading}>
+                <button className='action-button danger' onClick={handleCancelEdit} disabled={isLoading}>
                   취소
                 </button>
               </div>

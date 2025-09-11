@@ -33,6 +33,21 @@ const Navigation: React.FC = () => {
       return '/more';
     }
 
+    // /notification, /hospital, /terms 경로에서는 더보기 탭을 활성화
+    if (pathname === '/notification') {
+      return '/more';
+    }
+
+    // /hospital 경로에서는 더보기 탭을 활성화
+    if (pathname === '/hospital') {
+      return '/more';
+    }
+
+    // /terms 경로에서는 더보기 탭을 활성화
+    if (pathname === '/terms') {
+      return '/more';
+    }
+
     // 기본적으로는 현재 경로와 일치
     return pathname;
   }, [location.pathname]);

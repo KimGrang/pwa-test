@@ -141,6 +141,11 @@ const UserMoreScreen: React.FC = () => {
             <span className='chevron-icon'></span>
           </div>
         </div>
+        <div className='form-actions'>
+          <button className='action-button primary'>저장</button>
+
+          <button className='action-button danger'>취소</button>
+        </div>
       </div>
 
       {/* 회원 탈퇴 모달 */}
