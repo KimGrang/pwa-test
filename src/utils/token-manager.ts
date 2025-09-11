@@ -58,7 +58,7 @@ export class TokenManager {
         localStorage.setItem(TOKEN_KEYS.USER_DATA, JSON.stringify(tokens.user));
       }
 
-      console.log('✅ 토큰 저장 완료 (하이브리드 보안)');
+      // console.log('✅ 토큰 저장 완료 (하이브리드 보안)');
     } catch (error) {
       console.error('토큰 저장 실패:', error);
     }
@@ -73,7 +73,7 @@ export class TokenManager {
 
       // 마이그레이션이 필요한 경우 (보안 플래그가 없고 토큰이 있는 경우)
       if (!flag && (localStorage.getItem(TOKEN_KEYS.ACCESS_TOKEN) || localStorage.getItem('authToken'))) {
-        console.log('🔄 기존 토큰 마이그레이션 중...');
+        // console.log('🔄 기존 토큰 마이그레이션 중...');
         this.migrateLegacyTokens();
       }
     } catch (error) {
@@ -91,11 +91,11 @@ export class TokenManager {
       const legacyRefreshToken = localStorage.getItem(TOKEN_KEYS.REFRESH_TOKEN);
       const legacyUserData = localStorage.getItem(TOKEN_KEYS.USER_DATA);
 
-      console.log('🔄 마이그레이션 대상 토큰들:', {
-        hasAccessToken: !!legacyAccessToken,
-        hasRefreshToken: !!legacyRefreshToken,
-        hasUserData: !!legacyUserData,
-      });
+      // console.log('🔄 마이그레이션 대상 토큰들:', {
+      //   hasAccessToken: !!legacyAccessToken,
+      //   hasRefreshToken: !!legacyRefreshToken,
+      //   hasUserData: !!legacyUserData,
+      // });
 
       if (legacyAccessToken) {
         // 보안 플래그 설정
@@ -124,9 +124,9 @@ export class TokenManager {
           localStorage.removeItem('authToken');
         }
 
-        console.log('✅ 기존 토큰 마이그레이션 완료');
+        // console.log('✅ 기존 토큰 마이그레이션 완료');
       } else {
-        console.log('⚠️ 마이그레이션할 토큰이 없습니다');
+        // console.log('⚠️ 마이그레이션할 토큰이 없습니다');
       }
     } catch (error) {
       console.error('토큰 마이그레이션 실패:', error);
@@ -143,7 +143,7 @@ export class TokenManager {
 
       // 만료 시간 체크
       if (this.isTokenExpired()) {
-        console.log('⏰ 토큰 만료됨');
+        // console.log('⏰ 토큰 만료됨');
         return null;
       }
 
@@ -235,7 +235,7 @@ export class TokenManager {
       // 기존 토큰도 정리 (호환성)
       localStorage.removeItem('authToken');
 
-      console.log('🧹 토큰 정리 완료');
+      // console.log('🧹 토큰 정리 완료');
     } catch (error) {
       console.error('토큰 제거 실패:', error);
     }
@@ -261,7 +261,7 @@ export class TokenManager {
       localStorage.setItem(TOKEN_KEYS.ACCESS_TOKEN, accessToken);
       localStorage.setItem(TOKEN_KEYS.TOKEN_EXPIRY, expiryTime.toString());
 
-      console.log('🔄 Access Token 업데이트 완료');
+      // console.log('🔄 Access Token 업데이트 완료');
     } catch (error) {
       console.error('Access Token 업데이트 실패:', error);
     }

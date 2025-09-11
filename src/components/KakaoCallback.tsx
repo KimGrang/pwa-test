@@ -24,21 +24,21 @@ const KakaoCallback: React.FC = () => {
   const memoizedNavigate = useCallback(navigate, [navigate]);
 
   useEffect(() => {
-    console.log('🔄 useEffect 실행됨 - hasProcessed:', hasProcessed.current);
+    // console.log('🔄 useEffect 실행됨 - hasProcessed:', hasProcessed.current);
 
     // 중복 실행 방지
     if (hasProcessed.current) {
-      console.log('⏭️ 이미 처리됨 - useEffect 종료');
+      // console.log('⏭️ 이미 처리됨 - useEffect 종료');
       return;
     }
 
     // 즉시 처리 완료 표시 (URL 파라미터 읽기 전에)
     hasProcessed.current = true;
-    console.log('✅ hasProcessed.current = true 설정됨 (즉시)');
+    // console.log('✅ hasProcessed.current = true 설정됨 (즉시)');
 
     const handleKakaoCallback = async () => {
       try {
-        console.log('🚀 handleKakaoCallback 시작');
+        // console.log('🚀 handleKakaoCallback 시작');
 
         // URL 파라미터에서 토큰과 사용자 정보 추출
         const accessToken = searchParams.get('accessToken');
@@ -54,35 +54,35 @@ const KakaoCallback: React.FC = () => {
         // 사용자 정보 파싱
         const user = JSON.parse(decodeURIComponent(userParam));
 
-        console.log('✅ 카카오 로그인 콜백 성공:', { user, accessToken, refreshToken });
+        // console.log('✅ 카카오 로그인 콜백 성공:', { user, accessToken, refreshToken });
 
         // Zustand store에 데이터 저장
-        console.log('🔑 setAuthTokens 호출 전');
+        // console.log('🔑 setAuthTokens 호출 전');
         memoizedSetAuthTokens({
           accessToken,
           refreshToken,
         });
-        console.log('🔑 setAuthTokens 호출 후');
+        // console.log('🔑 setAuthTokens 호출 후');
 
         // 공통 로그인 후처리 함수 호출 (사용자 정보 + 병원 정보 처리)
-        console.log('⏰ 카카오 로그인 성공 - processLoginData 호출');
+        // console.log('⏰ 카카오 로그인 성공 - processLoginData 호출');
         await processLoginData(user, getMyHospital);
-        console.log('⏰ processLoginData 완료');
+        // console.log('⏰ processLoginData 완료');
 
         // TokenManager에도 저장 (기존 호환성 유지)
-        console.log('🔐 TokenManager.saveTokens 호출 전');
+        // console.log('🔐 TokenManager.saveTokens 호출 전');
         TokenManager.saveTokens({
           accessToken,
           refreshToken,
           user,
         });
-        console.log('🔐 TokenManager.saveTokens 호출 후');
+        // console.log('🔐 TokenManager.saveTokens 호출 후');
 
-        console.log('✅ 카카오 로그인 완료 - 홈 화면으로 이동');
+        // console.log('✅ 카카오 로그인 완료 - 홈 화면으로 이동');
 
         // 홈 화면으로 리다이렉트
         memoizedNavigate('/');
-        console.log('🏠 navigate("/") 호출됨');
+        // console.log('🏠 navigate("/") 호출됨');
       } catch (error) {
         console.error('❌ 카카오 로그인 콜백 처리 실패:', error);
         memoizedNavigate('/');

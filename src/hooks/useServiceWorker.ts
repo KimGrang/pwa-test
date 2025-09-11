@@ -48,7 +48,7 @@ export const useServiceWorker = () => {
         try {
           const reg = await navigator.serviceWorker.register('/sw.js');
           setRegistration(reg);
-          console.log('Service Worker 등록 성공:', reg);
+// console.log('Service Worker 등록 성공:', reg);
         } catch (error) {
           console.error('Service Worker 등록 실패:', error);
         }
@@ -77,7 +77,7 @@ export const useServiceWorker = () => {
           sync: { register: (tag: string, options?: Record<string, unknown>) => Promise<void> };
         }
       ).sync.register(tag, options);
-      console.log('Background Sync 등록 성공');
+// console.log('Background Sync 등록 성공');
     } catch (error) {
       console.error('Background Sync 등록 실패:', error);
       throw error;
@@ -103,7 +103,7 @@ export const useServiceWorker = () => {
           periodicSync: { register: (tag: string, options?: Record<string, unknown>) => Promise<void> };
         }
       ).periodicSync.register(tag, options);
-      console.log('Periodic Sync 등록 성공');
+// console.log('Periodic Sync 등록 성공');
     } catch (error) {
       console.error('Periodic Sync 등록 실패:', error);
       throw error;
@@ -131,7 +131,7 @@ export const useServiceWorker = () => {
         });
       }
 
-      console.log('Push Notifications 구독 성공:', subscription);
+// console.log('Push Notifications 구독 성공:', subscription);
       return subscription;
     } catch (error) {
       console.error('Push Notifications 구독 실패:', error);
@@ -151,7 +151,7 @@ export const useServiceWorker = () => {
       const subscription = await registration.pushManager.getSubscription();
       if (subscription) {
         await subscription.unsubscribe();
-        console.log('Push Notifications 구독 해제 성공');
+// console.log('Push Notifications 구독 해제 성공');
       }
     } catch (error) {
       console.error('Push Notifications 구독 해제 실패:', error);
@@ -169,7 +169,7 @@ export const useServiceWorker = () => {
 
     try {
       const permission = await Notification.requestPermission();
-      console.log('알림 권한:', permission);
+// console.log('알림 권한:', permission);
       return permission;
     } catch (error) {
       console.error('알림 권한 요청 실패:', error);
@@ -215,7 +215,7 @@ export const useServiceWorker = () => {
 
     try {
       await registration.update();
-      console.log('Service Worker 업데이트 확인 완료');
+// console.log('Service Worker 업데이트 확인 완료');
     } catch (error) {
       console.error('Service Worker 업데이트 확인 실패:', error);
       throw error;

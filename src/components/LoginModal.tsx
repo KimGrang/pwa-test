@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { XMarkIcon } from '@heroicons/react/24/outline';
 import { useAxios } from '../hooks/useAxios';
 import { useDwonStoreAuth, useDwonStorePets, useDwonStoreHospitals } from '../hooks/useDwonStoreAPI';
-import { getCurrentConfig } from '../config/dwon-store-config';
+// import { getCurrentConfig } from '../config/dwon-store-config';
 import { useAuthStore } from '../store/authStore';
 import { useUserStore } from '../store/userStore';
 import { useRecordStore } from '../store/recordStore';
@@ -85,14 +85,14 @@ const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose }) => {
     setError(null);
 
     try {
-      console.log('📡 서버에 테스트 로그인 요청...');
-      console.log('🔧 현재 환경:', process.env.NODE_ENV || 'development');
-      console.log('🔧 getCurrentConfig():', getCurrentConfig());
+      // console.log('📡 서버에 테스트 로그인 요청...');
+      // console.log('🔧 현재 환경:', process.env.NODE_ENV || 'development');
+      // console.log('🔧 getCurrentConfig():', getCurrentConfig());
 
       // 서버 API 호출 (원래 방식 - localhost:4000 사용)
       const response = await testLogin();
 
-      console.log('📥 전체 서버 응답:', response);
+      // console.log('📥 전체 서버 응답:', response);
 
       // response가 직접 데이터인지 확인
       if (
@@ -114,7 +114,7 @@ const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose }) => {
           message: (response as { message?: string }).message || '',
         };
 
-        console.log('✅ 서버 응답:', loginData);
+        // console.log('✅ 서버 응답:', loginData);
 
         // Zustand store에 데이터 저장
         setAuthTokens({
@@ -130,23 +130,23 @@ const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose }) => {
         });
 
         // 저장된 데이터 확인
-        console.log('💾 테스트 로그인 - Zustand store에 저장된 정보:', {
-          user: loginData.user,
-          tokens: {
-            accessToken: loginData.access_token,
-            refreshToken: loginData.refresh_token,
-          },
-        });
+        // console.log('💾 테스트 로그인 - Zustand store에 저장된 정보:', {
+        //   user: loginData.user,
+        //   tokens: {
+        //     accessToken: loginData.access_token,
+        //     refreshToken: loginData.refresh_token,
+        //   },
+        // });
 
-        console.log('✅ 테스트 로그인 성공! 데이터를 로드합니다.');
+        // console.log('✅ 테스트 로그인 성공! 데이터를 로드합니다.');
 
         // 공통 로그인 후처리 함수 호출 (사용자 정보 + 병원 정보 처리)
-        console.log('⏰ 로그인 성공 - processLoginData 호출');
+        // console.log('⏰ 로그인 성공 - processLoginData 호출');
         await processLoginData(loginData.user, getMyHospital);
 
         // 로그인 성공 후 즉시 데이터 로드
-        console.log('⏰ 로그인 성공 - loadPetsWithMedicalRecords 호출');
-        await loadPetsWithMedicalRecordsDirect(loginData.user);
+        // console.log('⏰ 로그인 성공 - loadPetsWithMedicalRecords 호출');
+        await loadPetsWithMedicalRecordsDirect();
 
         onClose();
       } else {
@@ -163,20 +163,20 @@ const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose }) => {
   /**
    * 로그인 시 사용자 정보를 직접 받는 데이터 로드 함수 (이전 로직과 동일)
    */
-  const loadPetsWithMedicalRecordsDirect = async (user: User) => {
-    console.log('🚀 loadPetsWithMedicalRecordsDirect 함수 호출됨');
-    console.log('🔍 전달받은 사용자 정보:', { userId: user.id, userName: user.name });
+  const loadPetsWithMedicalRecordsDirect = async () => {
+    // console.log('🚀 loadPetsWithMedicalRecordsDirect 함수 호출됨');
+    // console.log('🔍 전달받은 사용자 정보:', { userId: user.id, userName: user.name });
 
     try {
-      console.log('🔄 반려동물과 진료기록 데이터 로드 시작... (userId:', user.id, ')');
+      // console.log('🔄 반려동물과 진료기록 데이터 로드 시작... (userId:', user.id, ')');
 
       // 새로운 API: 반려동물과 진료기록을 함께 조회 (N+1 문제 해결)
-      console.log('📡 API 호출 시작: getMyPetsWithRecords()');
+      // console.log('📡 API 호출 시작: getMyPetsWithRecords()');
       const petsWithRecordsResponse = await getMyPetsWithRecords();
-      console.log('📡 API 응답:', petsWithRecordsResponse);
+      // console.log('📡 API 응답:', petsWithRecordsResponse);
 
       if (!petsWithRecordsResponse) {
-        console.log('❌ API 응답이 null 또는 undefined');
+        // console.log('❌ API 응답이 null 또는 undefined');
         return;
       }
 
@@ -185,7 +185,7 @@ const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose }) => {
         Array.isArray(petsWithRecordsResponse.data) &&
         petsWithRecordsResponse.data.length > 0
       ) {
-        console.log('🐕 반려동물과 진료기록 데이터:', petsWithRecordsResponse.data);
+        // console.log('🐕 반려동물과 진료기록 데이터:', petsWithRecordsResponse.data);
 
         // 반려동물 데이터 추출 및 정렬
         const sortedPets = petsWithRecordsResponse.data
@@ -204,7 +204,7 @@ const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose }) => {
           }))
           .sort((a: Pet, b: Pet) => a.id - b.id);
 
-        console.log('🔄 정렬된 반려동물 데이터:', sortedPets);
+        // console.log('🔄 정렬된 반려동물 데이터:', sortedPets);
         setPets(sortedPets);
 
         // 모든 진료기록을 하나의 배열로 합치기
@@ -214,14 +214,14 @@ const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose }) => {
             (a: MedicalRecord, b: MedicalRecord) => new Date(b.visitDate).getTime() - new Date(a.visitDate).getTime()
           );
 
-        console.log('📋 모든 진료기록 데이터:', allMedicalRecords);
-        console.log('📋 진료기록 개수:', allMedicalRecords.length);
+        // console.log('📋 모든 진료기록 데이터:', allMedicalRecords);
+        // console.log('📋 진료기록 개수:', allMedicalRecords.length);
         setMedicalRecords(allMedicalRecords);
 
         // 진료기록이 제대로 설정되었는지 확인
-        console.log('✅ 진료기록 데이터 로드 완료:', allMedicalRecords.length, '개');
+        // console.log('✅ 진료기록 데이터 로드 완료:', allMedicalRecords.length, '개');
       } else {
-        console.log('ℹ️ 등록된 반려동물이 없습니다.');
+        // console.log('ℹ️ 등록된 반려동물이 없습니다.');
         setPets([]);
         setMedicalRecords([]);
       }
@@ -229,7 +229,7 @@ const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose }) => {
       console.error('❌ 반려동물과 진료기록 로드 실패:', error);
       // 401 에러인 경우 인증 상태 초기화
       if (error instanceof Error && error.message.includes('인증이 필요합니다')) {
-        console.log('🔓 인증 토큰이 유효하지 않음 - 로그아웃 처리');
+        // console.log('🔓 인증 토큰이 유효하지 않음 - 로그아웃 처리');
         authLogout();
         clearUser();
         TokenManager.clearTokens();

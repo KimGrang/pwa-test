@@ -23,7 +23,7 @@ export const refreshAccessToken = async (): Promise<boolean> => {
   }
 
   try {
-    console.log('🔄 토큰 갱신 시도 중...');
+    // console.log('🔄 토큰 갱신 시도 중...');
 
     const response = await fetch(`${getCurrentConfig().BASE_URL}${DWON_STORE_ENDPOINTS.AUTH.REFRESH}`, {
       method: 'POST',
@@ -47,7 +47,7 @@ export const refreshAccessToken = async (): Promise<boolean> => {
       expiresIn: data.expires_in,
     });
 
-    console.log('✅ 토큰 갱신 성공');
+    // console.log('✅ 토큰 갱신 성공');
     return true;
   } catch (error) {
     console.error('❌ 토큰 갱신 실패:', error);
@@ -59,7 +59,7 @@ export const refreshAccessToken = async (): Promise<boolean> => {
  * 로그아웃 처리
  */
 export const handleLogout = (): void => {
-  console.log('🔓 로그아웃 처리 중...');
+  // console.log('🔓 로그아웃 처리 중...');
   TokenManager.clearTokens();
 
   // 인증 상태 변경 이벤트 발생

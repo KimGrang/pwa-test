@@ -153,7 +153,7 @@ const MedicalRecordCalendar: React.FC<MedicalRecordCalendarProps> = ({
   const handleRecordClick = useCallback(
     (record: MedicalRecord, e: React.MouseEvent | React.KeyboardEvent) => {
       e.stopPropagation();
-      console.log('🔍 진료기록 클릭됨:', record);
+// console.log('🔍 진료기록 클릭됨:', record);
       onRecordSelect?.(record);
     },
     [onRecordSelect]

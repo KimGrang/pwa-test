@@ -54,24 +54,24 @@ const HomeScreen: React.FC = () => {
 
   // 진료기록 데이터 로드 함수 (useCallback으로 메모이제이션)
   const loadPetsWithMedicalRecords = useCallback(async () => {
-    console.log('🚀 loadPetsWithMedicalRecords 함수 호출됨');
-    console.log('🔍 현재 상태:', { isAuthenticated, currentUserId: currentUser?.id });
+    // console.log('🚀 loadPetsWithMedicalRecords 함수 호출됨');
+    // console.log('🔍 현재 상태:', { isAuthenticated, currentUserId: currentUser?.id });
 
     if (!isAuthenticated || !currentUser?.id) {
-      console.log('❌ 인증되지 않았거나 사용자 ID가 없음 - 함수 종료');
+      // console.log('❌ 인증되지 않았거나 사용자 ID가 없음 - 함수 종료');
       return;
     }
 
     try {
-      console.log('🔄 반려동물과 진료기록 데이터 로드 시작... (userId:', currentUser.id, ')');
+      // console.log('🔄 반려동물과 진료기록 데이터 로드 시작... (userId:', currentUser.id, ')');
 
       // 새로운 API: 반려동물과 진료기록을 함께 조회 (N+1 문제 해결)
-      console.log('📡 API 호출 시작: getMyPetsWithRecords()');
+      // console.log('📡 API 호출 시작: getMyPetsWithRecords()');
       const petsWithRecordsResponse = await getMyPetsWithRecords();
-      console.log('📡 API 응답:', petsWithRecordsResponse);
+      // console.log('📡 API 응답:', petsWithRecordsResponse);
 
       if (!petsWithRecordsResponse) {
-        console.log('❌ API 응답이 null 또는 undefined');
+        // console.log('❌ API 응답이 null 또는 undefined');
         return;
       }
 
@@ -80,7 +80,7 @@ const HomeScreen: React.FC = () => {
         Array.isArray(petsWithRecordsResponse.data) &&
         petsWithRecordsResponse.data.length > 0
       ) {
-        console.log('🐕 반려동물과 진료기록 데이터:', petsWithRecordsResponse.data);
+        // console.log('🐕 반려동물과 진료기록 데이터:', petsWithRecordsResponse.data);
 
         // 반려동물 데이터 추출 및 정렬
         const sortedPets = petsWithRecordsResponse.data
@@ -99,7 +99,7 @@ const HomeScreen: React.FC = () => {
           }))
           .sort((a, b) => a.id - b.id);
 
-        console.log('🔄 정렬된 반려동물 데이터:', sortedPets);
+        // console.log('🔄 정렬된 반려동물 데이터:', sortedPets);
         setPets(sortedPets);
 
         // 모든 진료기록을 하나의 배열로 합치기
@@ -107,22 +107,22 @@ const HomeScreen: React.FC = () => {
           .flatMap((pet) => pet.medicalRecords)
           .sort((a, b) => new Date(b.visitDate).getTime() - new Date(a.visitDate).getTime());
 
-        console.log('📋 모든 진료기록 데이터:', allMedicalRecords);
+        // console.log('📋 모든 진료기록 데이터:', allMedicalRecords);
         console.log('📋 진료기록 개수:', allMedicalRecords.length);
         setMedicalRecords(allMedicalRecords);
 
         // 진료기록이 제대로 설정되었는지 확인
-        console.log('✅ 진료기록 데이터 로드 완료:', allMedicalRecords.length, '개');
+        // console.log('✅ 진료기록 데이터 로드 완료:', allMedicalRecords.length, '개');
       } else {
-        console.log('ℹ️ 등록된 반려동물이 없습니다.');
+        // console.log('ℹ️ 등록된 반려동물이 없습니다.');
         setPets([]);
         setMedicalRecords([]);
       }
     } catch (error) {
-      console.error('❌ 반려동물과 진료기록 로드 실패:', error);
+      // console.error('❌ 반려동물과 진료기록 로드 실패:', error);
       // 401 에러인 경우 인증 상태 초기화
       if (error instanceof Error && error.message.includes('인증이 필요합니다')) {
-        console.log('🔓 인증 토큰이 유효하지 않음 - 로그아웃 처리');
+        // console.log('🔓 인증 토큰이 유효하지 않음 - 로그아웃 처리');
         authLogout();
         clearUser();
         TokenManager.clearTokens();
@@ -146,7 +146,7 @@ const HomeScreen: React.FC = () => {
       // TokenManager에 저장된 사용자 정보가 있다면 store에 복원
       const userData = TokenManager.getUserData();
       if (userData && typeof userData === 'object' && 'id' in userData) {
-        console.log('🔄 토큰 복원 중...');
+        // console.log('🔄 토큰 복원 중...');
         setCurrentUser(userData as User);
         authLogin({
           accessToken: hasToken,
@@ -154,7 +154,7 @@ const HomeScreen: React.FC = () => {
         });
 
         // 토큰 복원 후 데이터 로드
-        console.log('⏰ 토큰 복원 완료 - loadPetsWithMedicalRecords 호출');
+        // console.log('⏰ 토큰 복원 완료 - loadPetsWithMedicalRecords 호출');
         loadPetsWithMedicalRecords();
       }
     }
@@ -176,13 +176,13 @@ const HomeScreen: React.FC = () => {
     // 이전 상태와 다를 때만 로그 출력
     if (prevAuthState.current !== authInfo.isAuthenticated) {
       if (authInfo.isAuthenticated && authInfo.userId) {
-        console.log('✅ 로그인 상태:', {
-          userId: authInfo.userId,
-          userName: authInfo.userName,
-          hasTokens: authInfo.hasTokens,
-        });
+        // console.log('✅ 로그인 상태:', {
+        //   userId: authInfo.userId,
+        //   userName: authInfo.userName,
+        //   hasTokens: authInfo.hasTokens,
+        // });
       } else if (!authInfo.isAuthenticated) {
-        console.log('❌ 로그아웃 상태');
+        // console.log('❌ 로그아웃 상태');
       }
       prevAuthState.current = authInfo.isAuthenticated;
     }
@@ -191,7 +191,7 @@ const HomeScreen: React.FC = () => {
   // 401 에러 이벤트 수신 - axios interceptor에서 발생
   useEffect(() => {
     const handleAuthError = () => {
-      console.log('🔓 인증 오류 이벤트 수신 - 로그아웃 처리');
+      // console.log('🔓 인증 오류 이벤트 수신 - 로그아웃 처리');
       authLogout();
       clearUser();
       // TokenManager는 이미 axios interceptor에서 정리됨
@@ -354,7 +354,7 @@ const HomeScreen: React.FC = () => {
   // 진료기록 선택 시 상세 페이지로 이동
   const handleRecordSelect = useCallback(
     (record: (typeof medicalRecords)[0]) => {
-      console.log('🚀 진료기록 상세 페이지로 이동:', record);
+      // console.log('🚀 진료기록 상세 페이지로 이동:', record);
       navigate(`/record/${record.id}`, {
         state: { record },
       });
