@@ -20,6 +20,9 @@ const KakaoCallback: React.FC = () => {
   // setAuthTokens를 useCallback으로 메모이제이션
   const memoizedSetAuthTokens = useCallback(setAuthTokens, [setAuthTokens]);
 
+  // navigate를 useCallback으로 메모이제이션
+  const memoizedNavigate = useCallback(navigate, [navigate]);
+
   useEffect(() => {
     console.log('🔄 useEffect 실행됨 - hasProcessed:', hasProcessed.current);
 
@@ -44,7 +47,7 @@ const KakaoCallback: React.FC = () => {
 
         if (!accessToken || !refreshToken || !userParam) {
           console.error('❌ 카카오 로그인 콜백: 필수 파라미터 누락');
-          navigate('/');
+          memoizedNavigate('/');
           return;
         }
 
@@ -78,16 +81,16 @@ const KakaoCallback: React.FC = () => {
         console.log('✅ 카카오 로그인 완료 - 홈 화면으로 이동');
 
         // 홈 화면으로 리다이렉트
-        navigate('/');
+        memoizedNavigate('/');
         console.log('🏠 navigate("/") 호출됨');
       } catch (error) {
         console.error('❌ 카카오 로그인 콜백 처리 실패:', error);
-        navigate('/');
+        memoizedNavigate('/');
       }
     };
 
     handleKakaoCallback();
-  }, [searchParams, memoizedSetAuthTokens, getMyHospital]);
+  }, [searchParams, memoizedSetAuthTokens, getMyHospital, memoizedNavigate]);
 
   return (
     <div
