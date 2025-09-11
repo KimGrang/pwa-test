@@ -1,7 +1,7 @@
 import { useCallback } from 'react';
 import useAxios from './useAxios';
 import { getCurrentConfig, DWON_STORE_ENDPOINTS, DWON_STORE_PAGINATION } from '../config/dwon-store-config';
-import { ApiResponse, User, LoginCredentials, ChatMessage } from '../types';
+import { ApiResponse, User, LoginCredentials, ChatMessage, UpdateUserRequest } from '../types';
 import { CreatePetRequest, PetWithRecordsResponse } from '../types/pet';
 import { CreateMedicalRecordRequest } from '../types/medical-record';
 import { CreateVetRequest } from '../types/vet';
@@ -97,7 +97,7 @@ export const useDwonStoreUser = () => {
   const getProfile = useCallback(() => get(DWON_STORE_ENDPOINTS.USERS.PROFILE), [get]);
 
   const updateProfile = useCallback(
-    (profileData: Partial<User>) => patch(DWON_STORE_ENDPOINTS.USERS.PROFILE, profileData),
+    (profileData: UpdateUserRequest) => patch(DWON_STORE_ENDPOINTS.USERS.PROFILE, profileData),
     [patch]
   );
 
@@ -111,6 +111,11 @@ export const useDwonStoreUser = () => {
 
   const withdraw = useCallback(() => del(DWON_STORE_ENDPOINTS.USERS.WITHDRAW), [del]);
 
+  const updateHospital = useCallback(
+    (hospitalId: number) => patch(DWON_STORE_ENDPOINTS.USERS.PROFILE, { hospitalId }),
+    [patch]
+  );
+
   return {
     userData: data?.data || null,
     loading,
@@ -120,6 +125,7 @@ export const useDwonStoreUser = () => {
     changePassword,
     deleteUser,
     withdraw,
+    updateHospital,
     clearError,
   };
 };

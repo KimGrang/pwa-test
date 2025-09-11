@@ -11,29 +11,7 @@ import { TokenManager } from '../utils/token-manager';
 import { processLoginData } from '../utils/loginPostProcess';
 import { Pet } from '../types/pet';
 import { MedicalRecord } from '../types/medical-record';
-
-// Hospital 타입 정의 (임시)
-interface Hospital {
-  id: string;
-  name: string;
-  address: string;
-  phone: string;
-  email: string;
-  website?: string;
-  description?: string;
-  specialties: string[];
-  operatingHours: {
-    [key: string]: {
-      open: string;
-      close: string;
-      isOpen: boolean;
-    };
-  };
-  location: {
-    latitude: number;
-    longitude: number;
-  };
-}
+import { Hospital } from '../types/hospital';
 
 // User 타입 정의 (API 응답과 일치)
 interface User {
