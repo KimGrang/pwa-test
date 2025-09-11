@@ -85,7 +85,7 @@ const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose }) => {
     try {
       // 백엔드에서 카카오 로그인 URL 가져오기
       const response = await axiosGet('/auth/kakao/url', {
-        baseURL: import.meta.env.VITE_API_BASE_URL || 'https://www.example.com/api',
+        baseURL: import.meta.env.VITE_API_BASE_URL,
       });
       const { authUrl } = response as { authUrl: string };
 

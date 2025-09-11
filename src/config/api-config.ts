@@ -6,7 +6,7 @@
 export const API_CONFIG = {
   // example.com 백엔드 API
   DWON_STORE: {
-    BASE_URL: import.meta.env.VITE_API_BASE_URL || 'https://example.com/api',
+    BASE_URL: import.meta.env.VITE_API_BASE_URL,
     TIMEOUT: 10000,
   },
   // 로컬 개발 환경

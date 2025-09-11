@@ -18,7 +18,11 @@ const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose }) => {
 
   // API 훅
   const { testLogin, loading: authLoading } = useDwonStoreAuth();
+<<<<<<< HEAD
   const { get: axiosGet } = useAxios(import.meta.env.VITE_API_BASE_URL || 'https://example.com/api');
+=======
+  const { get: axiosGet } = useAxios('https://www.dwon.store/api');
+>>>>>>> e85f16ec7b2375c87f87ab722377bda349decb59
 
   // 스토어 훅
   const { login: setAuthTokens } = useAuthStore();
@@ -34,7 +38,11 @@ const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose }) => {
     try {
       // 백엔드에서 카카오 로그인 URL 가져오기
       const response = await axiosGet('/auth/kakao/url', {
+<<<<<<< HEAD
         baseURL: import.meta.env.VITE_API_BASE_URL || 'https://example.com/api',
+=======
+        baseURL: 'https://www.dwon.store/api',
+>>>>>>> e85f16ec7b2375c87f87ab722377bda349decb59
       });
       const { authUrl } = response;
 
