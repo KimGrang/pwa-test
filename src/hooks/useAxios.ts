@@ -1,9 +1,11 @@
 import { useState, useCallback } from 'react';
 import axios, { AxiosRequestConfig, AxiosResponse, AxiosError } from 'axios';
+import { TokenManager } from '../utils/token-manager';
+import { TokenRefreshManager } from '../utils/token-refresh';
 
 /**
- * 범용 axios HTTP 통신을 위한 커스텀 훅
- * 모든 컴포넌트에서 재사용 가능한 axios 통신 관리
+ * 보안 강화된 axios HTTP 통신 훅
+ * 자동 토큰 갱신 및 재시도 로직 포함
  */
 
 interface UseAxiosState<T> {
@@ -43,11 +45,10 @@ export const useAxios = <T = unknown>(baseURL?: string): UseAxiosReturn<T> => {
     },
   });
 
-  // 요청 인터셉터 - 토큰 자동 추가
+  // 요청 인터셉터 - 보안 강화된 토큰 추가
   axiosInstance.interceptors.request.use(
     (config) => {
-      // example.com API를 위한 토큰 관리
-      const accessToken = localStorage.getItem('dwon_access_token') || localStorage.getItem('authToken');
+      const accessToken = TokenManager.getAccessToken();
       if (accessToken) {
         config.headers.Authorization = `Bearer ${accessToken}`;
       }
@@ -58,29 +59,41 @@ export const useAxios = <T = unknown>(baseURL?: string): UseAxiosReturn<T> => {
     }
   );
 
-  // 응답 인터셉터 - 에러 처리
+  // 응답 인터셉터 - 자동 토큰 갱신 로직
   axiosInstance.interceptors.response.use(
     (response: AxiosResponse) => {
       return response;
     },
-    (error: AxiosError) => {
+    async (error: AxiosError) => {
+      const originalRequest = error.config as AxiosRequestConfig & { _retry?: boolean };
+
+      // 401 에러이고 아직 재시도하지 않은 경우
+      if (error.response?.status === 401 && !originalRequest._retry) {
+        originalRequest._retry = true;
+
+        try {
+          // 토큰 갱신 시도
+          const refreshSuccess = await TokenRefreshManager.handleTokenRefresh();
+
+          if (refreshSuccess) {
+            // 갱신 성공시 원본 요청 재시도
+            return axiosInstance.request(originalRequest);
+          } else {
+            // 갱신 실패시 에러 반환
+            return Promise.reject(new Error('인증이 필요합니다.'));
+          }
+        } catch {
+          return Promise.reject(new Error('인증이 필요합니다.'));
+        }
+      }
+
+      // 401이 아닌 다른 에러들 처리
       let errorMessage = '요청 중 오류가 발생했습니다.';
 
       if (error.response) {
-        // 서버 응답이 있는 경우
         switch (error.response.status) {
           case 400:
             errorMessage = '잘못된 요청입니다.';
-            break;
-          case 401:
-            errorMessage = '인증이 필요합니다.';
-            // 토큰 및 사용자 데이터 제거
-            localStorage.removeItem('authToken');
-            localStorage.removeItem('dwon_access_token');
-            localStorage.removeItem('dwon_refresh_token');
-            localStorage.removeItem('dwon_user_data');
-            // 페이지 새로고침 없이 인증 상태 변경을 알리기 위한 이벤트 발생
-            window.dispatchEvent(new CustomEvent('auth-error'));
             break;
           case 403:
             errorMessage = '접근 권한이 없습니다.';
@@ -98,10 +111,8 @@ export const useAxios = <T = unknown>(baseURL?: string): UseAxiosReturn<T> => {
             errorMessage = (error.response.data as { message?: string })?.message || errorMessage;
         }
       } else if (error.request) {
-        // 네트워크 오류
         errorMessage = '네트워크 연결을 확인해주세요.';
       } else {
-        // 기타 오류
         errorMessage = error.message || errorMessage;
       }
 
