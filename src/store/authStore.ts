@@ -116,7 +116,15 @@ export const useAuthStore = create<AuthState>()(
         useHospitalStore.getState().clearAll();
         useChatStore.getState().clearAll();
 
-        // 인증 스토어 초기화
+        // localStorage에서 모든 사용자 관련 데이터 삭제
+        localStorage.removeItem('record-store');
+        localStorage.removeItem('pet-store');
+        localStorage.removeItem('user-store');
+        localStorage.removeItem('hospital-store');
+        localStorage.removeItem('chat-store');
+        localStorage.removeItem('auth-store'); // 인증 스토어도 삭제
+
+        // 인증 스토어 초기화 (메모리에서만)
         set({
           tokens: null,
           isAuthenticated: false,

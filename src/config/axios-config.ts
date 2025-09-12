@@ -1,6 +1,4 @@
 import axios, { AxiosInstance, AxiosRequestConfig, AxiosError } from 'axios';
-import { TokenManager } from '../utils/token-manager';
-import { TokenRefreshManager } from '../utils/token-refresh';
 
 /**
  * 통합된 Axios 설정 및 인스턴스 관리
@@ -85,9 +83,18 @@ export const createAxiosInstance = (baseURL?: string, config?: AxiosRequestConfi
   // 요청 인터셉터 - 토큰 자동 추가
   instance.interceptors.request.use(
     (config) => {
-      const accessToken = TokenManager.getAccessToken();
-      if (accessToken && config.headers) {
-        config.headers.Authorization = `Bearer ${accessToken}`;
+      // localStorage에서 토큰 가져오기
+      const authData = localStorage.getItem('auth-store');
+      if (authData) {
+        try {
+          const parsed = JSON.parse(authData);
+          const accessToken = parsed?.state?.tokens?.accessToken;
+          if (accessToken && config.headers) {
+            config.headers.Authorization = `Bearer ${accessToken}`;
+          }
+        } catch (error) {
+          console.error('토큰 파싱 오류:', error);
+        }
       }
       return config;
     },
@@ -101,25 +108,54 @@ export const createAxiosInstance = (baseURL?: string, config?: AxiosRequestConfi
   instance.interceptors.response.use(
     (response) => response,
     async (error: AxiosError) => {
-      const originalRequest = error.config as AxiosRequestConfig & { _retry?: boolean };
+      const originalRequest = error.config as any;
 
-      // 401 에러 처리 - 토큰 갱신 시도
+      // 401 에러이고 재시도하지 않은 경우 토큰 갱신 시도
       if (error.response?.status === 401 && !originalRequest._retry) {
         originalRequest._retry = true;
 
         try {
-          const refreshSuccess = await TokenRefreshManager.handleTokenRefresh();
-          if (refreshSuccess && originalRequest) {
-            // 갱신된 토큰으로 원본 요청 재시도
-            const newAccessToken = TokenManager.getAccessToken();
-            if (newAccessToken && originalRequest.headers) {
-              originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
+          const authData = localStorage.getItem('auth-store');
+          if (authData) {
+            const parsed = JSON.parse(authData);
+            const refreshToken = parsed?.state?.tokens?.refreshToken;
+
+            if (refreshToken) {
+              // 토큰 갱신 요청
+              const refreshResponse = await axios.post(`${getCurrentEnvironmentConfig().BASE_URL}/auth/refresh`, {
+                refresh_token: refreshToken,
+              });
+
+              if (refreshResponse.data?.success && refreshResponse.data?.data) {
+                const newTokens = {
+                  accessToken: refreshResponse.data.data.access_token,
+                  refreshToken: refreshResponse.data.data.refresh_token,
+                };
+
+                // localStorage 업데이트
+                const updatedAuthData = {
+                  ...parsed,
+                  state: {
+                    ...parsed.state,
+                    tokens: newTokens,
+                  },
+                };
+                localStorage.setItem('auth-store', JSON.stringify(updatedAuthData));
+
+                // 원래 요청 재시도
+                if (originalRequest.headers) {
+                  originalRequest.headers.Authorization = `Bearer ${newTokens.accessToken}`;
+                }
+                return instance.request(originalRequest);
+              }
             }
-            return instance.request(originalRequest);
           }
         } catch (refreshError) {
-          console.error('Token refresh failed:', refreshError);
-          // 토큰 갱신 실패 시 로그인 페이지로 리다이렉트 등의 처리를 할 수 있음
+          console.error('토큰 갱신 실패:', refreshError);
+          // 토큰 갱신 실패 시 로그아웃 처리
+          localStorage.removeItem('auth-store');
+          // 로그인 페이지로 리다이렉트
+          window.location.href = '/';
         }
       }
 

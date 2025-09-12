@@ -2,7 +2,6 @@ import React, { useEffect, useRef, useCallback } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useAuthStore } from '../store/authStore';
 import { useUserAPI } from '../hooks';
-import { TokenManager } from '../utils/token-manager';
 import { processLoginData } from '../utils/loginPostProcess';
 
 /**
@@ -81,14 +80,7 @@ const KakaoCallback: React.FC = () => {
         await processLoginData(user, getMyHospital);
         // console.log('⏰ processLoginData 완료');
 
-        // TokenManager에도 저장 (기존 호환성 유지)
-        // console.log('🔐 TokenManager.saveTokens 호출 전');
-        TokenManager.saveTokens({
-          accessToken,
-          refreshToken,
-          user,
-        });
-        // console.log('🔐 TokenManager.saveTokens 호출 후');
+        // persist로 자동 저장됨
 
         // console.log('✅ 카카오 로그인 완료 - 홈 화면으로 이동');
 

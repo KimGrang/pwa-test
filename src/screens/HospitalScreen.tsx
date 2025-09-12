@@ -7,6 +7,7 @@ import { useUserStore } from '../store/userStore';
 import '../styles/HospitalSelector.css';
 
 const HospitalScreen: React.FC = () => {
+  console.log('🏥 HospitalScreen 컴포넌트 렌더링됨');
   const navigate = useNavigate();
   const { updateHospital, loading: isUpdating } = useUserAPI();
   const { selectedHospital } = useHospitalStore();

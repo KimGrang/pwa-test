@@ -1,14 +1,6 @@
 import React, { useState } from 'react';
 import { useUserAPI } from '../hooks';
 import { useAuthStore } from '../store/authStore';
-import { useUserStore } from '../store/userStore';
-import { useRecordStore } from '../store/recordStore';
-import { usePetStore } from '../store/petStore';
-import { useChatStore } from '../store/chatStore';
-import { useHospitalStore } from '../store/hospitalStore';
-import { useUIStore } from '../store/uiStore';
-import { useAppStore } from '../store/appStore';
-import { TokenManager } from '../utils/token-manager';
 import '../styles/LoginModal.css';
 
 interface WithdrawModalProps {
@@ -30,14 +22,7 @@ const WithdrawModal: React.FC<WithdrawModalProps> = ({ isOpen, onClose, onSucces
   const { withdraw, error, clearError } = useUserAPI();
 
   // 스토어 훅들
-  const { clearAll: clearAuthStore } = useAuthStore();
-  const { clearAll: clearUserStore } = useUserStore();
-  const { clearAll: clearRecordStore } = useRecordStore();
-  const { clearAll: clearPetStore } = usePetStore();
-  const { clearAll: clearChatStore } = useChatStore();
-  const { clearAll: clearHospitalStore } = useHospitalStore();
-  const { clearAll: clearUIStore } = useUIStore();
-  const { clearAll: clearAppStore } = useAppStore();
+  const { logout: clearAuthStore } = useAuthStore();
 
   /**
    * 모달 닫기 처리
@@ -74,18 +59,8 @@ const WithdrawModal: React.FC<WithdrawModalProps> = ({ isOpen, onClose, onSucces
       const response = await withdraw();
 
       if (response) {
-        // 모든 스토어 데이터 삭제
+        // authStore.logout()이 모든 스토어와 토큰을 정리함
         clearAuthStore();
-        clearUserStore();
-        clearRecordStore();
-        clearPetStore();
-        clearChatStore();
-        clearHospitalStore();
-        clearUIStore();
-        clearAppStore();
-
-        // 토큰 삭제
-        TokenManager.clearTokens();
 
         alert('회원 탈퇴가 완료되었습니다.');
         onSuccess();

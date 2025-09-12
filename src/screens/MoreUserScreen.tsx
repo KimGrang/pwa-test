@@ -1,14 +1,7 @@
 import React, { useCallback, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useUserStore } from '../store/userStore';
-
-import { useRecordStore } from '../store/recordStore';
-import { usePetStore } from '../store/petStore';
-import { useChatStore } from '../store/chatStore';
-import { useHospitalStore } from '../store/hospitalStore';
-import { useUIStore } from '../store/uiStore';
-import { useAppStore } from '../store/appStore';
-import { TokenManager } from '../utils/token-manager';
+import { useAuthStore } from '../store/authStore';
 import WithdrawModal from '../components/WithdrawModal';
 import '../styles/base.css';
 import '../styles/moreScreen.css';
@@ -22,44 +15,21 @@ const UserMoreScreen: React.FC = () => {
   const [isWithdrawModalOpen, setIsWithdrawModalOpen] = useState(false);
 
   // 스토어에서 사용자 정보와 인증 상태 가져오기
-  const { currentUser, clearAll: clearUserStore } = useUserStore();
-  const { clearAll: clearRecordStore } = useRecordStore();
-  const { clearAll: clearPetStore } = usePetStore();
-  const { clearAll: clearChatStore } = useChatStore();
-  const { clearAll: clearHospitalStore } = useHospitalStore();
-  const { clearAll: clearUIStore } = useUIStore();
-  const { clearAll: clearAppStore } = useAppStore();
+  const { currentUser } = useUserStore();
+  const { logout } = useAuthStore();
 
   /**
-   * 로그아웃 처리 - 모든 Zustand 스토어 데이터 삭제
+   * 로그아웃 처리
    */
   const handleLogout = useCallback(() => {
     if (window.confirm('정말 로그아웃하시겠습니까?')) {
-      // 모든 스토어 데이터 삭제
-      clearUserStore();
-      clearRecordStore();
-      clearPetStore();
-      clearChatStore();
-      clearHospitalStore();
-      clearUIStore();
-      clearAppStore();
-
-      // 토큰 삭제
-      TokenManager.clearTokens();
+      // authStore의 logout 함수 사용 (모든 스토어 정리됨)
+      logout();
 
       // 홈 화면으로 이동
       navigate('/');
     }
-  }, [
-    clearUserStore,
-    clearRecordStore,
-    clearPetStore,
-    clearChatStore,
-    clearHospitalStore,
-    clearUIStore,
-    clearAppStore,
-    navigate,
-  ]);
+  }, [logout, navigate]);
 
   /**
    * 회원탈퇴 모달 열기

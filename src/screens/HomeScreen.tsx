@@ -2,7 +2,6 @@ import React, { useEffect, useMemo, useCallback, useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom';
 import { KeyIcon, XMarkIcon } from '@heroicons/react/24/outline';
 import { useAuthAPI, usePetsAPI } from '../hooks';
-import { TokenManager } from '../utils/token-manager';
 import { useUserStore } from '../store/userStore';
 import { useAuthStore } from '../store/authStore';
 import { useRecordStore } from '../store/recordStore';
@@ -115,41 +114,11 @@ const HomeScreen: React.FC = () => {
       if (error instanceof Error && error.message.includes('인증이 필요합니다')) {
         // console.log('🔓 인증 토큰이 유효하지 않음 - 로그아웃 처리');
         authLogout();
-        clearUser();
-        TokenManager.clearTokens();
       }
     }
   }, [isAuthenticated, currentUser?.id, getMyPetsWithRecords, setPets, setMedicalRecords, authLogout, clearUser]);
 
-  // 토큰 복원 실행 여부를 추적하는 ref
-  const tokenRestoreAttempted = useRef(false);
-
-  // 이전 인증 상태를 추적하는 ref
-  const prevAuthState = useRef<boolean | null>(null);
-
-  // 컴포넌트 마운트 시 토큰 복원 (한 번만 실행)
-  useEffect(() => {
-    if (tokenRestoreAttempted.current) return;
-    tokenRestoreAttempted.current = true;
-
-    const hasToken = TokenManager.getAccessToken();
-    if (hasToken && !isAuthenticated) {
-      // TokenManager에 저장된 사용자 정보가 있다면 store에 복원
-      const userData = TokenManager.getUserData();
-      if (userData && typeof userData === 'object' && 'id' in userData) {
-        // console.log('🔄 토큰 복원 중...');
-        setCurrentUser(userData as import('../types/user').User);
-        authLogin({
-          accessToken: hasToken,
-          refreshToken: TokenManager.getRefreshToken() || '',
-        } as import('../types/auth').TokenCredentials);
-
-        // 토큰 복원 후 데이터 로드
-        // console.log('⏰ 토큰 복원 완료 - loadPetsWithMedicalRecords 호출');
-        loadPetsWithMedicalRecords();
-      }
-    }
-  }, [authLogin, isAuthenticated, loadPetsWithMedicalRecords, setCurrentUser]);
+  // persist로 자동 복원됨
 
   // 안정적인 인증 상태 정보 (useMemo로 메모이제이션)
   const authInfo = useMemo(
@@ -162,30 +131,13 @@ const HomeScreen: React.FC = () => {
     [isAuthenticated, currentUser?.id, currentUser?.name, tokens?.accessToken]
   );
 
-  // 인증 상태 변화 감지 (디버깅용) - 상태 변화 시에만 출력
-  useEffect(() => {
-    // 이전 상태와 다를 때만 로그 출력
-    if (prevAuthState.current !== authInfo.isAuthenticated) {
-      if (authInfo.isAuthenticated && authInfo.userId) {
-        // console.log('✅ 로그인 상태:', {
-        //   userId: authInfo.userId,
-        //   userName: authInfo.userName,
-        //   hasTokens: authInfo.hasTokens,
-        // });
-      } else if (!authInfo.isAuthenticated) {
-        // console.log('❌ 로그아웃 상태');
-      }
-      prevAuthState.current = authInfo.isAuthenticated;
-    }
-  }, [authInfo]); // 안정적인 의존성
+  // 인증 상태 변화 감지는 제거됨
 
   // 401 에러 이벤트 수신 - axios interceptor에서 발생
   useEffect(() => {
     const handleAuthError = () => {
       // console.log('🔓 인증 오류 이벤트 수신 - 로그아웃 처리');
       authLogout();
-      clearUser();
-      // TokenManager는 이미 axios interceptor에서 정리됨
     };
 
     window.addEventListener('auth-error', handleAuthError);
@@ -291,8 +243,6 @@ const HomeScreen: React.FC = () => {
           if (error instanceof Error && error.message.includes('인증이 필요합니다')) {
             console.log('🔓 인증 토큰이 유효하지 않음 - 로그아웃 처리');
             authLogout();
-            clearUser();
-            TokenManager.clearTokens();
           }
         }
       };
@@ -318,12 +268,6 @@ const HomeScreen: React.FC = () => {
   };
 
   // 로그아웃 처리
-  // const handleLogout = useCallback(() => {
-  //   authLogout();
-  //   clearUser();
-  //   TokenManager.clearTokens();
-  //   navigate('/'); // 홈 화면으로 이동
-  // }, [authLogout, clearUser, navigate]);
 
   // 날짜 선택 시 해당 날짜의 진료기록으로 이동
   const handleDateSelect = useCallback(
@@ -382,7 +326,7 @@ const HomeScreen: React.FC = () => {
             </button>
           ) : (
             <button className='user-greeting' onClick={handleUserProfileClick}>
-              {currentUser?.name || '사용자'}님
+              {currentUser?.name}님
             </button>
           )}
         </div>

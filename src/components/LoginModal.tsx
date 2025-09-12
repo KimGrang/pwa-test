@@ -8,7 +8,6 @@ import { useAuthStore } from '../store/authStore';
 import { useUserStore } from '../store/userStore';
 import { useRecordStore } from '../store/recordStore';
 import { usePetStore } from '../store/petStore';
-import { TokenManager } from '../utils/token-manager';
 import { processLoginData } from '../utils/loginPostProcess';
 import { Pet } from '../types/pet';
 import { MedicalRecord } from '../types/medical-record';
@@ -40,7 +39,7 @@ const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose }) => {
   const [error, setError] = useState<string | null>(null);
 
   // API 훅
-  const { testLogin, loading: authLoading } = useAuthAPI();
+  const { testLogin, getKakaoAuthUrl, loading: authLoading } = useAuthAPI();
   const { getMyPetsWithRecords } = usePetsAPI();
   const { getMyHospital } = useUserAPI();
   // const { get: axiosGet } = useAxios(); // 삭제된 hook
@@ -62,26 +61,14 @@ const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose }) => {
     setError(null);
 
     try {
-      // 백엔드에서 카카오 로그인 URL 가져오기
-      const baseUrl = import.meta.env.VITE_API_BASE_URL || 'https://www.dwon.store/api';
-      // console.log('🔍 카카오 로그인 URL 요청:', `${baseUrl}/auth/kakao/url`);
-
-      const response = await fetch(`${baseUrl}/auth/kakao/url`);
-
-      if (!response.ok) {
-        throw new Error(`카카오 로그인 URL 요청 실패: ${response.status}`);
-      }
-
-      const data = await response.json();
-      // console.log('🔍 백엔드 응답:', data);
-
-      const { authUrl } = data;
+      // API 훅을 사용해서 카카오 로그인 URL 가져오기
+      const { authUrl } = await getKakaoAuthUrl();
 
       if (!authUrl) {
         throw new Error('카카오 로그인 URL을 받지 못했습니다.');
       }
 
-      // console.log('🔍 카카오 로그인 URL로 리다이렉트:', authUrl);
+      console.log('🔍 카카오 로그인 URL로 리다이렉트:', authUrl);
 
       // 카카오 로그인 페이지로 리다이렉트
       window.location.href = authUrl;
@@ -138,12 +125,7 @@ const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose }) => {
           refreshToken: loginData.refresh_token,
         } as TokenCredentials);
 
-        // TokenManager에도 저장 (기존 호환성 유지)
-        TokenManager.saveTokens({
-          accessToken: loginData.access_token,
-          refreshToken: loginData.refresh_token,
-          user: loginData.user,
-        });
+        // persist로 자동 저장됨
 
         // 저장된 데이터 확인
         // console.log('💾 테스트 로그인 - Zustand store에 저장된 정보:', {
@@ -247,8 +229,6 @@ const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose }) => {
       if (error instanceof Error && error.message.includes('인증이 필요합니다')) {
         // console.log('🔓 인증 토큰이 유효하지 않음 - 로그아웃 처리');
         authLogout();
-        clearUser();
-        TokenManager.clearTokens();
       }
     }
   };

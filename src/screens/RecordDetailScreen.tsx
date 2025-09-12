@@ -22,21 +22,12 @@ const DetailRecord: React.FC = () => {
   const navigate = useNavigate();
   const { records } = useRecordStore();
   const { getPetById } = usePetStore();
-  const { isAuthenticated, logout } = useAuthStore();
+  const { logout } = useAuthStore();
   const { loading, error, getRecordDetail, clearError } = useMedicalRecordsAPI();
   const [recordDetail, setRecordDetail] = useState<MedicalRecordDetail | null>(null);
 
   // recordId로 진료기록 찾기
   const record = records.find((r) => r.id === parseInt(recordId || '0', 10));
-
-  // 인증 상태 확인
-  useEffect(() => {
-    if (!isAuthenticated) {
-      console.log('🔐 인증되지 않은 사용자 - 로그인 페이지로 리다이렉트');
-      navigate('/login');
-      return;
-    }
-  }, [isAuthenticated, navigate]);
 
   // 컴포넌트 마운트 시 API 호출 (한 번만)
   useEffect(() => {

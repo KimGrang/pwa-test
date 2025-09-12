@@ -26,10 +26,10 @@ export const useMedicalRecordsAPI = () => {
     [get]
   );
 
-  // 진료기록 생성
+  // 진료기록 생성 (API 문서: POST /api/medical-records/post)
   const createRecord = useCallback(
     (recordData: CreateMedicalRecordRequest) => {
-      return post(API_ENDPOINTS.MEDICAL_RECORDS.CREATE, recordData);
+      return post('/medical-records/post', recordData);
     },
     [post]
   );
@@ -42,26 +42,26 @@ export const useMedicalRecordsAPI = () => {
     [get]
   );
 
-  // 진료기록 수정
+  // 진료기록 수정 (API 문서: PATCH /api/medical-records/patch/{id})
   const updateRecord = useCallback(
     (id: number, recordData: Partial<CreateMedicalRecordRequest>) => {
-      return patch(API_ENDPOINTS.MEDICAL_RECORDS.DETAIL(id), recordData);
+      return patch(`/medical-records/patch/${id}`, recordData);
     },
     [patch]
   );
 
-  // 진료기록 삭제
+  // 진료기록 삭제 (API 문서: DELETE /api/medical-records/del/{id})
   const deleteRecord = useCallback(
     (id: number) => {
-      return del(API_ENDPOINTS.MEDICAL_RECORDS.DETAIL(id));
+      return del(`/medical-records/del/${id}`);
     },
     [del]
   );
 
-  // 진료기록 상세 조회 (추가 정보 포함)
+  // 진료기록 상세 조회 (API 문서: GET /api/medical-records/detail/{id})
   const getRecordDetail = useCallback(
     (id: number) => {
-      return get(API_ENDPOINTS.MEDICAL_RECORDS.DETAIL_WITH_RELATIONS(id));
+      return get(`/medical-records/detail/${id}`);
     },
     [get]
   );
