@@ -3,6 +3,11 @@ import { persist } from 'zustand/middleware';
 import { apiInstance } from '../config/axios-config';
 import { API_ENDPOINTS } from '../config/api-endpoints';
 import { ApiResponse, LoginCredentials, TokenCredentials, User } from '../types';
+import { useRecordStore } from './recordStore';
+import { usePetStore } from './petStore';
+import { useUserStore } from './userStore';
+import { useHospitalStore } from './hospitalStore';
+import { useChatStore } from './chatStore';
 
 /**
  * 인증 토큰 인터페이스
@@ -64,7 +69,6 @@ interface AuthState {
   setError: (error: string | null) => void;
   clearError: () => void;
   logout: () => void;
-  clearAll: () => void;
 
   // API 액션
   login: (credentials: LoginCredentials | TokenCredentials) => Promise<AuthResponse | null>;
@@ -104,22 +108,23 @@ export const useAuthStore = create<AuthState>()(
 
       clearError: () => set({ error: null }),
 
-      logout: () =>
-        set({
-          tokens: null,
-          isAuthenticated: false,
-          user: null,
-          error: null,
-        }),
+      logout: () => {
+        // 모든 스토어 초기화
+        useRecordStore.getState().clearAll();
+        usePetStore.getState().clearAll();
+        useUserStore.getState().clearAll();
+        useHospitalStore.getState().clearAll();
+        useChatStore.getState().clearAll();
 
-      clearAll: () =>
+        // 인증 스토어 초기화
         set({
           tokens: null,
           isAuthenticated: false,
           user: null,
           isLoading: false,
           error: null,
-        }),
+        });
+      },
 
       // API 액션들
       login: async (credentials: LoginCredentials | TokenCredentials) => {

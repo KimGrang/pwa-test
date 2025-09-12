@@ -1,7 +1,7 @@
 import React, { useCallback, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useUserStore } from '../store/userStore';
-import { useAuthStore } from '../store/authStore';
+
 import { useRecordStore } from '../store/recordStore';
 import { usePetStore } from '../store/petStore';
 import { useChatStore } from '../store/chatStore';
@@ -23,7 +23,6 @@ const UserMoreScreen: React.FC = () => {
 
   // 스토어에서 사용자 정보와 인증 상태 가져오기
   const { currentUser, clearAll: clearUserStore } = useUserStore();
-  const { clearAll: clearAuthStore } = useAuthStore();
   const { clearAll: clearRecordStore } = useRecordStore();
   const { clearAll: clearPetStore } = usePetStore();
   const { clearAll: clearChatStore } = useChatStore();
@@ -37,7 +36,6 @@ const UserMoreScreen: React.FC = () => {
   const handleLogout = useCallback(() => {
     if (window.confirm('정말 로그아웃하시겠습니까?')) {
       // 모든 스토어 데이터 삭제
-      clearAuthStore();
       clearUserStore();
       clearRecordStore();
       clearPetStore();
@@ -53,7 +51,6 @@ const UserMoreScreen: React.FC = () => {
       navigate('/');
     }
   }, [
-    clearAuthStore,
     clearUserStore,
     clearRecordStore,
     clearPetStore,

@@ -61,7 +61,7 @@ export const useMedicalRecordsAPI = () => {
   // 진료기록 상세 조회 (추가 정보 포함)
   const getRecordDetail = useCallback(
     (id: number) => {
-      return get(`/medical-records/detail/${id}`);
+      return get(API_ENDPOINTS.MEDICAL_RECORDS.DETAIL_WITH_RELATIONS(id));
     },
     [get]
   );

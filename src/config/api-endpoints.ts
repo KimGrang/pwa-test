@@ -50,6 +50,7 @@ export const API_ENDPOINTS = {
     BY_PET: (petId: number) => `/medical-records/pet/${petId}`,
     CREATE: '/medical-records',
     DETAIL: (id: number) => `/medical-records/${id}`,
+    DETAIL_WITH_RELATIONS: (id: number) => `/medical-records/detail/${id}`,
   },
 
   // AI 상담 관련

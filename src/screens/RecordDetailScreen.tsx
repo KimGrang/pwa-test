@@ -9,6 +9,7 @@ import {
 } from '@heroicons/react/24/outline';
 import { useRecordStore } from '../store/recordStore';
 import { usePetStore } from '../store/petStore';
+import { useAuthStore } from '../store/authStore';
 import { useMedicalRecordsAPI } from '../hooks/useMedicalRecordsAPI';
 import { MedicalRecordDetail } from '../types/medical-record';
 
@@ -21,11 +22,21 @@ const DetailRecord: React.FC = () => {
   const navigate = useNavigate();
   const { records } = useRecordStore();
   const { getPetById } = usePetStore();
-  const { loading, error, getRecordDetail } = useMedicalRecordsAPI();
+  const { isAuthenticated, logout } = useAuthStore();
+  const { loading, error, getRecordDetail, clearError } = useMedicalRecordsAPI();
   const [recordDetail, setRecordDetail] = useState<MedicalRecordDetail | null>(null);
 
   // recordId로 진료기록 찾기
   const record = records.find((r) => r.id === parseInt(recordId || '0', 10));
+
+  // 인증 상태 확인
+  useEffect(() => {
+    if (!isAuthenticated) {
+      console.log('🔐 인증되지 않은 사용자 - 로그인 페이지로 리다이렉트');
+      navigate('/login');
+      return;
+    }
+  }, [isAuthenticated, navigate]);
 
   // 컴포넌트 마운트 시 API 호출 (한 번만)
   useEffect(() => {
@@ -37,44 +48,30 @@ const DetailRecord: React.FC = () => {
       try {
         console.log('🔍 API 호출 시작:', recordId);
 
-        // 임시 목 데이터로 테스트
-        const mockData: MedicalRecordDetail = {
-          diagnosis: [
-            {
-              id: 1,
-              recordId: parseInt(recordId, 10),
-              ownerName: '김철수',
-              animalType: '개',
-              breed: '골든리트리버',
-              animalName: '멍멍이',
-              gender: '수컷',
-              age: '3년 2개월',
-              diseaseName: '상기도 감염',
-              diagnosisDate: '2024-01-15T00:00:00.000Z',
-              prognosis: '양호',
-              shared: false,
-            },
-          ],
-          prescriptions: [
-            {
-              id: 1,
-              recordId: parseInt(recordId, 10),
-              medicationName: '아목시실린',
-              dosage: '250mg',
-              frequency: '1일 2회',
-              durationDays: 7,
-              specialInstructions: '식후 복용',
-            },
-          ],
-        };
+        // 이전 에러 상태 초기화
+        clearError();
+
+        const response = await getRecordDetail(parseInt(recordId, 10));
 
         if (isMounted) {
-          console.log('🔍 목 데이터 설정:', mockData);
-          setRecordDetail(mockData);
+          if (response && typeof response === 'object' && 'data' in response) {
+            console.log('🔍 API 응답 성공:', response);
+            setRecordDetail((response as { data: MedicalRecordDetail }).data);
+          } else {
+            console.error('🔍 API 응답 형식 오류:', response);
+          }
         }
       } catch (err) {
         if (isMounted) {
-          console.error('🔍 전체 오류:', err);
+          console.error('🔍 API 호출 오류:', err);
+
+          // 401 Unauthorized 에러 처리
+          if (err instanceof Error && err.message.includes('Unauthorized')) {
+            console.log('🔐 인증 토큰 만료 - 로그아웃 후 로그인 페이지로 이동');
+            logout();
+            navigate('/login');
+            return;
+          }
         }
       }
     };
@@ -85,7 +82,7 @@ const DetailRecord: React.FC = () => {
     return () => {
       isMounted = false;
     };
-  }, [recordId]);
+  }, [recordId, getRecordDetail, clearError]);
 
   // 디버깅용 로그 (한 번만 실행)
   useEffect(() => {
@@ -116,8 +113,15 @@ const DetailRecord: React.FC = () => {
     );
   }
 
-  // 에러 상태 처리
-  if (error) {
+  // 에러 상태 처리 (취소된 요청은 제외)
+  if (error && error !== 'canceled') {
+    // 401 Unauthorized 에러인 경우 로그인 페이지로 리다이렉트
+    if (error === 'Unauthorized') {
+      console.log('🔐 401 에러 감지 - 로그아웃 후 로그인 페이지로 이동');
+      logout();
+      navigate('/login');
+      return null;
+    }
     return (
       <div className='screen-container'>
         <div className='screen-header'>
@@ -141,18 +145,20 @@ const DetailRecord: React.FC = () => {
               </button>
               <button
                 className='back-button'
-                onClick={() => {
+                onClick={async () => {
                   console.log('🔄 재시도 버튼 클릭');
                   if (recordId) {
-                    getRecordDetail(parseInt(recordId, 10))
-                      .then((response: unknown) => {
-                        if (response && typeof response === 'object' && 'data' in response) {
-                          setRecordDetail((response as { data: MedicalRecordDetail }).data);
-                        }
-                      })
-                      .catch((err: unknown) => {
-                        console.error('🔍 재시도 API 오류:', err);
-                      });
+                    try {
+                      // 에러 상태 초기화
+                      clearError();
+
+                      const response = await getRecordDetail(parseInt(recordId, 10));
+                      if (response && typeof response === 'object' && 'data' in response) {
+                        setRecordDetail((response as { data: MedicalRecordDetail }).data);
+                      }
+                    } catch (err) {
+                      console.error('🔍 재시도 API 오류:', err);
+                    }
                   }
                 }}
               >
