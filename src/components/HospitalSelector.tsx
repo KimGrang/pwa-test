@@ -2,6 +2,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { useUserAPI } from '../hooks';
 import { useHospitalStore } from '../store/hospitalStore';
 import { useUserStore } from '../store/userStore';
+import { useAuthStore } from '../store/authStore';
 import type { Hospital } from '../types/hospital';
 
 /**
@@ -12,6 +13,7 @@ const HospitalSelector: React.FC = () => {
   const { getHospitals, loading, error } = useUserAPI();
   const { hospitals, setHospitals, selectedHospital, setSelectedHospital } = useHospitalStore();
   const { currentUser } = useUserStore();
+  const { isAuthenticated } = useAuthStore();
   const [searchTerm, setSearchTerm] = useState('');
   const [isLoadingHospitals, setIsLoadingHospitals] = useState(false);
   const [hasLoadedHospitals, setHasLoadedHospitals] = useState(false);
@@ -19,23 +21,29 @@ const HospitalSelector: React.FC = () => {
 
   // 병원 목록 로드
   const loadHospitals = useCallback(async () => {
-    console.log('🏥 loadHospitals 호출됨, 조건 확인:', {
-      isLoadingHospitals,
-      hasLoadedHospitals,
-      isMounted,
-    });
+    // console.log('🏥 loadHospitals 호출됨, 조건 확인:', {
+    //   isLoadingHospitals,
+    //   hasLoadedHospitals,
+    //   isMounted,
+    // });
 
-    // 이미 로딩 중이거나 이미 로드된 경우 중복 요청 방지
-    if (isLoadingHospitals || hasLoadedHospitals || !isMounted) {
-      console.log('🏥 병원 목록 로드 스킵 - 조건에 의해 차단됨');
+    // 인증되지 않은 경우 API 호출하지 않음
+    if (!isAuthenticated) {
+      // console.log('🏥 병원 목록 로드 스킵 - 인증되지 않음', { isAuthenticated });
       return;
     }
 
-    console.log('병원 목록 로드 시작');
+    // 이미 로딩 중이거나 이미 로드된 경우 중복 요청 방지
+    if (isLoadingHospitals || hasLoadedHospitals || !isMounted) {
+      // console.log('🏥 병원 목록 로드 스킵 - 조건에 의해 차단됨');
+      return;
+    }
+
+    // console.log('🏥 병원 목록 로드 시작 - 인증됨', { isAuthenticated });
     setIsLoadingHospitals(true);
     try {
       const response = await getHospitals({ page: 1, limit: 100 }); // 모든 병원을 가져오기 위해 큰 limit 설정
-      console.log('병원 API 응답:', response);
+      // console.log('병원 API 응답:', response);
 
       // API 문서에 따르면 응답 구조: { success: true, data: Hospital[] }
       if (response && isMounted) {
@@ -52,12 +60,12 @@ const HospitalSelector: React.FC = () => {
           hospitalsData = response.data;
         }
 
-        console.log('추출된 병원 데이터:', hospitalsData);
+        // console.log('추출된 병원 데이터:', hospitalsData);
         setHospitals(hospitalsData);
         setHasLoadedHospitals(true);
-        console.log('병원 목록 로드 성공:', hospitalsData.length, '개');
+        // console.log('병원 목록 로드 성공:', hospitalsData.length, '개');
       } else {
-        console.log('병원 데이터가 없거나 마운트되지 않음:', { hasResponse: !!response, isMounted });
+        // console.log('병원 데이터가 없거나 마운트되지 않음:', { hasResponse: !!response, isMounted });
       }
     } catch (err) {
       // 모든 에러를 로깅하여 문제 파악
@@ -74,23 +82,23 @@ const HospitalSelector: React.FC = () => {
 
   // 컴포넌트 마운트 상태 설정
   useEffect(() => {
-    console.log('🏥 HospitalSelector 컴포넌트 마운트됨');
+    // console.log('🏥 HospitalSelector 컴포넌트 마운트됨');
     setIsMounted(true);
 
     // 언마운트 시 정리
     return () => {
-      console.log('🏥 HospitalSelector 컴포넌트 언마운트됨');
+      // console.log('🏥 HospitalSelector 컴포넌트 언마운트됨');
       setIsMounted(false);
     };
   }, []);
 
   // 마운트된 후 병원 목록 로드
   useEffect(() => {
-    if (isMounted && !hasLoadedHospitals && !isLoadingHospitals) {
-      console.log('🏥 마운트 완료, 병원 목록 로드 시작');
+    if (isMounted && !hasLoadedHospitals && !isLoadingHospitals && isAuthenticated) {
+      // console.log('🏥 마운트 완료, 병원 목록 로드 시작');
       loadHospitals();
     }
-  }, [isMounted, hasLoadedHospitals, isLoadingHospitals, loadHospitals]);
+  }, [isMounted, hasLoadedHospitals, isLoadingHospitals, isAuthenticated, loadHospitals]);
 
   // 현재 사용자의 병원이 설정되어 있다면 선택된 병원으로 설정
   useEffect(() => {
@@ -120,16 +128,27 @@ const HospitalSelector: React.FC = () => {
     }
   };
 
-  console.log('🏥 HospitalSelector 렌더링 상태:', {
-    isLoadingHospitals,
-    loading,
-    error,
-    hospitalsCount: hospitals.length,
-    filteredCount: filteredHospitals.length,
-  });
+  // console.log('🏥 HospitalSelector 렌더링 상태:', {
+  //   isLoadingHospitals,
+  //   loading,
+  //   error,
+  //   hospitalsCount: hospitals.length,
+  //   filteredCount: filteredHospitals.length,
+  // });
+
+  // 인증되지 않은 경우
+  if (!isAuthenticated) {
+    return (
+      <div className='hospital-selector'>
+        <div className='auth-required-container'>
+          <p>병원 목록을 보려면 로그인이 필요합니다.</p>
+        </div>
+      </div>
+    );
+  }
 
   if (isLoadingHospitals || loading) {
-    console.log('🏥 로딩 상태 렌더링');
+    // console.log('🏥 로딩 상태 렌더링');
     return (
       <div className='hospital-selector'>
         <div className='loading-container'>

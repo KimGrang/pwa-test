@@ -48,7 +48,7 @@ export const useUserAPI = () => {
       const endpoint = params
         ? `${API_ENDPOINTS.HOSPITALS.LIST}?page=${params.page || 1}&limit=${params.limit || 10}`
         : API_ENDPOINTS.HOSPITALS.LIST;
-      console.log('🏥 getHospitals 호출됨:', { endpoint, params });
+      // console.log('🏥 getHospitals 호출됨:', { endpoint, params });
       return get(endpoint);
     },
     [get]

@@ -10,7 +10,7 @@ import PetMoreScreen from './screens/MorePetScreen';
 import InstallScreen from './screens/InstallScreen';
 import Navigation from './components/Navigation';
 import KakaoCallback from './components/KakaoCallback';
-import HospitalScreen from './screens/HospitalScreen';
+import HospitalScreen from './screens/MoreHospitalScreen';
 import NotificationScreen from './screens/NotificationScreen';
 import TermsScreen from './screens/TermsScreen';
 

@@ -1,5 +1,6 @@
 import React, { useCallback, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { ChevronRightIcon, UserIcon } from '@heroicons/react/24/outline';
 import { useUserStore } from '../store/userStore';
 import { useAuthStore } from '../store/authStore';
 import WithdrawModal from '../components/WithdrawModal';
@@ -65,11 +66,7 @@ const UserMoreScreen: React.FC = () => {
     <div className='screen-container'>
       {/* 상단 헤더 */}
       <div className='screen-header'>
-        <div className='header-left'>
-          <button className='back-button' onClick={handleGoBack}>
-            ← 뒤로
-          </button>
-        </div>
+        <div className='header-left'></div>
         <div className='header-center'>
           <span className='title'>계정 관리</span>
         </div>
@@ -83,7 +80,7 @@ const UserMoreScreen: React.FC = () => {
           <div className='profile-card'>
             <div className='profile-avatar'>
               <div className='avatar-circle'>
-                <span className='avatar-icon'>👤</span>
+                <UserIcon className='avatar-heroicon' />
               </div>
             </div>
             <div className='profile-info'>
@@ -100,18 +97,20 @@ const UserMoreScreen: React.FC = () => {
 
           <div className='menu-item' onClick={handleLogout}>
             <span className='menu-text'>로그아웃</span>
-            <span className='chevron-icon'></span>
+            <ChevronRightIcon className='chevron-heroicon' />
           </div>
 
           <div className='menu-item' onClick={handleWithdrawal}>
             <span className='menu-text'>회원탈퇴</span>
-            <span className='chevron-icon'></span>
+            <ChevronRightIcon className='chevron-heroicon' />
           </div>
         </div>
         <div className='form-actions'>
-          <button className='action-button primary'>저장</button>
+          {/* <button className='action-button primary'>저장</button> */}
 
-          <button className='action-button danger'>취소</button>
+          <button className='action-button danger' onClick={handleGoBack}>
+            취소
+          </button>
         </div>
       </div>
 
