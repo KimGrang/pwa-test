@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useCallback } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useAuthStore } from '../store/authStore';
-import { useDwonStoreHospitals } from '../hooks/useDwonStoreAPI';
+import { useUserAPI } from '../hooks';
 import { TokenManager } from '../utils/token-manager';
 import { processLoginData } from '../utils/loginPostProcess';
 
@@ -15,7 +15,7 @@ const KakaoCallback: React.FC = () => {
   const hasProcessed = useRef(false);
 
   const { login: setAuthTokens } = useAuthStore();
-  const { getMyHospital } = useDwonStoreHospitals();
+  const { getMyHospital } = useUserAPI();
 
   // setAuthTokens를 useCallback으로 메모이제이션
   const memoizedSetAuthTokens = useCallback(setAuthTokens, [setAuthTokens]);
@@ -39,14 +39,26 @@ const KakaoCallback: React.FC = () => {
     const handleKakaoCallback = async () => {
       try {
         // console.log('🚀 handleKakaoCallback 시작');
+        // console.log('🔍 현재 URL:', window.location.href);
+        // console.log('🔍 URL 파라미터들:', Object.fromEntries(searchParams.entries()));
 
         // URL 파라미터에서 토큰과 사용자 정보 추출
         const accessToken = searchParams.get('accessToken');
         const refreshToken = searchParams.get('refreshToken');
         const userParam = searchParams.get('user');
 
+        // console.log('🔍 추출된 파라미터:', {
+        //   accessToken: !!accessToken,
+        //   refreshToken: !!refreshToken,
+        //   userParam: !!userParam,
+        // });
+
         if (!accessToken || !refreshToken || !userParam) {
-          console.error('❌ 카카오 로그인 콜백: 필수 파라미터 누락');
+          console.error('❌ 카카오 로그인 콜백: 필수 파라미터 누락', {
+            accessToken: !!accessToken,
+            refreshToken: !!refreshToken,
+            userParam: !!userParam,
+          });
           memoizedNavigate('/');
           return;
         }
@@ -61,7 +73,7 @@ const KakaoCallback: React.FC = () => {
         memoizedSetAuthTokens({
           accessToken,
           refreshToken,
-        });
+        } as import('../types/auth').TokenCredentials);
         // console.log('🔑 setAuthTokens 호출 후');
 
         // 공통 로그인 후처리 함수 호출 (사용자 정보 + 병원 정보 처리)

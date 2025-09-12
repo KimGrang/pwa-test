@@ -2,7 +2,7 @@
  * 토큰 자동 갱신 유틸리티
  */
 import { TokenManager } from './token-manager';
-import { getCurrentConfig, DWON_STORE_ENDPOINTS } from '../config/dwon-store-config';
+import { API_ENDPOINTS } from '../config/api-endpoints';
 
 interface RefreshResponse {
   access_token: string;
@@ -25,7 +25,7 @@ export const refreshAccessToken = async (): Promise<boolean> => {
   try {
     // console.log('🔄 토큰 갱신 시도 중...');
 
-    const response = await fetch(`${getCurrentConfig().BASE_URL}${DWON_STORE_ENDPOINTS.AUTH.REFRESH}`, {
+    const response = await fetch(API_ENDPOINTS.AUTH.REFRESH_TOKEN, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

@@ -1,7 +1,8 @@
 import React, { useCallback, useState, useEffect } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { usePetStore } from '../store/petStore';
-import { usePetAPIHook } from '../hooks/usePetAPI';
+import { usePetsAPI } from '../hooks/usePetsAPI';
+import { Pet } from '../types/pet';
 import '../styles/base.css';
 import '../styles/moreScreen.css';
 
@@ -20,7 +21,7 @@ const PetMoreScreen: React.FC = () => {
     // fetchMyPets,
     loading: isLoading,
     error: apiError,
-  } = usePetAPIHook();
+  } = usePetsAPI();
 
   // 편집 모드 상태
   const [isEditing, setIsEditing] = useState(false);
@@ -121,10 +122,10 @@ const PetMoreScreen: React.FC = () => {
     try {
       if (editingPetId) {
         // 기존 반려동물 수정 - API 호출
-        const updatedPet = await updatePetAPI(editingPetId, petData);
-        if (updatedPet) {
+        const response = await updatePetAPI(editingPetId, petData);
+        if (response && typeof response === 'object' && 'data' in response) {
           // 로컬 상태 업데이트 (API 재호출 불필요)
-          updatePet(editingPetId, updatedPet);
+          updatePet(editingPetId, (response as { data: Pet }).data);
           alert('반려동물 정보가 수정되었습니다.');
           navigate('/more'); // 수정 후 MoreScreen으로 이동
         } else {
@@ -132,10 +133,10 @@ const PetMoreScreen: React.FC = () => {
         }
       } else {
         // 새 반려동물 추가 - API 호출
-        const newPet = await createPet(petData);
-        if (newPet) {
+        const response = await createPet(petData);
+        if (response && typeof response === 'object' && 'data' in response) {
           // 로컬 상태 업데이트 (API 재호출 불필요)
-          addPet(newPet);
+          addPet((response as { data: Pet }).data);
           alert('반려동물이 추가되었습니다.');
           navigate('/more'); // 추가 후 MoreScreen으로 이동
         } else {
@@ -163,8 +164,8 @@ const PetMoreScreen: React.FC = () => {
         try {
           // setIsLoading(true);
           // API 호출로 삭제
-          const deletedPet = await deletePetAPI(petId);
-          if (deletedPet) {
+          const response = await deletePetAPI(petId);
+          if (response) {
             // 로컬 상태 업데이트 (API 재호출 불필요)
             removePet(petId);
             alert('반려동물이 삭제되었습니다.');

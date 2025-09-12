@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo, useCallback, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { KeyIcon, XMarkIcon } from '@heroicons/react/24/outline';
-import { useDwonStoreAuth, useDwonStorePets } from '../hooks/useDwonStoreAPI';
+import { useAuthAPI, usePetsAPI } from '../hooks';
 import { TokenManager } from '../utils/token-manager';
 import { useUserStore } from '../store/userStore';
 import { useAuthStore } from '../store/authStore';
@@ -16,16 +16,7 @@ import '../styles/moreScreen.css';
 import '../styles/PetFilter.css';
 import '../styles/LoginModal.css';
 
-// User 타입 정의 (API 응답과 일치)
-interface User {
-  id: number;
-  email: string;
-  name: string;
-  role: 'USER' | 'ADMIN' | 'HOSPITAL_ADMIN' | 'VET' | 'OWNER';
-  hospitalId?: number;
-  SNS?: string;
-  isTestAccount?: boolean;
-}
+// User 타입은 ../types/user에서 import하여 사용
 
 /**
  * 홈 화면 컴포넌트
@@ -45,10 +36,10 @@ const HomeScreen: React.FC = () => {
   const { calendar, filters, setSelectedPetId } = useUIStore();
 
   // example.com API 인증 Hook
-  const { loading: authLoading, error: authError, clearError: clearAuthError } = useDwonStoreAuth();
+  const { loading: authLoading, error: authError, clearError: clearAuthError } = useAuthAPI();
 
   // 반려동물 및 진료기록 관련 Hook
-  const { getMyPetsWithRecords } = useDwonStorePets();
+  const { getMyPetsWithRecords } = usePetsAPI();
   // const { getMyPets } = useDwonStorePets(); // 기존 함수 (주석처리)
   // const { getRecordsByPet } = useDwonStoreMedicalRecords(); // 기존 함수 (주석처리)
 
@@ -147,11 +138,11 @@ const HomeScreen: React.FC = () => {
       const userData = TokenManager.getUserData();
       if (userData && typeof userData === 'object' && 'id' in userData) {
         // console.log('🔄 토큰 복원 중...');
-        setCurrentUser(userData as User);
+        setCurrentUser(userData as import('../types/user').User);
         authLogin({
           accessToken: hasToken,
           refreshToken: TokenManager.getRefreshToken() || '',
-        });
+        } as import('../types/auth').TokenCredentials);
 
         // 토큰 복원 후 데이터 로드
         // console.log('⏰ 토큰 복원 완료 - loadPetsWithMedicalRecords 호출');

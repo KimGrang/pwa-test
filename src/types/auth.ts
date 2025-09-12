@@ -1,19 +1,16 @@
 // 웹 PWA용 인증 타입들
+import { User } from './user';
 
-export interface User {
-  id: number;
-  name: string;
-  email: string;
-  phone?: string;
-  avatar?: string;
-  role: 'user' | 'admin';
-  createdAt: string;
-  updatedAt: string;
-}
+export type { User };
 
 export interface LoginCredentials {
   email: string;
   password: string;
+}
+
+export interface TokenCredentials {
+  accessToken: string;
+  refreshToken: string;
 }
 
 export interface RegisterCredentials extends LoginCredentials {

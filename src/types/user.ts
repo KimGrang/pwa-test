@@ -13,7 +13,7 @@ export interface User {
   role: 'USER' | 'ADMIN' | 'HOSPITAL_ADMIN' | 'VET' | 'OWNER';
   hospitalId?: number;
   isTestAccount?: boolean;
-  createdAt: string; // API 가이드와 일치하도록 camelCase로 변경
+  createdAt?: string; // API 가이드와 일치하도록 camelCase로 변경
   updatedAt?: string;
 }
 

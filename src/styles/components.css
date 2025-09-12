@@ -425,3 +425,105 @@
 .bg-examination {
   background-color: var(--color-warning); /* 건강검진 - 경고 컬러 */
 }
+
+/* ===== 처방전 컴포넌트 ===== */
+.prescription-item {
+  background-color: var(--color-background-secondary);
+  border: 1px solid var(--color-border-light);
+  border-radius: var(--radius-md);
+  padding: var(--spacing-md);
+  margin-bottom: var(--spacing-md);
+  transition: box-shadow var(--transition-normal);
+}
+
+.prescription-item:hover {
+  box-shadow: var(--shadow-sm);
+}
+
+.prescription-item:last-child {
+  margin-bottom: 0;
+}
+
+.prescription-header {
+  margin-bottom: var(--spacing-sm);
+  padding-bottom: var(--spacing-sm);
+  border-bottom: 1px solid var(--color-border-light);
+}
+
+.medication-name {
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-primary);
+  margin: 0;
+}
+
+.prescription-details {
+  margin-top: var(--spacing-sm);
+}
+
+/* ===== 진단서 컴포넌트 ===== */
+.diagnosis-item {
+  background-color: var(--color-background-secondary);
+  border: 1px solid var(--color-border-light);
+  border-radius: var(--radius-md);
+  padding: var(--spacing-md);
+  margin-bottom: var(--spacing-md);
+  transition: box-shadow var(--transition-normal);
+}
+
+.diagnosis-item:hover {
+  box-shadow: var(--shadow-sm);
+}
+
+.diagnosis-item:last-child {
+  margin-bottom: 0;
+}
+
+.diagnosis-header {
+  margin-bottom: var(--spacing-sm);
+  padding-bottom: var(--spacing-sm);
+  border-bottom: 1px solid var(--color-border-light);
+}
+
+.disease-name {
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-warning);
+  margin: 0;
+}
+
+.diagnosis-details {
+  margin-top: var(--spacing-sm);
+}
+
+/* ===== 로딩 및 에러 메시지 ===== */
+.loading-message {
+  text-align: center;
+  padding: var(--spacing-xl);
+  color: var(--color-text-secondary);
+}
+
+.loading-message h3 {
+  margin-bottom: var(--spacing-sm);
+  color: var(--color-text-primary);
+}
+
+.error-message {
+  text-align: center;
+  padding: var(--spacing-xl);
+  color: var(--color-text-secondary);
+}
+
+.error-message h3 {
+  margin-bottom: var(--spacing-sm);
+  color: var(--color-danger);
+}
+
+.no-data-message {
+  text-align: center;
+  color: var(--color-text-secondary);
+  font-style: italic;
+  padding: var(--spacing-md);
+  background-color: var(--color-background-tertiary);
+  border-radius: var(--radius-sm);
+}

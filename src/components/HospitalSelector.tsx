@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { useDwonStoreHospitals } from '../hooks/useDwonStoreAPI';
+import { useUserAPI } from '../hooks';
 import { useHospitalStore } from '../store/hospitalStore';
 import { useUserStore } from '../store/userStore';
 import type { Hospital } from '../types/hospital';
@@ -9,33 +9,56 @@ import type { Hospital } from '../types/hospital';
  * 모든 병원 목록을 불러와서 사용자가 선택할 수 있도록 함
  */
 const HospitalSelector: React.FC = () => {
-  const { getHospitals, loading, error } = useDwonStoreHospitals();
+  const { getHospitals, loading, error } = useUserAPI();
   const { hospitals, setHospitals, selectedHospital, setSelectedHospital } = useHospitalStore();
   const { currentUser } = useUserStore();
   const [searchTerm, setSearchTerm] = useState('');
   const [isLoadingHospitals, setIsLoadingHospitals] = useState(false);
+  const [hasLoadedHospitals, setHasLoadedHospitals] = useState(false);
+  const [isMounted, setIsMounted] = useState(false);
 
   // 병원 목록 로드
   const loadHospitals = useCallback(async () => {
+    // 이미 로딩 중이거나 이미 로드된 경우 중복 요청 방지
+    if (isLoadingHospitals || hasLoadedHospitals || !isMounted) {
+      // console.log('병원 목록 로드 스킵 - 이미 로딩 중이거나 로드됨 또는 마운트되지 않음');
+      return;
+    }
+
+    // console.log('병원 목록 로드 시작');
     setIsLoadingHospitals(true);
     try {
       const response = await getHospitals({ page: 1, limit: 100 }); // 모든 병원을 가져오기 위해 큰 limit 설정
-      if (response?.data) {
-        setHospitals(response.data as Hospital[]);
+      if (response?.data && isMounted) {
+        setHospitals((response as unknown as { data: Hospital[] }).data);
+        setHasLoadedHospitals(true);
+        // console.log('병원 목록 로드 성공:', (response as unknown as { data: Hospital[] }).data.length, '개');
       }
     } catch (err) {
+      // 모든 에러를 로깅하여 문제 파악
       console.error('병원 목록 로드 실패:', err);
+      // console.log('에러 타입:', typeof err);
+      // console.log('에러 이름:', err instanceof Error ? err.name : 'N/A');
+      // console.log('에러 메시지:', err instanceof Error ? err.message : String(err));
     } finally {
-      setIsLoadingHospitals(false);
+      if (isMounted) {
+        setIsLoadingHospitals(false);
+      }
     }
-  }, [getHospitals, setHospitals]);
+  }, [getHospitals, setHospitals, isLoadingHospitals, hasLoadedHospitals, isMounted]);
 
-  // 컴포넌트 마운트 시 병원 목록 로드
+  // 컴포넌트 마운트 시 병원 목록 로드 (한 번만 실행)
   useEffect(() => {
-    if (hospitals.length === 0) {
-      loadHospitals();
-    }
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+    // console.log('컴포넌트 마운트 - 병원 목록 로드 시작');
+    setIsMounted(true);
+    loadHospitals();
+
+    // 언마운트 시 정리
+    return () => {
+      // console.log('컴포넌트 언마운트');
+      setIsMounted(false);
+    };
+  }, []); // 빈 의존성 배열로 마운트 시 한 번만 실행
 
   // 현재 사용자의 병원이 설정되어 있다면 선택된 병원으로 설정
   useEffect(() => {
@@ -105,7 +128,11 @@ const HospitalSelector: React.FC = () => {
       {/* 병원 목록 */}
       <div className='hospitals-list'>
         <h3>병원 목록</h3>
-        {filteredHospitals.length === 0 ? (
+        {isLoadingHospitals ? (
+          <div className='loading-state'>
+            <p>병원 목록을 불러오는 중...</p>
+          </div>
+        ) : filteredHospitals.length === 0 ? (
           <div className='no-results'>
             <p>검색 결과가 없습니다.</p>
           </div>

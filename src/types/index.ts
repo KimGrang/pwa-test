@@ -4,7 +4,14 @@
 export * from './api';
 
 // 인증 관련 타입 (User 타입 제외)
-export type { LoginCredentials, RegisterCredentials, AuthResponse, LoginResponse, AuthState } from './auth';
+export type {
+  LoginCredentials,
+  TokenCredentials,
+  RegisterCredentials,
+  AuthResponse,
+  LoginResponse,
+  AuthState,
+} from './auth';
 
 // AI 상담 및 채팅 관련 타입
 export * from './ai-consultation';

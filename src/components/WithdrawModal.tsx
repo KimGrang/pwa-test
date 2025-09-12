@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useDwonStoreUser } from '../hooks/useDwonStoreAPI';
+import { useUserAPI } from '../hooks';
 import { useAuthStore } from '../store/authStore';
 import { useUserStore } from '../store/userStore';
 import { useRecordStore } from '../store/recordStore';
@@ -27,7 +27,7 @@ const WithdrawModal: React.FC<WithdrawModalProps> = ({ isOpen, onClose, onSucces
   const [isLoading, setIsLoading] = useState(false);
 
   // API 훅
-  const { withdraw, error, clearError } = useDwonStoreUser();
+  const { withdraw, error, clearError } = useUserAPI();
 
   // 스토어 훅들
   const { clearAll: clearAuthStore } = useAuthStore();

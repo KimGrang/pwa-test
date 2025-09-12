@@ -38,3 +38,32 @@ export interface UpdateMedicalRecordRequest {
   treatment_plan?: string;
   follow_up?: string;
 }
+
+/**
+ * 진료기록 상세 조회 응답 타입 (diagnosis, prescription 포함)
+ */
+export interface MedicalRecordDetail {
+  diagnosis: Array<{
+    id: number;
+    recordId: number;
+    ownerName: string;
+    animalType: string;
+    breed: string;
+    animalName: string;
+    gender: string;
+    age: string;
+    diseaseName: string;
+    diagnosisDate: string;
+    prognosis: string;
+    shared: boolean;
+  }>;
+  prescriptions: Array<{
+    id: number;
+    recordId: number;
+    medicationName: string;
+    dosage: string;
+    frequency: string;
+    durationDays: number;
+    specialInstructions?: string;
+  }>;
+}

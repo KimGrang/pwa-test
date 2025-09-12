@@ -29,7 +29,7 @@ export const processLoginData = async (user: User, getMyHospital: () => Promise<
     // console.log('🏥 사용자 병원 정보:', user.hospital);
 
     // 사용자 정보 저장
-    setCurrentUser(user);
+    setCurrentUser(user as import('../types/user').User);
 
     // 병원 정보 처리
     if (user.hospital) {

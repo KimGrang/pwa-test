@@ -1,14 +1,14 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import HospitalSelector from '../components/HospitalSelector';
-import { useDwonStoreUser } from '../hooks/useDwonStoreAPI';
+import { useUserAPI } from '../hooks';
 import { useHospitalStore } from '../store/hospitalStore';
 import { useUserStore } from '../store/userStore';
 import '../styles/HospitalSelector.css';
 
 const HospitalScreen: React.FC = () => {
   const navigate = useNavigate();
-  const { updateHospital, loading: isUpdating } = useDwonStoreUser();
+  const { updateHospital, loading: isUpdating } = useUserAPI();
   const { selectedHospital } = useHospitalStore();
   const { currentUser, updateUserProfile } = useUserStore();
   const [isSaving, setIsSaving] = useState(false);
@@ -43,8 +43,11 @@ const HospitalScreen: React.FC = () => {
         setSaveMessage(null);
       }, 2000);
     } catch (error) {
-      console.error('병원 설정 실패:', error);
-      setSaveMessage({ type: 'error', text: '병원 설정에 실패했습니다. 다시 시도해주세요.' });
+      // 취소된 요청은 에러로 로깅하지 않음
+      if (error instanceof Error && error.message !== 'canceled' && error.name !== 'CanceledError') {
+        console.error('병원 설정 실패:', error);
+        setSaveMessage({ type: 'error', text: '병원 설정에 실패했습니다. 다시 시도해주세요.' });
+      }
     } finally {
       setIsSaving(false);
     }
@@ -68,8 +71,6 @@ const HospitalScreen: React.FC = () => {
 
       {/* 메인 콘텐츠 */}
       <div className='screen-scrollable-content'>
-        {/* 현재 설정된 병원 정보 */}
-
         {/* 저장 메시지 */}
         {saveMessage && <div className={`save-message ${saveMessage.type}`}>{saveMessage.text}</div>}
 

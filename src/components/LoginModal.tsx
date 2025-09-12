@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { XMarkIcon } from '@heroicons/react/24/outline';
-import { useAxios } from '../hooks/useAxios';
-import { useDwonStoreAuth, useDwonStorePets, useDwonStoreHospitals } from '../hooks/useDwonStoreAPI';
+import { TokenCredentials } from '../types/auth';
+// import { useAxios } from '../hooks/useAxios'; // 삭제된 파일
+import { useAuthAPI, usePetsAPI, useUserAPI } from '../hooks';
 // import { getCurrentConfig } from '../config/dwon-store-config';
 import { useAuthStore } from '../store/authStore';
 import { useUserStore } from '../store/userStore';
@@ -39,10 +40,10 @@ const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose }) => {
   const [error, setError] = useState<string | null>(null);
 
   // API 훅
-  const { testLogin, loading: authLoading } = useDwonStoreAuth();
-  const { getMyPetsWithRecords } = useDwonStorePets();
-  const { getMyHospital } = useDwonStoreHospitals();
-  const { get: axiosGet } = useAxios();
+  const { testLogin, loading: authLoading } = useAuthAPI();
+  const { getMyPetsWithRecords } = usePetsAPI();
+  const { getMyHospital } = useUserAPI();
+  // const { get: axiosGet } = useAxios(); // 삭제된 hook
 
   // 스토어 훅
   const { login: setAuthTokens, logout: authLogout } = useAuthStore();
@@ -62,10 +63,25 @@ const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose }) => {
 
     try {
       // 백엔드에서 카카오 로그인 URL 가져오기
-      const response = await axiosGet('/auth/kakao/url', {
-        baseURL: import.meta.env.VITE_API_BASE_URL,
-      });
-      const { authUrl } = response as { authUrl: string };
+      const baseUrl = import.meta.env.VITE_API_BASE_URL || 'https://www.dwon.store/api';
+      // console.log('🔍 카카오 로그인 URL 요청:', `${baseUrl}/auth/kakao/url`);
+
+      const response = await fetch(`${baseUrl}/auth/kakao/url`);
+
+      if (!response.ok) {
+        throw new Error(`카카오 로그인 URL 요청 실패: ${response.status}`);
+      }
+
+      const data = await response.json();
+      // console.log('🔍 백엔드 응답:', data);
+
+      const { authUrl } = data;
+
+      if (!authUrl) {
+        throw new Error('카카오 로그인 URL을 받지 못했습니다.');
+      }
+
+      // console.log('🔍 카카오 로그인 URL로 리다이렉트:', authUrl);
 
       // 카카오 로그인 페이지로 리다이렉트
       window.location.href = authUrl;
@@ -120,7 +136,7 @@ const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose }) => {
         setAuthTokens({
           accessToken: loginData.access_token,
           refreshToken: loginData.refresh_token,
-        });
+        } as TokenCredentials);
 
         // TokenManager에도 저장 (기존 호환성 유지)
         TokenManager.saveTokens({

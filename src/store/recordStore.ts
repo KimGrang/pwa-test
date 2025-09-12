@@ -1,5 +1,9 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
+import { apiInstance } from '../config/axios-config';
+import { API_ENDPOINTS, buildPaginatedEndpoint } from '../config/api-endpoints';
+import { ApiResponse } from '../types';
+import { CreateMedicalRecordRequest } from '../types/medical-record';
 
 /**
  * 진료 기록 인터페이스 (백엔드 API 응답 구조에 맞춤)
@@ -15,6 +19,14 @@ interface MedicalRecord {
   treatmentPlan: string;
   followUp: string;
   createdAt: string;
+}
+
+/**
+ * 페이지네이션 파라미터
+ */
+interface PaginationParams {
+  page?: number;
+  limit?: number;
 }
 
 /**
@@ -41,7 +53,7 @@ interface RecordState {
   isLoading: boolean;
   error: string | null;
 
-  // 액션
+  // 기본 액션
   setRecords: (records: MedicalRecord[]) => void;
   setSelectedRecord: (record: MedicalRecord | null) => void;
   addRecord: (record: MedicalRecord) => void;
@@ -60,6 +72,15 @@ interface RecordState {
 
   // 전체 데이터 삭제
   clearAll: () => void;
+
+  // API 액션
+  getRecordsByPetAPI: (petId: number, params?: PaginationParams) => Promise<MedicalRecord[] | null>;
+  createRecord: (recordData: CreateMedicalRecordRequest) => Promise<MedicalRecord | null>;
+  getRecordByIdAPI: (id: number) => Promise<MedicalRecord | null>;
+  updateRecordAPI: (id: number, recordData: Partial<CreateMedicalRecordRequest>) => Promise<MedicalRecord | null>;
+  deleteRecordAPI: (id: number) => Promise<boolean>;
+  getRecordDetail: (id: number) => Promise<MedicalRecord | null>;
+  getAllRecords: (params?: PaginationParams) => Promise<MedicalRecord[] | null>;
 }
 
 /**
@@ -75,7 +96,7 @@ export const useRecordStore = create<RecordState>()(
       isLoading: false,
       error: null,
 
-      // 액션
+      // 기본 액션
       setRecords: (records: MedicalRecord[]) => set({ records }),
 
       setSelectedRecord: (record: MedicalRecord | null) => set({ selectedRecord: record }),
@@ -146,6 +167,169 @@ export const useRecordStore = create<RecordState>()(
           isLoading: false,
           error: null,
         }),
+
+      // API 액션들
+      getRecordsByPetAPI: async (petId: number, params: PaginationParams = {}) => {
+        set({ isLoading: true, error: null });
+        try {
+          const baseEndpoint = API_ENDPOINTS.MEDICAL_RECORDS.BY_PET(petId);
+          const endpoint = buildPaginatedEndpoint(baseEndpoint, params.page, params.limit);
+          const response = await apiInstance.get<ApiResponse<MedicalRecord[]>>(endpoint);
+
+          if (response.data?.data) {
+            const records = response.data.data;
+            set({
+              records,
+              isLoading: false,
+            });
+            return records;
+          }
+          return null;
+        } catch (error) {
+          const errorMessage = error instanceof Error ? error.message : '진료기록 조회 중 오류가 발생했습니다.';
+          set({ error: errorMessage, isLoading: false });
+          return null;
+        }
+      },
+
+      createRecord: async (recordData: CreateMedicalRecordRequest) => {
+        set({ isLoading: true, error: null });
+        try {
+          const response = await apiInstance.post<ApiResponse<MedicalRecord>>(
+            API_ENDPOINTS.MEDICAL_RECORDS.CREATE,
+            recordData
+          );
+
+          if (response.data?.data) {
+            const newRecord = response.data.data;
+            const { records } = get();
+            set({
+              records: [...records, newRecord],
+              isLoading: false,
+            });
+            return newRecord;
+          }
+          return null;
+        } catch (error) {
+          const errorMessage = error instanceof Error ? error.message : '진료기록 생성 중 오류가 발생했습니다.';
+          set({ error: errorMessage, isLoading: false });
+          return null;
+        }
+      },
+
+      getRecordByIdAPI: async (id: number) => {
+        set({ isLoading: true, error: null });
+        try {
+          const response = await apiInstance.get<ApiResponse<MedicalRecord>>(API_ENDPOINTS.MEDICAL_RECORDS.DETAIL(id));
+
+          if (response.data?.data) {
+            const record = response.data.data;
+            set({
+              selectedRecord: record,
+              isLoading: false,
+            });
+            return record;
+          }
+          return null;
+        } catch (error) {
+          const errorMessage = error instanceof Error ? error.message : '진료기록 조회 중 오류가 발생했습니다.';
+          set({ error: errorMessage, isLoading: false });
+          return null;
+        }
+      },
+
+      updateRecordAPI: async (id: number, recordData: Partial<CreateMedicalRecordRequest>) => {
+        set({ isLoading: true, error: null });
+        try {
+          const response = await apiInstance.patch<ApiResponse<MedicalRecord>>(
+            API_ENDPOINTS.MEDICAL_RECORDS.DETAIL(id),
+            recordData
+          );
+
+          if (response.data?.data) {
+            const updatedRecord = response.data.data;
+            const { records, selectedRecord } = get();
+
+            const updatedRecords = records.map((record) => (record.id === id ? updatedRecord : record));
+
+            set({
+              records: updatedRecords,
+              selectedRecord: selectedRecord?.id === id ? updatedRecord : selectedRecord,
+              isLoading: false,
+            });
+            return updatedRecord;
+          }
+          return null;
+        } catch (error) {
+          const errorMessage = error instanceof Error ? error.message : '진료기록 수정 중 오류가 발생했습니다.';
+          set({ error: errorMessage, isLoading: false });
+          return null;
+        }
+      },
+
+      deleteRecordAPI: async (id: number) => {
+        set({ isLoading: true, error: null });
+        try {
+          await apiInstance.delete(API_ENDPOINTS.MEDICAL_RECORDS.DETAIL(id));
+
+          const { records, selectedRecord } = get();
+          const filteredRecords = records.filter((record) => record.id !== id);
+
+          set({
+            records: filteredRecords,
+            selectedRecord: selectedRecord?.id === id ? null : selectedRecord,
+            isLoading: false,
+          });
+          return true;
+        } catch (error) {
+          const errorMessage = error instanceof Error ? error.message : '진료기록 삭제 중 오류가 발생했습니다.';
+          set({ error: errorMessage, isLoading: false });
+          return false;
+        }
+      },
+
+      getRecordDetail: async (id: number) => {
+        set({ isLoading: true, error: null });
+        try {
+          const response = await apiInstance.get<ApiResponse<MedicalRecord>>(`/medical-records/detail/${id}`);
+
+          if (response.data?.data) {
+            const record = response.data.data;
+            set({
+              selectedRecord: record,
+              isLoading: false,
+            });
+            return record;
+          }
+          return null;
+        } catch (error) {
+          const errorMessage = error instanceof Error ? error.message : '진료기록 상세 조회 중 오류가 발생했습니다.';
+          set({ error: errorMessage, isLoading: false });
+          return null;
+        }
+      },
+
+      getAllRecords: async (params: PaginationParams = {}) => {
+        set({ isLoading: true, error: null });
+        try {
+          const endpoint = buildPaginatedEndpoint(API_ENDPOINTS.MEDICAL_RECORDS.LIST, params.page, params.limit);
+          const response = await apiInstance.get<ApiResponse<MedicalRecord[]>>(endpoint);
+
+          if (response.data?.data) {
+            const records = response.data.data;
+            set({
+              records,
+              isLoading: false,
+            });
+            return records;
+          }
+          return null;
+        } catch (error) {
+          const errorMessage = error instanceof Error ? error.message : '전체 진료기록 조회 중 오류가 발생했습니다.';
+          set({ error: errorMessage, isLoading: false });
+          return null;
+        }
+      },
     }),
     {
       name: 'record-store',

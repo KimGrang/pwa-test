@@ -1,12 +1,21 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
-import { Pet } from '../types/pet';
+import { apiInstance } from '../config/axios-config';
+import { API_ENDPOINTS, buildPaginatedEndpoint } from '../config/api-endpoints';
+import { ApiResponse } from '../types';
+import { Pet, CreatePetRequest, PetWithRecordsResponse } from '../types/pet';
+
+/**
+ * 페이지네이션 파라미터
+ */
+interface PaginationParams {
+  page?: number;
+  limit?: number;
+}
 
 /**
  * 반려동물 상태 인터페이스
- * API 문서에 맞춰 업데이트
  */
-
 interface PetState {
   // 반려동물 목록
   pets: Pet[];
@@ -28,7 +37,7 @@ interface PetState {
     total: number;
   };
 
-  // 액션
+  // 기본 액션
   setPets: (pets: Pet[]) => void;
   setSelectedPet: (pet: Pet | null) => void;
   addPet: (pet: Pet) => void;
@@ -46,6 +55,15 @@ interface PetState {
 
   // 전체 데이터 삭제
   clearAll: () => void;
+
+  // API 액션
+  getMyPets: (params?: PaginationParams) => Promise<Pet[] | null>;
+  getMyPetsWithRecords: () => Promise<PetWithRecordsResponse | null>;
+  getPetByIdAPI: (id: number) => Promise<Pet | null>;
+  createPet: (petData: CreatePetRequest) => Promise<Pet | null>;
+  updatePetAPI: (id: number, petData: Partial<CreatePetRequest>) => Promise<Pet | null>;
+  deletePetAPI: (id: number) => Promise<boolean>;
+  getAllPets: (params?: PaginationParams) => Promise<Pet[] | null>;
 }
 
 /**
@@ -66,7 +84,7 @@ export const usePetStore = create<PetState>()(
         total: 0,
       },
 
-      // 액션
+      // 기본 액션
       setPets: (pets: Pet[]) => set({ pets }),
 
       setSelectedPet: (pet: Pet | null) => set({ selectedPet: pet }),
@@ -134,6 +152,166 @@ export const usePetStore = create<PetState>()(
             total: 0,
           },
         }),
+
+      // API 액션들
+      getMyPets: async (params: PaginationParams = {}) => {
+        set({ isLoading: true, error: null });
+        try {
+          const endpoint = buildPaginatedEndpoint(API_ENDPOINTS.PETS.MY_PETS, params.page, params.limit);
+          const response = await apiInstance.get<ApiResponse<Pet[]>>(endpoint);
+
+          if (response.data?.data) {
+            const pets = response.data.data;
+            set({
+              pets,
+              isLoading: false,
+            });
+            return pets;
+          }
+          return null;
+        } catch (error) {
+          const errorMessage = error instanceof Error ? error.message : '반려동물 목록 조회 중 오류가 발생했습니다.';
+          set({ error: errorMessage, isLoading: false });
+          return null;
+        }
+      },
+
+      getMyPetsWithRecords: async () => {
+        set({ isLoading: true, error: null });
+        try {
+          const response = await apiInstance.get<PetWithRecordsResponse>(API_ENDPOINTS.PETS.MY_PETS_WITH_RECORDS);
+
+          if (response.data) {
+            // PetWithRecordsResponse의 구조에 따라 pets 데이터 추출
+            const pets = response.data.data || response.data;
+            if (Array.isArray(pets)) {
+              set({
+                pets,
+                isLoading: false,
+              });
+            }
+            return response.data;
+          }
+          return null;
+        } catch (error) {
+          const errorMessage =
+            error instanceof Error ? error.message : '반려동물과 진료기록 조회 중 오류가 발생했습니다.';
+          set({ error: errorMessage, isLoading: false });
+          return null;
+        }
+      },
+
+      getPetByIdAPI: async (id: number) => {
+        set({ isLoading: true, error: null });
+        try {
+          const response = await apiInstance.get<ApiResponse<Pet>>(API_ENDPOINTS.PETS.DETAIL(id));
+
+          if (response.data?.data) {
+            const pet = response.data.data;
+            set({
+              selectedPet: pet,
+              isLoading: false,
+            });
+            return pet;
+          }
+          return null;
+        } catch (error) {
+          const errorMessage = error instanceof Error ? error.message : '반려동물 조회 중 오류가 발생했습니다.';
+          set({ error: errorMessage, isLoading: false });
+          return null;
+        }
+      },
+
+      createPet: async (petData: CreatePetRequest) => {
+        set({ isLoading: true, error: null });
+        try {
+          const response = await apiInstance.post<ApiResponse<Pet>>(API_ENDPOINTS.PETS.CREATE, petData);
+
+          if (response.data?.data) {
+            const newPet = response.data.data;
+            const { pets } = get();
+            set({
+              pets: [...pets, newPet],
+              isLoading: false,
+            });
+            return newPet;
+          }
+          return null;
+        } catch (error) {
+          const errorMessage = error instanceof Error ? error.message : '반려동물 등록 중 오류가 발생했습니다.';
+          set({ error: errorMessage, isLoading: false });
+          return null;
+        }
+      },
+
+      updatePetAPI: async (id: number, petData: Partial<CreatePetRequest>) => {
+        set({ isLoading: true, error: null });
+        try {
+          const response = await apiInstance.patch<ApiResponse<Pet>>(API_ENDPOINTS.PETS.DETAIL(id), petData);
+
+          if (response.data?.data) {
+            const updatedPet = response.data.data;
+            const { pets, selectedPet } = get();
+
+            const updatedPets = pets.map((pet) => (pet.id === id ? updatedPet : pet));
+
+            set({
+              pets: updatedPets,
+              selectedPet: selectedPet?.id === id ? updatedPet : selectedPet,
+              isLoading: false,
+            });
+            return updatedPet;
+          }
+          return null;
+        } catch (error) {
+          const errorMessage = error instanceof Error ? error.message : '반려동물 수정 중 오류가 발생했습니다.';
+          set({ error: errorMessage, isLoading: false });
+          return null;
+        }
+      },
+
+      deletePetAPI: async (id: number) => {
+        set({ isLoading: true, error: null });
+        try {
+          await apiInstance.delete(API_ENDPOINTS.PETS.DETAIL(id));
+
+          const { pets, selectedPet } = get();
+          const filteredPets = pets.filter((pet) => pet.id !== id);
+
+          set({
+            pets: filteredPets,
+            selectedPet: selectedPet?.id === id ? null : selectedPet,
+            isLoading: false,
+          });
+          return true;
+        } catch (error) {
+          const errorMessage = error instanceof Error ? error.message : '반려동물 삭제 중 오류가 발생했습니다.';
+          set({ error: errorMessage, isLoading: false });
+          return false;
+        }
+      },
+
+      getAllPets: async (params: PaginationParams = {}) => {
+        set({ isLoading: true, error: null });
+        try {
+          const endpoint = buildPaginatedEndpoint(API_ENDPOINTS.PETS.LIST, params.page, params.limit);
+          const response = await apiInstance.get<ApiResponse<Pet[]>>(endpoint);
+
+          if (response.data?.data) {
+            const pets = response.data.data;
+            set({
+              pets,
+              isLoading: false,
+            });
+            return pets;
+          }
+          return null;
+        } catch (error) {
+          const errorMessage = error instanceof Error ? error.message : '전체 반려동물 조회 중 오류가 발생했습니다.';
+          set({ error: errorMessage, isLoading: false });
+          return null;
+        }
+      },
     }),
     {
       name: 'pet-store',
